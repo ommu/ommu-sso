@@ -31,6 +31,10 @@
 class InlisCatalogs extends CActiveRecord
 {
 	public $defaultColumns = array();
+	
+	// Variable Search
+	public $catalog_search;
+	public $creation_search;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -64,7 +68,8 @@ class InlisCatalogs extends CActiveRecord
 			array('creation_id', 'length', 'max'=>10),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, catalog_id, creation_date, creation_id', 'safe', 'on'=>'search'),
+			array('id, catalog_id, creation_date, creation_id,
+				catalog_search, creation_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -76,6 +81,8 @@ class InlisCatalogs extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'catalog' => array(self::BELONGS_TO, 'SyncCatalogs', 'catalog_id'),
+			'creation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
 		);
 	}
 
@@ -89,6 +96,8 @@ class InlisCatalogs extends CActiveRecord
 			'catalog_id' => Yii::t('attribute', 'Catalog'),
 			'creation_date' => Yii::t('attribute', 'Creation Date'),
 			'creation_id' => Yii::t('attribute', 'Creation'),
+			'catalog_search' => Yii::t('attribute', 'Catalog'),
+			'creation_search' => Yii::t('attribute', 'Creation'),
 		);
 		/*
 			'ID' => 'ID',
@@ -125,6 +134,20 @@ class InlisCatalogs extends CActiveRecord
 			$criteria->compare('t.creation_id',$_GET['creation']);
 		else
 			$criteria->compare('t.creation_id',$this->creation_id);
+		
+		// Custom Search
+		$criteria->with = array(
+			'catalog' => array(
+				'alias'=>'catalog',
+				'select'=>'Title',
+			),
+			'creation' => array(
+				'alias'=>'creation',
+				'select'=>'displayname',
+			),
+		);
+		$criteria->compare('catalog.Title',strtolower($this->catalog_search), true);
+		$criteria->compare('creation.displayname',strtolower($this->creation_search), true);
 
 		if(!isset($_GET['InlisCatalogs_sort']))
 			$criteria->order = 't.id DESC';
@@ -169,19 +192,18 @@ class InlisCatalogs extends CActiveRecord
 	 */
 	protected function afterConstruct() {
 		if(count($this->defaultColumns) == 0) {
-			/*
-			$this->defaultColumns[] = array(
-				'class' => 'CCheckBoxColumn',
-				'name' => 'id',
-				'selectableRows' => 2,
-				'checkBoxHtmlOptions' => array('name' => 'trash_id[]')
-			);
-			*/
 			$this->defaultColumns[] = array(
 				'header' => 'No',
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
-			$this->defaultColumns[] = 'catalog_id';
+			$this->defaultColumns[] = array(
+				'name' => 'catalog_search',
+				'value' => '$data->catalog->Title',
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'creation_search',
+				'value' => '$data->creation->displayname',
+			);
 			$this->defaultColumns[] = array(
 				'name' => 'creation_date',
 				'value' => 'Utility::dateFormat($data->creation_date)',
@@ -208,7 +230,6 @@ class InlisCatalogs extends CActiveRecord
 					),
 				), true),
 			);
-			$this->defaultColumns[] = 'creation_id';
 		}
 		parent::afterConstruct();
 	}
@@ -233,68 +254,12 @@ class InlisCatalogs extends CActiveRecord
 	/**
 	 * before validate attributes
 	 */
-	/*
 	protected function beforeValidate() {
 		if(parent::beforeValidate()) {
-			// Create action
+			if($this->isNewRecord)
+				$this->creation_id = Yii::app()->user->id;
 		}
 		return true;
 	}
-	*/
-
-	/**
-	 * after validate attributes
-	 */
-	/*
-	protected function afterValidate()
-	{
-		parent::afterValidate();
-			// Create action
-		return true;
-	}
-	*/
-	
-	/**
-	 * before save attributes
-	 */
-	/*
-	protected function beforeSave() {
-		if(parent::beforeSave()) {
-		}
-		return true;	
-	}
-	*/
-	
-	/**
-	 * After save attributes
-	 */
-	/*
-	protected function afterSave() {
-		parent::afterSave();
-		// Create action
-	}
-	*/
-
-	/**
-	 * Before delete attributes
-	 */
-	/*
-	protected function beforeDelete() {
-		if(parent::beforeDelete()) {
-			// Create action
-		}
-		return true;
-	}
-	*/
-
-	/**
-	 * After delete attributes
-	 */
-	/*
-	protected function afterDelete() {
-		parent::afterDelete();
-		// Create action
-	}
-	*/
 
 }
