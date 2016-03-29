@@ -11,6 +11,7 @@
  *	Index
  *	GetMember
  *	Generate
+ *	ChangePassword
  *
  *	LoadModel
  *	performAjaxValidation
@@ -53,7 +54,7 @@ class UserController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','getmember','generate'),
+				'actions'=>array('index','getmember','generate','changepassword'),
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
@@ -86,17 +87,15 @@ class UserController extends Controller
 	public function actionGetMember() 
 	{
 		if(Yii::app()->request->isPostRequest) {
+			$membernumber = trim($_POST['membernumber']);
+			
 			$criteria=new CDbCriteria;
-			$criteria->compare('MemberNo',trim($_POST['membernumber']));
+			$criteria->compare('MemberNo', $membernumber);
 			
 			$model = SyncMembers::model()->find($criteria);
 			$return = '';
 				
-			if($model == null) {
-				$return['success'] = '0';
-				$return['error'] = 'NULL';
-				$return['message'] = 'error, member tidak ditemukan';
-			} else {
+			if($model != null) {
 				if($model->users == null) {
 					if($model->StatusAnggota == 'ACTIVE') {
 						$return['success'] = '1';
@@ -121,6 +120,10 @@ class UserController extends Controller
 				$return['birthday'] = $model->PlaceOfBirth != '' ? ucwords(strtolower(trim($model->PlaceOfBirth.', '.Utility::dateFormat($model->DateOfBirth)))) : Utility::dateFormat($model->DateOfBirth);
 				$return['phone_number'] = $model->NoHp;
 				$return['member_type'] = ucwords(strtolower(trim($model->JenisAnggota)));
+			} else {
+				$return['success'] = '0';
+				$return['error'] = 'NULL';
+				$return['message'] = 'error, member tidak ditemukan';
 			}
 			echo CJSON::encode($return);
 			
@@ -135,22 +138,22 @@ class UserController extends Controller
 	{
 		if(Yii::app()->request->isPostRequest) {
 			$email = trim($_POST['email']);
-			$memberid = trim($_POST['memberid']);
+			$member = trim($_POST['member']);
 			$displayname = trim($_POST['displayname']);
 			
 			$userFind = Users::model()->findByAttributes(array('email' => $email));
 			if($userFind == null) {
-				$memberFind = InlisUsers::model()->findByAttributes(array('member_id' => trim($_POST['memberid'])));
+				$memberFind = InlisUsers::model()->findByAttributes(array('member_id' => $member));
 				if($memberFind == null) {
 					$return['success'] = '1';
-					$user=new Users;
-					$user->email = $email;
-					$user->displayname = $displayname;
-					if($user->save()) {
-						$userInlis=new InlisUsers;
-						$userInlis->user_id = $user->user_id;
-						$userInlis->member_id = $memberid;
-						if($userInlis->save())
+					$model=new Users;
+					$model->email = $email;
+					$model->displayname = $displayname;
+					if($model->save()) {
+						$user=new InlisUsers;
+						$user->user_id = $model->user_id;
+						$user->member_id = $member;
+						if($user->save())
 							$return['message'] = 'success';
 					}
 				} else {
@@ -170,362 +173,54 @@ class UserController extends Controller
 	}
 	
 	/**
-	 * Displays a particular model.
-	 * @param integer $id the ID of the model to be displayed
+	 * Lists all models.
 	 */
-	public function actionView($id) 
+	public function actionChangePassword() 
 	{
-		$arrThemes = Utility::getCurrentTemplate('public');
-		Yii::app()->theme = $arrThemes['folder'];
-		$this->layout = $arrThemes['layout'];
-		Utility::applyCurrentTheme($this->module);
+		if(Yii::app()->request->isPostRequest) {
+			$user = trim($_POST['user']);
+			$password = trim($_POST['password']);
+			$newpassword = trim($_POST['newpassword']);
+			$confirmpassword = trim($_POST['confirmpassword']);
+			
+			$url = Utility::getProtocol().'://'.Yii::app()->request->serverName.Yii::app()->createUrl('users/api/member/changepassword');		
+			$item = array(
+				'user' => $user,
+				'password' => $password,
+				'newpassword' => $newpassword,
+				'confirmpassword' => $confirmpassword,
+			);
+			$items = http_build_query($item);
 		
-		$setting = VideoSetting::model()->findByPk(1,array(
-			'select' => 'meta_keyword',
-		));
-
-		$model=$this->loadModel($id);
-
-		$this->pageTitle = Yii::t('phrase', 'View Inlis Users');
-		$this->pageDescription = '';
-		$this->pageMeta = $setting->meta_keyword;
-		$this->render('front_view',array(
-			'model'=>$model,
-		));
-		/*
-		$this->render('admin_view',array(
-			'model'=>$model,
-		));
-		*/
-	}	
-
-	/**
-	 * Manages all models.
-	 */
-	public function actionManage() 
-	{
-		$model=new InlisUsers('search');
-		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['InlisUsers'])) {
-			$model->attributes=$_GET['InlisUsers'];
-		}
-
-		$columnTemp = array();
-		if(isset($_GET['GridColumn'])) {
-			foreach($_GET['GridColumn'] as $key => $val) {
-				if($_GET['GridColumn'][$key] == 1) {
-					$columnTemp[] = $key;
-				}
-			}
-		}
-		$columns = $model->getGridColumn($columnTemp);
-
-		$this->pageTitle = Yii::t('phrase', 'Inlis Users Manage');
-		$this->pageDescription = '';
-		$this->pageMeta = '';
-		$this->render('admin_manage',array(
-			'model'=>$model,
-			'columns' => $columns,
-		));
-	}	
-	
-	/**
-	 * Creates a new model.
-	 * If creation is successful, the browser will be redirected to the 'view' page.
-	 */
-	public function actionAdd() 
-	{
-		$model=new InlisUsers;
-
-		// Uncomment the following line if AJAX validation is needed
-		$this->performAjaxValidation($model);
-
-		if(isset($_POST['InlisUsers'])) {
-			$model->attributes=$_POST['InlisUsers'];
-
-			/* 
-			$jsonError = CActiveForm::validate($model);
-			if(strlen($jsonError) > 2) {
-				//echo $jsonError;
-				$errors = $model->getErrors();
-				$summary['msg'] = "<div class='errorSummary'><strong>Please fix the following input errors:</strong>";
-				$summary['msg'] .= "<ul>";
-				foreach($errors as $key => $value) {
-					$summary['msg'] .= "<li>{$value[0]}</li>";
-				}
-				$summary['msg'] .= "</ul></div>";
-
-				$message = json_decode($jsonError, true);
-				$merge = array_merge_recursive($summary, $message);
-				$encode = json_encode($merge);
-				echo $encode;
-
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL, $url);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			//curl_setopt($ch,CURLOPT_HEADER, true);
+			curl_setopt($ch, CURLOPT_POST, true);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $items);
+			$output=curl_exec($ch);
+			
+			$return = '';
+			if($output === false) {
+				$return['success'] = '0';
+				$return['error'] = 'NOTCONENCT';
+				$return['message'] = 'error, not connected';
+				
 			} else {
-				if(isset($_GET['enablesave']) && $_GET['enablesave'] == 1) {
-					if($model->save()) {
-						echo CJSON::encode(array(
-							'type' => 5,
-							'get' => Yii::app()->controller->createUrl('manage'),
-							'id' => 'partial-inlis-users',
-							'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'InlisUsers success created.').'</strong></div>',
-						));
-					} else {
-						print_r($model->getErrors());
-					}
+				$object = json_decode($output);
+				if($object->success == 1) {
+					$member = InlisUsers::model()->findByAttributes(array('user_id' => $user));
+					if($member != null) {
+						$member->change_password = '1';
+						$member->save();
+					}					
 				}
+				$return = $object;
 			}
-			Yii::app()->end();
-			*/
-
-			if(isset($_GET['enablesave']) && $_GET['enablesave'] == 1) {
-				if($model->save()) {
-					Yii::app()->user->setFlash('success', Yii::t('phrase', 'InlisUsers success created.'));
-					//$this->redirect(array('view','id'=>$model->id));
-					$this->redirect(array('manage'));
-				}
-			}
-		}
-
-		$this->pageTitle = Yii::t('phrase', 'Create Inlis Users');
-		$this->pageDescription = '';
-		$this->pageMeta = '';
-		$this->render('admin_add',array(
-			'model'=>$model,
-		));
-	}
-
-	/**
-	 * Updates a particular model.
-	 * If update is successful, the browser will be redirected to the 'view' page.
-	 * @param integer $id the ID of the model to be updated
-	 */
-	public function actionEdit($id) 
-	{
-		$model=$this->loadModel($id);
-
-		// Uncomment the following line if AJAX validation is needed
-		$this->performAjaxValidation($model);
-
-		if(isset($_POST['InlisUsers'])) {
-			$model->attributes=$_POST['InlisUsers'];
-
-			/* 
-			$jsonError = CActiveForm::validate($model);
-			if(strlen($jsonError) > 2) {
-				//echo $jsonError;
-				$errors = $model->getErrors();
-				$summary['msg'] = "<div class='errorSummary'><strong>Please fix the following input errors:</strong>";
-				$summary['msg'] .= "<ul>";
-				foreach($errors as $key => $value) {
-					$summary['msg'] .= "<li>{$value[0]}</li>";
-				}
-				$summary['msg'] .= "</ul></div>";
-
-				$message = json_decode($jsonError, true);
-				$merge = array_merge_recursive($summary, $message);
-				$encode = json_encode($merge);
-				echo $encode;
-
-			} else {
-				if(isset($_GET['enablesave']) && $_GET['enablesave'] == 1) {
-					if($model->save()) {
-						echo CJSON::encode(array(
-							'type' => 5,
-							'get' => Yii::app()->controller->createUrl('manage'),
-							'id' => 'partial-inlis-users',
-							'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'InlisUsers success updated.').'</strong></div>',
-						));
-					} else {
-						print_r($model->getErrors());
-					}
-				}
-			}
-			Yii::app()->end();
-			*/
-
-			if(isset($_GET['enablesave']) && $_GET['enablesave'] == 1) {
-				if($model->save()) {
-					Yii::app()->user->setFlash('success', Yii::t('phrase', 'InlisUsers success updated.'));
-					//$this->redirect(array('view','id'=>$model->id));
-					$this->redirect(array('manage'));
-				}
-			}
-		}
-
-		$this->pageTitle = Yii::t('phrase', 'Update Inlis Users');
-		$this->pageDescription = '';
-		$this->pageMeta = '';
-		$this->render('admin_edit',array(
-			'model'=>$model,
-		));
-	}
-
-	/**
-	 * Displays a particular model.
-	 * @param integer $id the ID of the model to be displayed
-	 */
-	public function actionRunAction() {
-		$id       = $_POST['trash_id'];
-		$criteria = null;
-		$actions  = $_GET['action'];
-
-		if(count($id) > 0) {
-			$criteria = new CDbCriteria;
-			$criteria->addInCondition('id', $id);
-
-			if($actions == 'publish') {
-				InlisUsers::model()->updateAll(array(
-					'publish' => 1,
-				),$criteria);
-			} elseif($actions == 'unpublish') {
-				InlisUsers::model()->updateAll(array(
-					'publish' => 0,
-				),$criteria);
-			} elseif($actions == 'trash') {
-				InlisUsers::model()->updateAll(array(
-					'publish' => 2,
-				),$criteria);
-			} elseif($actions == 'delete') {
-				InlisUsers::model()->deleteAll($criteria);
-			}
-		}
-
-		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-		if(!isset($_GET['ajax'])) {
-			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('manage'));
-		}
-	}
-
-	/**
-	 * Deletes a particular model.
-	 * If deletion is successful, the browser will be redirected to the 'admin' page.
-	 * @param integer $id the ID of the model to be deleted
-	 */
-	public function actionDelete($id) 
-	{
-		$model=$this->loadModel($id);
-		
-		if(Yii::app()->request->isPostRequest) {
-			// we only allow deletion via POST request
-			if(isset($id)) {
-				if($model->delete()) {
-					echo CJSON::encode(array(
-						'type' => 5,
-						'get' => Yii::app()->controller->createUrl('manage'),
-						'id' => 'partial-inlis-users',
-						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'InlisUsers success deleted.').'</strong></div>',
-					));
-				}
-			}
-
-		} else {
-			$this->dialogDetail = true;
-			$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
-			$this->dialogWidth = 350;
-
-			$this->pageTitle = Yii::t('phrase', 'InlisUsers Delete.');
-			$this->pageDescription = '';
-			$this->pageMeta = '';
-			$this->render('admin_delete');
-		}
-	}
-
-	/**
-	 * Deletes a particular model.
-	 * If deletion is successful, the browser will be redirected to the 'admin' page.
-	 * @param integer $id the ID of the model to be deleted
-	 */
-	public function actionPublish($id) 
-	{
-		$model=$this->loadModel($id);
-		
-		if($model->publish == 1) {
-		//if($model->actived == 1) {
-		//if($model->enabled == 1) {
-		//if($model->status == 1) {
-			$title = Yii::t('phrase', 'Unpublish');
-			//$title = Yii::t('phrase', 'Deactived');
-			//$title = Yii::t('phrase', 'Disabled');
-			//$title = Yii::t('phrase', 'Unresolved');
-			$replace = 0;
-		} else {
-			$title = Yii::t('phrase', 'Publish');
-			//$title = Yii::t('phrase', 'Actived');
-			//$title = Yii::t('phrase', 'Enabled');
-			//$title = Yii::t('phrase', 'Resolved');
-			$replace = 1;
-		}
-
-		if(Yii::app()->request->isPostRequest) {
-			// we only allow deletion via POST request
-			if(isset($id)) {
-				//change value active or publish
-				$model->publish = $replace;
-				//$model->actived = $replace;
-				//$model->enabled = $replace;
-				//$model->status = $replace;
-
-				if($model->update()) {
-					echo CJSON::encode(array(
-						'type' => 5,
-						'get' => Yii::app()->controller->createUrl('manage'),
-						'id' => 'partial-inlis-users',
-						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'InlisUsers success updated.').'</strong></div>',
-					));
-				}
-			}
-
-		} else {
-			$this->dialogDetail = true;
-			$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
-			$this->dialogWidth = 350;
-
-			$this->pageTitle = $title;
-			$this->pageDescription = '';
-			$this->pageMeta = '';
-			$this->render('admin_publish',array(
-				'title'=>$title,
-				'model'=>$model,
-			));
-		}
-	}
-
-	/**
-	 * Deletes a particular model.
-	 * If deletion is successful, the browser will be redirected to the 'admin' page.
-	 * @param integer $id the ID of the model to be deleted
-	 */
-	public function actionHeadline($id) 
-	{
-		$model=$this->loadModel($id);
-
-		if(Yii::app()->request->isPostRequest) {
-			// we only allow deletion via POST request
-			if(isset($id)) {
-				//change value active or publish
-				$model->headline = 1;
-				$model->publish = 1;
-
-				if($model->update()) {
-					echo CJSON::encode(array(
-						'type' => 5,
-						'get' => Yii::app()->controller->createUrl('manage'),
-						'id' => 'partial-inlis-users',
-						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'InlisUsers success updated.').'</strong></div>',
-					));
-				}
-			}
-
-		} else {
-			$this->dialogDetail = true;
-			$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
-			$this->dialogWidth = 350;
-
-			$this->pageTitle = Yii::t('phrase', 'Headline');
-			$this->pageDescription = '';
-			$this->pageMeta = '';
-			$this->render('admin_headline');
-		}
+			echo CJSON::encode($return);
+			
+		} else
+			$this->redirect(Yii::app()->createUrl('site/index'));
 	}
 
 	/**
