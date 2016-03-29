@@ -32,6 +32,10 @@
 class InlisFavourites extends CActiveRecord
 {
 	public $defaultColumns = array();
+	
+	// Variable Search
+	public $catalog_search;
+	public $user_search;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -65,7 +69,8 @@ class InlisFavourites extends CActiveRecord
 			array('creation_ip', 'length', 'max'=>20),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('favourite_id, catalog_id, user_id, creation_date, creation_ip', 'safe', 'on'=>'search'),
+			array('favourite_id, catalog_id, user_id, creation_date, creation_ip,
+				catalog_search, user_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -77,6 +82,8 @@ class InlisFavourites extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'catalog' => array(self::BELONGS_TO, 'SyncCatalogs', 'catalog_id'),
+			'user' => array(self::BELONGS_TO, 'Users', 'user_id'),
 		);
 	}
 
@@ -91,6 +98,8 @@ class InlisFavourites extends CActiveRecord
 			'user_id' => Yii::t('attribute', 'User'),
 			'creation_date' => Yii::t('attribute', 'Creation Date'),
 			'creation_ip' => Yii::t('attribute', 'Creation Ip'),
+			'catalog_search' => Yii::t('attribute', 'Catalog'),
+			'user_search' => Yii::t('attribute', 'User'),
 		);
 		/*
 			'Favourite' => 'Favourite',
@@ -121,7 +130,10 @@ class InlisFavourites extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('t.favourite_id',strtolower($this->favourite_id),true);
-		$criteria->compare('t.catalog_id',strtolower($this->catalog_id),true);
+		if(isset($_GET['catalog']))
+			$criteria->compare('t.catalog_id',$_GET['catalog']);
+		else
+			$criteria->compare('t.catalog_id',$this->catalog_id);
 		if(isset($_GET['user']))
 			$criteria->compare('t.user_id',$_GET['user']);
 		else
@@ -129,6 +141,20 @@ class InlisFavourites extends CActiveRecord
 		if($this->creation_date != null && !in_array($this->creation_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.creation_date)',date('Y-m-d', strtotime($this->creation_date)));
 		$criteria->compare('t.creation_ip',strtolower($this->creation_ip),true);
+		
+		// Custom Search
+		$criteria->with = array(
+			'catalog' => array(
+				'alias'=>'catalog',
+				'select'=>'Title',
+			),
+			'user' => array(
+				'alias'=>'user',
+				'select'=>'displayname',
+			),
+		);
+		$criteria->compare('catalog.Title',strtolower($this->catalog_search), true);
+		$criteria->compare('user.displayname',strtolower($this->user_search), true);
 
 		if(!isset($_GET['InlisFavourites_sort']))
 			$criteria->order = 't.favourite_id DESC';
@@ -174,20 +200,18 @@ class InlisFavourites extends CActiveRecord
 	 */
 	protected function afterConstruct() {
 		if(count($this->defaultColumns) == 0) {
-			/*
-			$this->defaultColumns[] = array(
-				'class' => 'CCheckBoxColumn',
-				'name' => 'id',
-				'selectableRows' => 2,
-				'checkBoxHtmlOptions' => array('name' => 'trash_id[]')
-			);
-			*/
 			$this->defaultColumns[] = array(
 				'header' => 'No',
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
-			$this->defaultColumns[] = 'catalog_id';
-			$this->defaultColumns[] = 'user_id';
+			$this->defaultColumns[] = array(
+				'name' => 'catalog_search',
+				'value' => '$data->catalog->Title',
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'user_search',
+				'value' => '$data->user->displayname',
+			);
 			$this->defaultColumns[] = array(
 				'name' => 'creation_date',
 				'value' => 'Utility::dateFormat($data->creation_date)',
@@ -239,68 +263,13 @@ class InlisFavourites extends CActiveRecord
 	/**
 	 * before validate attributes
 	 */
-	/*
 	protected function beforeValidate() {
 		if(parent::beforeValidate()) {
-			// Create action
+			if($this->isNewRecord)
+				$this->user_id = Yii::app()->user->id;
+			$this->creation_ip = $_SERVER['REMOTE_ADDR'];
 		}
 		return true;
 	}
-	*/
-
-	/**
-	 * after validate attributes
-	 */
-	/*
-	protected function afterValidate()
-	{
-		parent::afterValidate();
-			// Create action
-		return true;
-	}
-	*/
-	
-	/**
-	 * before save attributes
-	 */
-	/*
-	protected function beforeSave() {
-		if(parent::beforeSave()) {
-		}
-		return true;	
-	}
-	*/
-	
-	/**
-	 * After save attributes
-	 */
-	/*
-	protected function afterSave() {
-		parent::afterSave();
-		// Create action
-	}
-	*/
-
-	/**
-	 * Before delete attributes
-	 */
-	/*
-	protected function beforeDelete() {
-		if(parent::beforeDelete()) {
-			// Create action
-		}
-		return true;
-	}
-	*/
-
-	/**
-	 * After delete attributes
-	 */
-	/*
-	protected function afterDelete() {
-		parent::afterDelete();
-		// Create action
-	}
-	*/
 
 }
