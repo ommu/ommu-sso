@@ -91,7 +91,7 @@
  * @property Memberloanauthorizelocation[] $memberloanauthorizelocations
  * @property Branchs $branch
  */
-class Members extends CActiveRecord
+class Members extends OActiveRecord
 {
 	public $defaultColumns = array();
 

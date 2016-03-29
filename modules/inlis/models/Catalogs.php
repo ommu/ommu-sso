@@ -67,7 +67,7 @@
  * @property CatalogRuas[] $catalogRuases
  * @property Collections[] $collections
  */
-class Catalogs extends CActiveRecord
+class Catalogs extends OActiveRecord
 {
 	public $defaultColumns = array();
 

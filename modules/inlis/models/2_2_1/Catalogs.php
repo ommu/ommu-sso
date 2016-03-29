@@ -75,7 +75,7 @@
  * @property Collections[] $collections
  * @property Pengiriman[] $pengirimen
  */
-class Catalogs extends CActiveRecord
+class Catalogs extends OActiveRecord
 {
 	public $defaultColumns = array();
 

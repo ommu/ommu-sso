@@ -38,7 +38,7 @@
  * @property Worksheetfields[] $worksheetfields
  * @property Formats $format
  */
-class Worksheets extends CActiveRecord
+class Worksheets extends OActiveRecord
 {
 	public $defaultColumns = array();
 

@@ -85,7 +85,7 @@
  * @property Worksheets $worksheet
  * @property Stockopnamedetail[] $stockopnamedetails
  */
-class Collections extends CActiveRecord
+class Collections extends OActiveRecord
 {
 	public $defaultColumns = array();
 

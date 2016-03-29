@@ -75,7 +75,7 @@
  * @property Branchs $branch
  * @property Partners $partner
  */
-class Collections extends CActiveRecord
+class Collections extends OActiveRecord
 {
 	public $defaultColumns = array();
 
