@@ -233,8 +233,6 @@ class InlisWorksheets extends OActiveRecord
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
 			$this->defaultColumns[] = 'Name';
-			$this->defaultColumns[] = 'CardFormat';
-			$this->defaultColumns[] = 'Format_id';
 			$this->defaultColumns[] = 'CreateBy';
 			$this->defaultColumns[] = array(
 				'name' => 'CreateDate',
@@ -262,35 +260,6 @@ class InlisWorksheets extends OActiveRecord
 					),
 				), true),
 			);
-			$this->defaultColumns[] = 'CreateTerminal';
-			$this->defaultColumns[] = 'UpdateBy';
-			$this->defaultColumns[] = array(
-				'name' => 'UpdateDate',
-				'value' => 'Utility::dateFormat($data->UpdateDate)',
-				'htmlOptions' => array(
-					'class' => 'center',
-				),
-				'filter' => Yii::app()->controller->widget('zii.widgets.jui.CJuiDatePicker', array(
-					'model'=>$this,
-					'attribute'=>'UpdateDate',
-					'language' => 'ja',
-					'i18nScriptFile' => 'jquery.ui.datepicker-en.js',
-					//'mode'=>'datetime',
-					'htmlOptions' => array(
-						'id' => 'UpdateDate_filter',
-					),
-					'options'=>array(
-						'showOn' => 'focus',
-						'dateFormat' => 'dd-mm-yy',
-						'showOtherMonths' => true,
-						'selectOtherMonths' => true,
-						'changeMonth' => true,
-						'changeYear' => true,
-						'showButtonPanel' => true,
-					),
-				), true),
-			);
-			$this->defaultColumns[] = 'UpdateTerminal';
 		}
 		parent::afterConstruct();
 	}
@@ -311,74 +280,4 @@ class InlisWorksheets extends OActiveRecord
 			return $model;			
 		}
 	}
-
-	/**
-	 * before validate attributes
-	 */
-	/*
-	protected function beforeValidate() {
-		if(parent::beforeValidate()) {
-			// Create action
-		}
-		return true;
-	}
-	*/
-
-	/**
-	 * after validate attributes
-	 */
-	/*
-	protected function afterValidate()
-	{
-		parent::afterValidate();
-			// Create action
-		return true;
-	}
-	*/
-	
-	/**
-	 * before save attributes
-	 */
-	/*
-	protected function beforeSave() {
-		if(parent::beforeSave()) {
-			//$this->CreateDate = date('Y-m-d', strtotime($this->CreateDate));
-			//$this->UpdateDate = date('Y-m-d', strtotime($this->UpdateDate));
-		}
-		return true;	
-	}
-	*/
-	
-	/**
-	 * After save attributes
-	 */
-	/*
-	protected function afterSave() {
-		parent::afterSave();
-		// Create action
-	}
-	*/
-
-	/**
-	 * Before delete attributes
-	 */
-	/*
-	protected function beforeDelete() {
-		if(parent::beforeDelete()) {
-			// Create action
-		}
-		return true;
-	}
-	*/
-
-	/**
-	 * After delete attributes
-	 */
-	/*
-	protected function afterDelete() {
-		parent::afterDelete();
-		// Create action
-	}
-	*/
-
 }
