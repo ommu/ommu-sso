@@ -68,7 +68,7 @@ class InlisUsers extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('user_id, member_id, creation_id, modified_id', 'required'),
+			array('user_id, member_id', 'required'),
 			array('user_id, member_id, creation_id, modified_id', 'length', 'max'=>11),
 			array('', 'safe'),
 			// The following rule is used by search().
