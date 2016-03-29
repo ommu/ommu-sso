@@ -97,7 +97,7 @@ class InlisCollections extends OActiveRecord
 	 */
 	public function getDbConnection()
 	{
-		return Yii::app()->inlis;
+		return self::getAdvertDbConnection();
 	}
 
 	/**
@@ -105,7 +105,9 @@ class InlisCollections extends OActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'collections';
+		preg_match("/dbname=([^;]+)/i", $this->dbConnection->connectionString, $matches);
+		return $matches[1].'.collections';
+		//return 'collections';
 	}
 
 	/**

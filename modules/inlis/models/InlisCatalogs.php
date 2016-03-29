@@ -89,7 +89,7 @@ class InlisCatalogs extends OActiveRecord
 	 */
 	public function getDbConnection()
 	{
-		return Yii::app()->inlis;
+		return self::getAdvertDbConnection();
 	}
 
 	/**
@@ -97,7 +97,9 @@ class InlisCatalogs extends OActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'catalogs';
+		preg_match("/dbname=([^;]+)/i", $this->dbConnection->connectionString, $matches);
+		return $matches[1].'.catalogs';
+		//return 'catalogs';
 	}
 
 	/**

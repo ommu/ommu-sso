@@ -38,6 +38,13 @@
 class InlisWorksheetSub extends OActiveRecord
 {
 	public $defaultColumns = array();
+	
+	/**
+	 */
+	public function getDbConnection()
+	{
+		return self::getAdvertDbConnection();
+	}
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -55,7 +62,7 @@ class InlisWorksheetSub extends OActiveRecord
 	 */
 	public function getDbConnection()
 	{
-		return Yii::app()->inlis;
+		return self::getAdvertDbConnection();
 	}
 
 	/**
@@ -63,7 +70,9 @@ class InlisWorksheetSub extends OActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'akuisisi_worksheet';
+		preg_match("/dbname=([^;]+)/i", $this->dbConnection->connectionString, $matches);
+		return $matches[1].'.akuisisi_worksheet';
+		//return 'akuisisi_worksheet';
 	}
 
 	/**

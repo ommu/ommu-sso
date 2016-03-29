@@ -113,7 +113,7 @@ class InlisMembers extends OActiveRecord
 	 */
 	public function getDbConnection()
 	{
-		return Yii::app()->inlis;
+		return self::getAdvertDbConnection();
 	}
 
 	/**
@@ -121,7 +121,9 @@ class InlisMembers extends OActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'members';
+		preg_match("/dbname=([^;]+)/i", $this->dbConnection->connectionString, $matches);
+		return $matches[1].'.members';
+		//return 'members';
 	}
 
 	/**
