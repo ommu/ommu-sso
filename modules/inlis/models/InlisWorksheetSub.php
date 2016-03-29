@@ -38,13 +38,6 @@
 class InlisWorksheetSub extends OActiveRecord
 {
 	public $defaultColumns = array();
-	
-	/**
-	 */
-	public function getDbConnection()
-	{
-		return self::getAdvertDbConnection();
-	}
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -99,12 +92,12 @@ class InlisWorksheetSub extends OActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'akuisisis_relation' => array(self::HAS_MANY, 'Akuisisi', 'WorksheetID'),
-			'akuisisiLogs_relation' => array(self::HAS_MANY, 'AkuisisiLog', 'WorksheetID'),
-			'akuisisiMap_relation' => array(self::HAS_ONE, 'AkuisisiMap', 'WorksheetID'),
-			'akuisisiRaws_relation' => array(self::HAS_MANY, 'AkuisisiRaw', 'WorksheetID'),
-			'akuisisiRawLogs_relation' => array(self::HAS_MANY, 'AkuisisiRawLog', 'WorksheetID'),
-			'mainWorksheet_relation' => array(self::BELONGS_TO, 'Worksheets', 'Main_Worksheet_ID'),
+			'worksheet' => array(self::BELONGS_TO, 'InlisWorksheets', 'Main_Worksheet_ID'),
+			//'akuisisis_relation' => array(self::HAS_MANY, 'Akuisisi', 'WorksheetID'),
+			//'akuisisiLogs_relation' => array(self::HAS_MANY, 'AkuisisiLog', 'WorksheetID'),
+			//'akuisisiMap_relation' => array(self::HAS_ONE, 'AkuisisiMap', 'WorksheetID'),
+			//'akuisisiRaws_relation' => array(self::HAS_MANY, 'AkuisisiRaw', 'WorksheetID'),
+			//'akuisisiRawLogs_relation' => array(self::HAS_MANY, 'AkuisisiRawLog', 'WorksheetID'),
 		);
 	}
 
@@ -146,8 +139,8 @@ class InlisWorksheetSub extends OActiveRecord
 
 		$criteria->compare('t.ID',$this->ID);
 		$criteria->compare('t.Name',strtolower($this->Name),true);
-		if(isset($_GET['Main']))
-			$criteria->compare('t.Main_Worksheet_ID',$_GET['Main']);
+		if(isset($_GET['worksheet']))
+			$criteria->compare('t.Main_Worksheet_ID',$_GET['worksheet']);
 		else
 			$criteria->compare('t.Main_Worksheet_ID',$this->Main_Worksheet_ID);
 
@@ -206,7 +199,7 @@ class InlisWorksheetSub extends OActiveRecord
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
 			$this->defaultColumns[] = 'Name';
-			$this->defaultColumns[] = 'Main_Worksheet_ID';
+			$this->defaultColumns[] = 'worksheet.Name';
 		}
 		parent::afterConstruct();
 	}
@@ -227,72 +220,5 @@ class InlisWorksheetSub extends OActiveRecord
 			return $model;			
 		}
 	}
-
-	/**
-	 * before validate attributes
-	 */
-	/*
-	protected function beforeValidate() {
-		if(parent::beforeValidate()) {
-			// Create action
-		}
-		return true;
-	}
-	*/
-
-	/**
-	 * after validate attributes
-	 */
-	/*
-	protected function afterValidate()
-	{
-		parent::afterValidate();
-			// Create action
-		return true;
-	}
-	*/
-	
-	/**
-	 * before save attributes
-	 */
-	/*
-	protected function beforeSave() {
-		if(parent::beforeSave()) {
-		}
-		return true;	
-	}
-	*/
-	
-	/**
-	 * After save attributes
-	 */
-	/*
-	protected function afterSave() {
-		parent::afterSave();
-		// Create action
-	}
-	*/
-
-	/**
-	 * Before delete attributes
-	 */
-	/*
-	protected function beforeDelete() {
-		if(parent::beforeDelete()) {
-			// Create action
-		}
-		return true;
-	}
-	*/
-
-	/**
-	 * After delete attributes
-	 */
-	/*
-	protected function afterDelete() {
-		parent::afterDelete();
-		// Create action
-	}
-	*/
 
 }

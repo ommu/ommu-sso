@@ -31,3 +31,6 @@ plugin_menu		:
 			- urlTitle: Sub Worksheet
 				urlRules: {siteType: 0,1, userLevel: 1}
 				urlPath: {url: o/worksheetsub/manage, attr: -, icon: -}
+			- urlTitle: Location
+				urlRules: {siteType: 0,1, userLevel: 1}
+				urlPath: {url: o/location/manage, attr: -, icon: -}
