@@ -108,6 +108,10 @@ class WorksheetsubController extends Controller
 	 */
 	public function actionView($id) 
 	{
+		$this->dialogDetail = true;
+		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
+		$this->dialogWidth = 600;
+		
 		$model=$this->loadModel($id);
 
 		$this->pageTitle = Yii::t('phrase', 'View Inlis Worksheet Subs');
