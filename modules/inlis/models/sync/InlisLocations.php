@@ -1,6 +1,6 @@
 <?php
 /**
- * InlisLocations
+ * SyncLocations
  * version: 0.0.1
  *
  * @author Putra Sudaryanto <putra.sudaryanto@gmail.com>
@@ -40,7 +40,7 @@
  * @property Stockopnamedetail[] $stockopnamedetails
  * @property Stockopnamedetail[] $stockopnamedetails1
  */
-class InlisLocations extends OActiveRecord
+class SyncLocations extends OActiveRecord
 {
 	public $defaultColumns = array();
 
@@ -48,7 +48,7 @@ class InlisLocations extends OActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return InlisLocations the static model class
+	 * @return SyncLocations the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -171,7 +171,7 @@ class InlisLocations extends OActiveRecord
 			$criteria->compare('date(t.UpdateDate)',date('Y-m-d', strtotime($this->UpdateDate)));
 		$criteria->compare('t.UpdateTerminal',strtolower($this->UpdateTerminal),true);
 
-		if(!isset($_GET['InlisLocations_sort']))
+		if(!isset($_GET['SyncLocations_sort']))
 			$criteria->order = 't.ID DESC';
 
 		return new CActiveDataProvider($this, array(
