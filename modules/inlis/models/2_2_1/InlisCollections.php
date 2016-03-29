@@ -1,9 +1,11 @@
 <?php
 /**
- * Collections
+ * InlisCollections
+ * version: 0.0.1
+ *
  * @author Putra Sudaryanto <putra.sudaryanto@gmail.com>
  * @copyright Copyright (c) 2016 Ommu Platform (ommu.co)
- * @created date 28 March 2016, 13:45 WIB
+ * @created date 29 March 2016, 09:57 WIB
  * @link http://company.ommu.co
  * @contact (+62)856-299-4114
  *
@@ -69,13 +71,23 @@
  * @property string $SLA_REGISTER
  * @property string $SENAYAN_ID
  * @property string $NCIBookMan_ID
+ * @property string $CallNumber
  *
  * The followings are the available model relations:
- * @property Catalogs $catalog
+ * @property Collectionloanitems[] $collectionloanitems
+ * @property Collectionlogs[] $collectionlogs
+ * @property Collectionrules $rule
+ * @property Collectionmedias $media
  * @property Branchs $branch
+ * @property Catalogs $catalog
  * @property Partners $partner
+ * @property Locations $location
+ * @property Collectionsources $source
+ * @property Collectioncategorys $category
+ * @property Worksheets $worksheet
+ * @property Stockopnamedetail[] $stockopnamedetails
  */
-class Collections extends OActiveRecord
+class InlisCollections extends OActiveRecord
 {
 	public $defaultColumns = array();
 
@@ -83,7 +95,7 @@ class Collections extends OActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return Collections the static model class
+	 * @return InlisCollections the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -119,14 +131,14 @@ class Collections extends OActiveRecord
 			array('NoInduk, RFID', 'length', 'max'=>255),
 			array('Cooperation, PublishLocation, PublishYear, KalaTerbit, Edition, Class, MapScale, MapNumber, MapSubject, Keterangan_Sumber, Penempatan', 'length', 'max'=>200),
 			array('Currency', 'length', 'max'=>30),
-			array('ISBN', 'length', 'max'=>2000),
+			array('ISBN, CallNumber', 'length', 'max'=>2000),
 			array('NomorBarcode, Status', 'length', 'max'=>50),
 			array('CreateBy, CreateTerminal, UpdateBy, UpdateTerminal', 'length', 'max'=>100),
 			array('SLA_REGISTER, SENAYAN_ID, NCIBookMan_ID', 'length', 'max'=>45),
 			array('Title, TitleAdded, Author, AuthorAdded, Publisher, PhysicalDescription, Note, TanggalKirim, CreateDate, UpdateDate', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('ID, NoInduk, Title, TitleAdded, Author, AuthorAdded, Cooperation, PublishLocation, Publisher, PublishYear, KalaTerbit, Edition, Class, PhysicalDescription, Note, Currency, ISBN, MapScale, MapNumber, MapSubject, RFID, Price, TanggalKirim, IsDelete, Branch_id, Catalog_id, Partner_id, Location_id, Rule_id, Category_id, Media_id, Source_id, Worksheet_id, GroupingNumber, NomorBarcode, Status, Keterangan_Sumber, Penempatan, CreateBy, CreateDate, CreateTerminal, UpdateBy, UpdateDate, UpdateTerminal, IsVerified, SLA_REGISTER, SENAYAN_ID, NCIBookMan_ID', 'safe', 'on'=>'search'),
+			array('ID, NoInduk, Title, TitleAdded, Author, AuthorAdded, Cooperation, PublishLocation, Publisher, PublishYear, KalaTerbit, Edition, Class, PhysicalDescription, Note, Currency, ISBN, MapScale, MapNumber, MapSubject, RFID, Price, TanggalKirim, IsDelete, Branch_id, Catalog_id, Partner_id, Location_id, Rule_id, Category_id, Media_id, Source_id, Worksheet_id, GroupingNumber, NomorBarcode, Status, Keterangan_Sumber, Penempatan, CreateBy, CreateDate, CreateTerminal, UpdateBy, UpdateDate, UpdateTerminal, IsVerified, SLA_REGISTER, SENAYAN_ID, NCIBookMan_ID, CallNumber', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -138,9 +150,18 @@ class Collections extends OActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'catalog_relation' => array(self::BELONGS_TO, 'Catalogs', 'Catalog_id'),
+			'collectionloanitems_relation' => array(self::HAS_MANY, 'Collectionloanitems', 'Collection_id'),
+			'collectionlogs_relation' => array(self::HAS_MANY, 'Collectionlogs', 'Collection_id'),
+			'rule_relation' => array(self::BELONGS_TO, 'Collectionrules', 'Rule_id'),
+			'media_relation' => array(self::BELONGS_TO, 'Collectionmedias', 'Media_id'),
 			'branch_relation' => array(self::BELONGS_TO, 'Branchs', 'Branch_id'),
+			'catalog_relation' => array(self::BELONGS_TO, 'Catalogs', 'Catalog_id'),
 			'partner_relation' => array(self::BELONGS_TO, 'Partners', 'Partner_id'),
+			'location_relation' => array(self::BELONGS_TO, 'Locations', 'Location_id'),
+			'source_relation' => array(self::BELONGS_TO, 'Collectionsources', 'Source_id'),
+			'category_relation' => array(self::BELONGS_TO, 'Collectioncategorys', 'Category_id'),
+			'worksheet_relation' => array(self::BELONGS_TO, 'Worksheets', 'Worksheet_id'),
+			'stockopnamedetails_relation' => array(self::HAS_MANY, 'Stockopnamedetail', 'CollectionID'),
 		);
 	}
 
@@ -198,6 +219,7 @@ class Collections extends OActiveRecord
 			'SLA_REGISTER' => Yii::t('attribute', 'Sla Register'),
 			'SENAYAN_ID' => Yii::t('attribute', 'Senayan'),
 			'NCIBookMan_ID' => Yii::t('attribute', 'Ncibook Man'),
+			'CallNumber' => Yii::t('attribute', 'Call Number'),
 		);
 		/*
 			'ID' => 'ID',
@@ -248,6 +270,7 @@ class Collections extends OActiveRecord
 			'Sla Register' => 'Sla Register',
 			'Senayan' => 'Senayan',
 			'Ncibook Man' => 'Ncibook Man',
+			'Call Number' => 'Call Number',
 		
 		*/
 	}
@@ -307,12 +330,30 @@ class Collections extends OActiveRecord
 			$criteria->compare('t.Partner_id',$_GET['Partner']);
 		else
 			$criteria->compare('t.Partner_id',$this->Partner_id);
-		$criteria->compare('t.Location_id',$this->Location_id);
-		$criteria->compare('t.Rule_id',$this->Rule_id);
-		$criteria->compare('t.Category_id',$this->Category_id);
-		$criteria->compare('t.Media_id',$this->Media_id);
-		$criteria->compare('t.Source_id',$this->Source_id);
-		$criteria->compare('t.Worksheet_id',$this->Worksheet_id);
+		if(isset($_GET['Location']))
+			$criteria->compare('t.Location_id',$_GET['Location']);
+		else
+			$criteria->compare('t.Location_id',$this->Location_id);
+		if(isset($_GET['Rule']))
+			$criteria->compare('t.Rule_id',$_GET['Rule']);
+		else
+			$criteria->compare('t.Rule_id',$this->Rule_id);
+		if(isset($_GET['Category']))
+			$criteria->compare('t.Category_id',$_GET['Category']);
+		else
+			$criteria->compare('t.Category_id',$this->Category_id);
+		if(isset($_GET['Media']))
+			$criteria->compare('t.Media_id',$_GET['Media']);
+		else
+			$criteria->compare('t.Media_id',$this->Media_id);
+		if(isset($_GET['Source']))
+			$criteria->compare('t.Source_id',$_GET['Source']);
+		else
+			$criteria->compare('t.Source_id',$this->Source_id);
+		if(isset($_GET['Worksheet']))
+			$criteria->compare('t.Worksheet_id',$_GET['Worksheet']);
+		else
+			$criteria->compare('t.Worksheet_id',$this->Worksheet_id);
 		$criteria->compare('t.GroupingNumber',$this->GroupingNumber);
 		$criteria->compare('t.NomorBarcode',strtolower($this->NomorBarcode),true);
 		$criteria->compare('t.Status',strtolower($this->Status),true);
@@ -330,8 +371,9 @@ class Collections extends OActiveRecord
 		$criteria->compare('t.SLA_REGISTER',strtolower($this->SLA_REGISTER),true);
 		$criteria->compare('t.SENAYAN_ID',strtolower($this->SENAYAN_ID),true);
 		$criteria->compare('t.NCIBookMan_ID',strtolower($this->NCIBookMan_ID),true);
+		$criteria->compare('t.CallNumber',strtolower($this->CallNumber),true);
 
-		if(!isset($_GET['Collections_sort']))
+		if(!isset($_GET['InlisCollections_sort']))
 			$criteria->order = 't.ID DESC';
 
 		return new CActiveDataProvider($this, array(
@@ -408,6 +450,7 @@ class Collections extends OActiveRecord
 			$this->defaultColumns[] = 'SLA_REGISTER';
 			$this->defaultColumns[] = 'SENAYAN_ID';
 			$this->defaultColumns[] = 'NCIBookMan_ID';
+			$this->defaultColumns[] = 'CallNumber';
 		}
 
 		return $this->defaultColumns;
@@ -565,6 +608,7 @@ class Collections extends OActiveRecord
 			$this->defaultColumns[] = 'SLA_REGISTER';
 			$this->defaultColumns[] = 'SENAYAN_ID';
 			$this->defaultColumns[] = 'NCIBookMan_ID';
+			$this->defaultColumns[] = 'CallNumber';
 		}
 		parent::afterConstruct();
 	}

@@ -1,9 +1,11 @@
 <?php
 /**
- * Worksheets
+ * InlisWorksheets
+ * version: 0.0.1
+ *
  * @author Putra Sudaryanto <putra.sudaryanto@gmail.com>
  * @copyright Copyright (c) 2016 Ommu Platform (ommu.co)
- * @created date 28 March 2016, 13:43 WIB
+ * @created date 29 March 2016, 09:52 WIB
  * @link http://company.ommu.co
  * @contact (+62)856-299-4114
  *
@@ -31,18 +33,14 @@
  * @property string $UpdateBy
  * @property string $UpdateDate
  * @property string $UpdateTerminal
- * @property integer $NoUrut
  *
  * The followings are the available model relations:
  * @property AkuisisiWorksheet[] $akuisisiWorksheets
- * @property AuthHeader[] $authHeaders
- * @property Catalogs[] $catalogs
  * @property Collectionmedias[] $collectionmediases
- * @property Collections[] $collections
  * @property Worksheetfields[] $worksheetfields
  * @property Formats $format
  */
-class Worksheets extends OActiveRecord
+class InlisWorksheets extends OActiveRecord
 {
 	public $defaultColumns = array();
 
@@ -50,7 +48,7 @@ class Worksheets extends OActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return Worksheets the static model class
+	 * @return InlisWorksheets the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -81,12 +79,12 @@ class Worksheets extends OActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('Format_id, NoUrut', 'numerical', 'integerOnly'=>true),
+			array('Format_id', 'numerical', 'integerOnly'=>true),
 			array('Name, CardFormat, CreateBy, CreateTerminal, UpdateBy, UpdateTerminal', 'length', 'max'=>100),
 			array('CreateDate, UpdateDate', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('ID, Name, CardFormat, Format_id, CreateBy, CreateDate, CreateTerminal, UpdateBy, UpdateDate, UpdateTerminal, NoUrut', 'safe', 'on'=>'search'),
+			array('ID, Name, CardFormat, Format_id, CreateBy, CreateDate, CreateTerminal, UpdateBy, UpdateDate, UpdateTerminal', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -99,10 +97,7 @@ class Worksheets extends OActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'akuisisiWorksheets_relation' => array(self::HAS_MANY, 'AkuisisiWorksheet', 'Main_Worksheet_ID'),
-			'authHeaders_relation' => array(self::HAS_MANY, 'AuthHeader', 'Worksheet_id'),
-			'catalogs_relation' => array(self::HAS_MANY, 'Catalogs', 'Worksheet_id'),
 			'collectionmediases_relation' => array(self::HAS_MANY, 'Collectionmedias', 'Worksheet_id'),
-			'collections_relation' => array(self::HAS_MANY, 'Collections', 'Worksheet_id'),
 			'worksheetfields_relation' => array(self::HAS_MANY, 'Worksheetfields', 'Worksheet_id'),
 			'format_relation' => array(self::BELONGS_TO, 'Formats', 'Format_id'),
 		);
@@ -124,7 +119,6 @@ class Worksheets extends OActiveRecord
 			'UpdateBy' => Yii::t('attribute', 'Update By'),
 			'UpdateDate' => Yii::t('attribute', 'Update Date'),
 			'UpdateTerminal' => Yii::t('attribute', 'Update Terminal'),
-			'NoUrut' => Yii::t('attribute', 'No Urut'),
 		);
 		/*
 			'ID' => 'ID',
@@ -137,7 +131,6 @@ class Worksheets extends OActiveRecord
 			'Update By' => 'Update By',
 			'Update Date' => 'Update Date',
 			'Update Terminal' => 'Update Terminal',
-			'No Urut' => 'No Urut',
 		
 		*/
 	}
@@ -175,9 +168,8 @@ class Worksheets extends OActiveRecord
 		if($this->UpdateDate != null && !in_array($this->UpdateDate, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.UpdateDate)',date('Y-m-d', strtotime($this->UpdateDate)));
 		$criteria->compare('t.UpdateTerminal',strtolower($this->UpdateTerminal),true);
-		$criteria->compare('t.NoUrut',$this->NoUrut);
 
-		if(!isset($_GET['Worksheets_sort']))
+		if(!isset($_GET['InlisWorksheets_sort']))
 			$criteria->order = 't.ID DESC';
 
 		return new CActiveDataProvider($this, array(
@@ -216,7 +208,6 @@ class Worksheets extends OActiveRecord
 			$this->defaultColumns[] = 'UpdateBy';
 			$this->defaultColumns[] = 'UpdateDate';
 			$this->defaultColumns[] = 'UpdateTerminal';
-			$this->defaultColumns[] = 'NoUrut';
 		}
 
 		return $this->defaultColumns;
@@ -298,7 +289,6 @@ class Worksheets extends OActiveRecord
 				), true),
 			);
 			$this->defaultColumns[] = 'UpdateTerminal';
-			$this->defaultColumns[] = 'NoUrut';
 		}
 		parent::afterConstruct();
 	}

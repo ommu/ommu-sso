@@ -1,9 +1,11 @@
 <?php
 /**
- * Members
+ * InlisMembers
+ * version: 0.0.1
+ *
  * @author Putra Sudaryanto <putra.sudaryanto@gmail.com>
  * @copyright Copyright (c) 2016 Ommu Platform (ommu.co)
- * @created date 28 March 2016, 13:24 WIB
+ * @created date 29 March 2016, 09:54 WIB
  * @link http://company.ommu.co
  * @contact (+62)856-299-4114
  *
@@ -91,7 +93,7 @@
  * @property Memberloanauthorizelocation[] $memberloanauthorizelocations
  * @property Branchs $branch
  */
-class Members extends OActiveRecord
+class InlisMembers extends OActiveRecord
 {
 	public $defaultColumns = array();
 
@@ -99,7 +101,7 @@ class Members extends OActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return Members the static model class
+	 * @return InlisMembers the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -383,7 +385,7 @@ class Members extends OActiveRecord
 		$criteria->compare('t.ProvinceNow',strtolower($this->ProvinceNow),true);
 		$criteria->compare('t.JobNameDetail',strtolower($this->JobNameDetail),true);
 
-		if(!isset($_GET['Members_sort']))
+		if(!isset($_GET['InlisMembers_sort']))
 			$criteria->order = 't.ID DESC';
 
 		return new CActiveDataProvider($this, array(

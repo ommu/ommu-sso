@@ -1,9 +1,11 @@
 <?php
 /**
- * Catalogs
+ * InlisCollections
+ * version: 0.0.1
+ *
  * @author Putra Sudaryanto <putra.sudaryanto@gmail.com>
  * @copyright Copyright (c) 2016 Ommu Platform (ommu.co)
- * @created date 28 March 2016, 13:45 WIB
+ * @created date 29 March 2016, 09:53 WIB
  * @link http://company.ommu.co
  * @contact (+62)856-299-4114
  *
@@ -18,56 +20,64 @@
  *
  * --------------------------------------------------------------------------------------
  *
- * This is the model class for table "catalogs".
+ * This is the model class for table "collections".
  *
- * The followings are the available columns in table 'catalogs':
+ * The followings are the available columns in table 'collections':
  * @property double $ID
- * @property string $ControlNumber
- * @property string $BIBID
+ * @property string $NoInduk
  * @property string $Title
+ * @property string $TitleAdded
  * @property string $Author
- * @property string $Edition
- * @property string $Publisher
+ * @property string $AuthorAdded
+ * @property string $Cooperation
  * @property string $PublishLocation
+ * @property string $Publisher
  * @property string $PublishYear
- * @property string $Paging
- * @property string $Ill
- * @property string $Sizes
- * @property string $Item
- * @property string $Subject
- * @property string $Description
- * @property string $ISBN
- * @property string $CallNumber
+ * @property string $KalaTerbit
+ * @property string $Edition
+ * @property string $Class
+ * @property string $PhysicalDescription
  * @property string $Note
- * @property string $Languages
- * @property string $DeweyNo
- * @property string $ApproveDateOPAC
- * @property integer $IsOPAC
- * @property integer $IsBNI
- * @property integer $IsKIN
+ * @property string $Currency
+ * @property string $ISBN
+ * @property string $MapScale
+ * @property string $MapNumber
+ * @property string $MapSubject
+ * @property string $RFID
+ * @property double $Price
+ * @property string $TanggalKirim
  * @property integer $IsDelete
- * @property string $CoverURL
- * @property string $FileURL
- * @property string $MARC
  * @property integer $Branch_id
+ * @property double $Catalog_id
+ * @property integer $Partner_id
+ * @property integer $Location_id
+ * @property integer $Rule_id
+ * @property integer $Category_id
+ * @property integer $Media_id
+ * @property integer $Source_id
  * @property integer $Worksheet_id
+ * @property double $GroupingNumber
+ * @property string $NomorBarcode
+ * @property string $Status
+ * @property string $Keterangan_Sumber
+ * @property string $Penempatan
  * @property string $CreateBy
  * @property string $CreateDate
  * @property string $CreateTerminal
  * @property string $UpdateBy
  * @property string $UpdateDate
  * @property string $UpdateTerminal
+ * @property integer $IsVerified
  * @property string $SLA_REGISTER
  * @property string $SENAYAN_ID
  * @property string $NCIBookMan_ID
- * @property integer $collection_updated_count
- * @property string $tanggal
  *
  * The followings are the available model relations:
- * @property CatalogRuas[] $catalogRuases
- * @property Collections[] $collections
+ * @property Catalogs $catalog
+ * @property Branchs $branch
+ * @property Partners $partner
  */
-class Catalogs extends OActiveRecord
+class InlisCollections extends OActiveRecord
 {
 	public $defaultColumns = array();
 
@@ -75,7 +85,7 @@ class Catalogs extends OActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return Catalogs the static model class
+	 * @return InlisCollections the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -95,7 +105,7 @@ class Catalogs extends OActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'catalogs';
+		return 'collections';
 	}
 
 	/**
@@ -106,17 +116,19 @@ class Catalogs extends OActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('tanggal', 'required'),
-			array('IsOPAC, IsBNI, IsKIN, IsDelete, Branch_id, Worksheet_id, collection_updated_count', 'numerical', 'integerOnly'=>true),
-			array('ControlNumber, BIBID, CoverURL, FileURL', 'length', 'max'=>255),
-			array('Title', 'length', 'max'=>500),
-			array('Author, Publisher', 'length', 'max'=>300),
+			array('IsDelete, Branch_id, Partner_id, Location_id, Rule_id, Category_id, Media_id, Source_id, Worksheet_id, IsVerified', 'numerical', 'integerOnly'=>true),
+			array('Price, Catalog_id, GroupingNumber', 'numerical'),
+			array('NoInduk, RFID', 'length', 'max'=>255),
+			array('Cooperation, PublishLocation, PublishYear, KalaTerbit, Edition, Class, MapScale, MapNumber, MapSubject, Keterangan_Sumber, Penempatan', 'length', 'max'=>200),
+			array('Currency', 'length', 'max'=>30),
+			array('ISBN', 'length', 'max'=>2000),
+			array('NomorBarcode, Status', 'length', 'max'=>50),
 			array('CreateBy, CreateTerminal, UpdateBy, UpdateTerminal', 'length', 'max'=>100),
 			array('SLA_REGISTER, SENAYAN_ID, NCIBookMan_ID', 'length', 'max'=>45),
-			array('Edition, PublishLocation, PublishYear, Paging, Ill, Sizes, Item, Subject, Description, ISBN, CallNumber, Note, Languages, DeweyNo, ApproveDateOPAC, MARC, CreateDate, UpdateDate', 'safe'),
+			array('Title, TitleAdded, Author, AuthorAdded, Publisher, PhysicalDescription, Note, TanggalKirim, CreateDate, UpdateDate', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('ID, ControlNumber, BIBID, Title, Author, Edition, Publisher, PublishLocation, PublishYear, Paging, Ill, Sizes, Item, Subject, Description, ISBN, CallNumber, Note, Languages, DeweyNo, ApproveDateOPAC, IsOPAC, IsBNI, IsKIN, IsDelete, CoverURL, FileURL, MARC, Branch_id, Worksheet_id, CreateBy, CreateDate, CreateTerminal, UpdateBy, UpdateDate, UpdateTerminal, SLA_REGISTER, SENAYAN_ID, NCIBookMan_ID, collection_updated_count, tanggal', 'safe', 'on'=>'search'),
+			array('ID, NoInduk, Title, TitleAdded, Author, AuthorAdded, Cooperation, PublishLocation, Publisher, PublishYear, KalaTerbit, Edition, Class, PhysicalDescription, Note, Currency, ISBN, MapScale, MapNumber, MapSubject, RFID, Price, TanggalKirim, IsDelete, Branch_id, Catalog_id, Partner_id, Location_id, Rule_id, Category_id, Media_id, Source_id, Worksheet_id, GroupingNumber, NomorBarcode, Status, Keterangan_Sumber, Penempatan, CreateBy, CreateDate, CreateTerminal, UpdateBy, UpdateDate, UpdateTerminal, IsVerified, SLA_REGISTER, SENAYAN_ID, NCIBookMan_ID', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -128,8 +140,9 @@ class Catalogs extends OActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'catalogRuases_relation' => array(self::HAS_MANY, 'CatalogRuas', 'CatalogId'),
-			'collections_relation' => array(self::HAS_MANY, 'Collections', 'Catalog_id'),
+			'catalog_relation' => array(self::BELONGS_TO, 'Catalogs', 'Catalog_id'),
+			'branch_relation' => array(self::BELONGS_TO, 'Branchs', 'Branch_id'),
+			'partner_relation' => array(self::BELONGS_TO, 'Partners', 'Partner_id'),
 		);
 	}
 
@@ -140,89 +153,103 @@ class Catalogs extends OActiveRecord
 	{
 		return array(
 			'ID' => Yii::t('attribute', 'ID'),
-			'ControlNumber' => Yii::t('attribute', 'Control Number'),
-			'BIBID' => Yii::t('attribute', 'Bibid'),
+			'NoInduk' => Yii::t('attribute', 'No Induk'),
 			'Title' => Yii::t('attribute', 'Title'),
+			'TitleAdded' => Yii::t('attribute', 'Title Added'),
 			'Author' => Yii::t('attribute', 'Author'),
-			'Edition' => Yii::t('attribute', 'Edition'),
-			'Publisher' => Yii::t('attribute', 'Publisher'),
+			'AuthorAdded' => Yii::t('attribute', 'Author Added'),
+			'Cooperation' => Yii::t('attribute', 'Cooperation'),
 			'PublishLocation' => Yii::t('attribute', 'Publish Location'),
+			'Publisher' => Yii::t('attribute', 'Publisher'),
 			'PublishYear' => Yii::t('attribute', 'Publish Year'),
-			'Paging' => Yii::t('attribute', 'Paging'),
-			'Ill' => Yii::t('attribute', 'Ill'),
-			'Sizes' => Yii::t('attribute', 'Sizes'),
-			'Item' => Yii::t('attribute', 'Item'),
-			'Subject' => Yii::t('attribute', 'Subject'),
-			'Description' => Yii::t('attribute', 'Description'),
-			'ISBN' => Yii::t('attribute', 'Isbn'),
-			'CallNumber' => Yii::t('attribute', 'Call Number'),
+			'KalaTerbit' => Yii::t('attribute', 'Kala Terbit'),
+			'Edition' => Yii::t('attribute', 'Edition'),
+			'Class' => Yii::t('attribute', 'Class'),
+			'PhysicalDescription' => Yii::t('attribute', 'Physical Description'),
 			'Note' => Yii::t('attribute', 'Note'),
-			'Languages' => Yii::t('attribute', 'Languages'),
-			'DeweyNo' => Yii::t('attribute', 'Dewey No'),
-			'ApproveDateOPAC' => Yii::t('attribute', 'Approve Date Opac'),
-			'IsOPAC' => Yii::t('attribute', 'Is Opac'),
-			'IsBNI' => Yii::t('attribute', 'Is Bni'),
-			'IsKIN' => Yii::t('attribute', 'Is Kin'),
+			'Currency' => Yii::t('attribute', 'Currency'),
+			'ISBN' => Yii::t('attribute', 'Isbn'),
+			'MapScale' => Yii::t('attribute', 'Map Scale'),
+			'MapNumber' => Yii::t('attribute', 'Map Number'),
+			'MapSubject' => Yii::t('attribute', 'Map Subject'),
+			'RFID' => Yii::t('attribute', 'Rfid'),
+			'Price' => Yii::t('attribute', 'Price'),
+			'TanggalKirim' => Yii::t('attribute', 'Tanggal Kirim'),
 			'IsDelete' => Yii::t('attribute', 'Is Delete'),
-			'CoverURL' => Yii::t('attribute', 'Cover Url'),
-			'FileURL' => Yii::t('attribute', 'File Url'),
-			'MARC' => Yii::t('attribute', 'Marc'),
 			'Branch_id' => Yii::t('attribute', 'Branch'),
+			'Catalog_id' => Yii::t('attribute', 'Catalog'),
+			'Partner_id' => Yii::t('attribute', 'Partner'),
+			'Location_id' => Yii::t('attribute', 'Location'),
+			'Rule_id' => Yii::t('attribute', 'Rule'),
+			'Category_id' => Yii::t('attribute', 'Category'),
+			'Media_id' => Yii::t('attribute', 'Media'),
+			'Source_id' => Yii::t('attribute', 'Source'),
 			'Worksheet_id' => Yii::t('attribute', 'Worksheet'),
+			'GroupingNumber' => Yii::t('attribute', 'Grouping Number'),
+			'NomorBarcode' => Yii::t('attribute', 'Nomor Barcode'),
+			'Status' => Yii::t('attribute', 'Status'),
+			'Keterangan_Sumber' => Yii::t('attribute', 'Keterangan Sumber'),
+			'Penempatan' => Yii::t('attribute', 'Penempatan'),
 			'CreateBy' => Yii::t('attribute', 'Create By'),
 			'CreateDate' => Yii::t('attribute', 'Create Date'),
 			'CreateTerminal' => Yii::t('attribute', 'Create Terminal'),
 			'UpdateBy' => Yii::t('attribute', 'Update By'),
 			'UpdateDate' => Yii::t('attribute', 'Update Date'),
 			'UpdateTerminal' => Yii::t('attribute', 'Update Terminal'),
+			'IsVerified' => Yii::t('attribute', 'Is Verified'),
 			'SLA_REGISTER' => Yii::t('attribute', 'Sla Register'),
 			'SENAYAN_ID' => Yii::t('attribute', 'Senayan'),
 			'NCIBookMan_ID' => Yii::t('attribute', 'Ncibook Man'),
-			'collection_updated_count' => Yii::t('attribute', 'Collection Updated Count'),
-			'tanggal' => Yii::t('attribute', 'Tanggal'),
 		);
 		/*
 			'ID' => 'ID',
-			'Control Number' => 'Control Number',
-			'Bibid' => 'Bibid',
+			'No Induk' => 'No Induk',
 			'Title' => 'Title',
+			'Title Added' => 'Title Added',
 			'Author' => 'Author',
-			'Edition' => 'Edition',
-			'Publisher' => 'Publisher',
+			'Author Added' => 'Author Added',
+			'Cooperation' => 'Cooperation',
 			'Publish Location' => 'Publish Location',
+			'Publisher' => 'Publisher',
 			'Publish Year' => 'Publish Year',
-			'Paging' => 'Paging',
-			'Ill' => 'Ill',
-			'Sizes' => 'Sizes',
-			'Item' => 'Item',
-			'Subject' => 'Subject',
-			'Description' => 'Description',
-			'Isbn' => 'Isbn',
-			'Call Number' => 'Call Number',
+			'Kala Terbit' => 'Kala Terbit',
+			'Edition' => 'Edition',
+			'Class' => 'Class',
+			'Physical Description' => 'Physical Description',
 			'Note' => 'Note',
-			'Languages' => 'Languages',
-			'Dewey No' => 'Dewey No',
-			'Approve Date Opac' => 'Approve Date Opac',
-			'Is Opac' => 'Is Opac',
-			'Is Bni' => 'Is Bni',
-			'Is Kin' => 'Is Kin',
+			'Currency' => 'Currency',
+			'Isbn' => 'Isbn',
+			'Map Scale' => 'Map Scale',
+			'Map Number' => 'Map Number',
+			'Map Subject' => 'Map Subject',
+			'Rfid' => 'Rfid',
+			'Price' => 'Price',
+			'Tanggal Kirim' => 'Tanggal Kirim',
 			'Is Delete' => 'Is Delete',
-			'Cover Url' => 'Cover Url',
-			'File Url' => 'File Url',
-			'Marc' => 'Marc',
 			'Branch' => 'Branch',
+			'Catalog' => 'Catalog',
+			'Partner' => 'Partner',
+			'Location' => 'Location',
+			'Rule' => 'Rule',
+			'Category' => 'Category',
+			'Media' => 'Media',
+			'Source' => 'Source',
 			'Worksheet' => 'Worksheet',
+			'Grouping Number' => 'Grouping Number',
+			'Nomor Barcode' => 'Nomor Barcode',
+			'Status' => 'Status',
+			'Keterangan Sumber' => 'Keterangan Sumber',
+			'Penempatan' => 'Penempatan',
 			'Create By' => 'Create By',
 			'Create Date' => 'Create Date',
 			'Create Terminal' => 'Create Terminal',
 			'Update By' => 'Update By',
 			'Update Date' => 'Update Date',
 			'Update Terminal' => 'Update Terminal',
+			'Is Verified' => 'Is Verified',
 			'Sla Register' => 'Sla Register',
 			'Senayan' => 'Senayan',
 			'Ncibook Man' => 'Ncibook Man',
-			'Collection Updated Count' => 'Collection Updated Count',
-			'Tanggal' => 'Tanggal',
 		
 		*/
 	}
@@ -246,36 +273,53 @@ class Catalogs extends OActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('t.ID',$this->ID);
-		$criteria->compare('t.ControlNumber',strtolower($this->ControlNumber),true);
-		$criteria->compare('t.BIBID',strtolower($this->BIBID),true);
+		$criteria->compare('t.NoInduk',strtolower($this->NoInduk),true);
 		$criteria->compare('t.Title',strtolower($this->Title),true);
+		$criteria->compare('t.TitleAdded',strtolower($this->TitleAdded),true);
 		$criteria->compare('t.Author',strtolower($this->Author),true);
-		$criteria->compare('t.Edition',strtolower($this->Edition),true);
-		$criteria->compare('t.Publisher',strtolower($this->Publisher),true);
+		$criteria->compare('t.AuthorAdded',strtolower($this->AuthorAdded),true);
+		$criteria->compare('t.Cooperation',strtolower($this->Cooperation),true);
 		$criteria->compare('t.PublishLocation',strtolower($this->PublishLocation),true);
+		$criteria->compare('t.Publisher',strtolower($this->Publisher),true);
 		$criteria->compare('t.PublishYear',strtolower($this->PublishYear),true);
-		$criteria->compare('t.Paging',strtolower($this->Paging),true);
-		$criteria->compare('t.Ill',strtolower($this->Ill),true);
-		$criteria->compare('t.Sizes',strtolower($this->Sizes),true);
-		$criteria->compare('t.Item',strtolower($this->Item),true);
-		$criteria->compare('t.Subject',strtolower($this->Subject),true);
-		$criteria->compare('t.Description',strtolower($this->Description),true);
-		$criteria->compare('t.ISBN',strtolower($this->ISBN),true);
-		$criteria->compare('t.CallNumber',strtolower($this->CallNumber),true);
+		$criteria->compare('t.KalaTerbit',strtolower($this->KalaTerbit),true);
+		$criteria->compare('t.Edition',strtolower($this->Edition),true);
+		$criteria->compare('t.Class',strtolower($this->Class),true);
+		$criteria->compare('t.PhysicalDescription',strtolower($this->PhysicalDescription),true);
 		$criteria->compare('t.Note',strtolower($this->Note),true);
-		$criteria->compare('t.Languages',strtolower($this->Languages),true);
-		$criteria->compare('t.DeweyNo',strtolower($this->DeweyNo),true);
-		if($this->ApproveDateOPAC != null && !in_array($this->ApproveDateOPAC, array('0000-00-00 00:00:00', '0000-00-00')))
-			$criteria->compare('date(t.ApproveDateOPAC)',date('Y-m-d', strtotime($this->ApproveDateOPAC)));
-		$criteria->compare('t.IsOPAC',$this->IsOPAC);
-		$criteria->compare('t.IsBNI',$this->IsBNI);
-		$criteria->compare('t.IsKIN',$this->IsKIN);
+		$criteria->compare('t.Currency',strtolower($this->Currency),true);
+		$criteria->compare('t.ISBN',strtolower($this->ISBN),true);
+		$criteria->compare('t.MapScale',strtolower($this->MapScale),true);
+		$criteria->compare('t.MapNumber',strtolower($this->MapNumber),true);
+		$criteria->compare('t.MapSubject',strtolower($this->MapSubject),true);
+		$criteria->compare('t.RFID',strtolower($this->RFID),true);
+		$criteria->compare('t.Price',$this->Price);
+		if($this->TanggalKirim != null && !in_array($this->TanggalKirim, array('0000-00-00 00:00:00', '0000-00-00')))
+			$criteria->compare('date(t.TanggalKirim)',date('Y-m-d', strtotime($this->TanggalKirim)));
 		$criteria->compare('t.IsDelete',$this->IsDelete);
-		$criteria->compare('t.CoverURL',strtolower($this->CoverURL),true);
-		$criteria->compare('t.FileURL',strtolower($this->FileURL),true);
-		$criteria->compare('t.MARC',strtolower($this->MARC),true);
-		$criteria->compare('t.Branch_id',$this->Branch_id);
+		if(isset($_GET['Branch']))
+			$criteria->compare('t.Branch_id',$_GET['Branch']);
+		else
+			$criteria->compare('t.Branch_id',$this->Branch_id);
+		if(isset($_GET['Catalog']))
+			$criteria->compare('t.Catalog_id',$_GET['Catalog']);
+		else
+			$criteria->compare('t.Catalog_id',$this->Catalog_id);
+		if(isset($_GET['Partner']))
+			$criteria->compare('t.Partner_id',$_GET['Partner']);
+		else
+			$criteria->compare('t.Partner_id',$this->Partner_id);
+		$criteria->compare('t.Location_id',$this->Location_id);
+		$criteria->compare('t.Rule_id',$this->Rule_id);
+		$criteria->compare('t.Category_id',$this->Category_id);
+		$criteria->compare('t.Media_id',$this->Media_id);
+		$criteria->compare('t.Source_id',$this->Source_id);
 		$criteria->compare('t.Worksheet_id',$this->Worksheet_id);
+		$criteria->compare('t.GroupingNumber',$this->GroupingNumber);
+		$criteria->compare('t.NomorBarcode',strtolower($this->NomorBarcode),true);
+		$criteria->compare('t.Status',strtolower($this->Status),true);
+		$criteria->compare('t.Keterangan_Sumber',strtolower($this->Keterangan_Sumber),true);
+		$criteria->compare('t.Penempatan',strtolower($this->Penempatan),true);
 		$criteria->compare('t.CreateBy',strtolower($this->CreateBy),true);
 		if($this->CreateDate != null && !in_array($this->CreateDate, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.CreateDate)',date('Y-m-d', strtotime($this->CreateDate)));
@@ -284,14 +328,12 @@ class Catalogs extends OActiveRecord
 		if($this->UpdateDate != null && !in_array($this->UpdateDate, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.UpdateDate)',date('Y-m-d', strtotime($this->UpdateDate)));
 		$criteria->compare('t.UpdateTerminal',strtolower($this->UpdateTerminal),true);
+		$criteria->compare('t.IsVerified',$this->IsVerified);
 		$criteria->compare('t.SLA_REGISTER',strtolower($this->SLA_REGISTER),true);
 		$criteria->compare('t.SENAYAN_ID',strtolower($this->SENAYAN_ID),true);
 		$criteria->compare('t.NCIBookMan_ID',strtolower($this->NCIBookMan_ID),true);
-		$criteria->compare('t.collection_updated_count',$this->collection_updated_count);
-		if($this->tanggal != null && !in_array($this->tanggal, array('0000-00-00 00:00:00', '0000-00-00')))
-			$criteria->compare('date(t.tanggal)',date('Y-m-d', strtotime($this->tanggal)));
 
-		if(!isset($_GET['Catalogs_sort']))
+		if(!isset($_GET['InlisCollections_sort']))
 			$criteria->order = 't.ID DESC';
 
 		return new CActiveDataProvider($this, array(
@@ -321,46 +363,53 @@ class Catalogs extends OActiveRecord
 			}
 		} else {
 			//$this->defaultColumns[] = 'ID';
-			$this->defaultColumns[] = 'ControlNumber';
-			$this->defaultColumns[] = 'BIBID';
+			$this->defaultColumns[] = 'NoInduk';
 			$this->defaultColumns[] = 'Title';
+			$this->defaultColumns[] = 'TitleAdded';
 			$this->defaultColumns[] = 'Author';
-			$this->defaultColumns[] = 'Edition';
-			$this->defaultColumns[] = 'Publisher';
+			$this->defaultColumns[] = 'AuthorAdded';
+			$this->defaultColumns[] = 'Cooperation';
 			$this->defaultColumns[] = 'PublishLocation';
+			$this->defaultColumns[] = 'Publisher';
 			$this->defaultColumns[] = 'PublishYear';
-			$this->defaultColumns[] = 'Paging';
-			$this->defaultColumns[] = 'Ill';
-			$this->defaultColumns[] = 'Sizes';
-			$this->defaultColumns[] = 'Item';
-			$this->defaultColumns[] = 'Subject';
-			$this->defaultColumns[] = 'Description';
-			$this->defaultColumns[] = 'ISBN';
-			$this->defaultColumns[] = 'CallNumber';
+			$this->defaultColumns[] = 'KalaTerbit';
+			$this->defaultColumns[] = 'Edition';
+			$this->defaultColumns[] = 'Class';
+			$this->defaultColumns[] = 'PhysicalDescription';
 			$this->defaultColumns[] = 'Note';
-			$this->defaultColumns[] = 'Languages';
-			$this->defaultColumns[] = 'DeweyNo';
-			$this->defaultColumns[] = 'ApproveDateOPAC';
-			$this->defaultColumns[] = 'IsOPAC';
-			$this->defaultColumns[] = 'IsBNI';
-			$this->defaultColumns[] = 'IsKIN';
+			$this->defaultColumns[] = 'Currency';
+			$this->defaultColumns[] = 'ISBN';
+			$this->defaultColumns[] = 'MapScale';
+			$this->defaultColumns[] = 'MapNumber';
+			$this->defaultColumns[] = 'MapSubject';
+			$this->defaultColumns[] = 'RFID';
+			$this->defaultColumns[] = 'Price';
+			$this->defaultColumns[] = 'TanggalKirim';
 			$this->defaultColumns[] = 'IsDelete';
-			$this->defaultColumns[] = 'CoverURL';
-			$this->defaultColumns[] = 'FileURL';
-			$this->defaultColumns[] = 'MARC';
 			$this->defaultColumns[] = 'Branch_id';
+			$this->defaultColumns[] = 'Catalog_id';
+			$this->defaultColumns[] = 'Partner_id';
+			$this->defaultColumns[] = 'Location_id';
+			$this->defaultColumns[] = 'Rule_id';
+			$this->defaultColumns[] = 'Category_id';
+			$this->defaultColumns[] = 'Media_id';
+			$this->defaultColumns[] = 'Source_id';
 			$this->defaultColumns[] = 'Worksheet_id';
+			$this->defaultColumns[] = 'GroupingNumber';
+			$this->defaultColumns[] = 'NomorBarcode';
+			$this->defaultColumns[] = 'Status';
+			$this->defaultColumns[] = 'Keterangan_Sumber';
+			$this->defaultColumns[] = 'Penempatan';
 			$this->defaultColumns[] = 'CreateBy';
 			$this->defaultColumns[] = 'CreateDate';
 			$this->defaultColumns[] = 'CreateTerminal';
 			$this->defaultColumns[] = 'UpdateBy';
 			$this->defaultColumns[] = 'UpdateDate';
 			$this->defaultColumns[] = 'UpdateTerminal';
+			$this->defaultColumns[] = 'IsVerified';
 			$this->defaultColumns[] = 'SLA_REGISTER';
 			$this->defaultColumns[] = 'SENAYAN_ID';
 			$this->defaultColumns[] = 'NCIBookMan_ID';
-			$this->defaultColumns[] = 'collection_updated_count';
-			$this->defaultColumns[] = 'tanggal';
 		}
 
 		return $this->defaultColumns;
@@ -383,39 +432,41 @@ class Catalogs extends OActiveRecord
 				'header' => 'No',
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
-			$this->defaultColumns[] = 'ControlNumber';
-			$this->defaultColumns[] = 'BIBID';
+			$this->defaultColumns[] = 'NoInduk';
 			$this->defaultColumns[] = 'Title';
+			$this->defaultColumns[] = 'TitleAdded';
 			$this->defaultColumns[] = 'Author';
-			$this->defaultColumns[] = 'Edition';
-			$this->defaultColumns[] = 'Publisher';
+			$this->defaultColumns[] = 'AuthorAdded';
+			$this->defaultColumns[] = 'Cooperation';
 			$this->defaultColumns[] = 'PublishLocation';
+			$this->defaultColumns[] = 'Publisher';
 			$this->defaultColumns[] = 'PublishYear';
-			$this->defaultColumns[] = 'Paging';
-			$this->defaultColumns[] = 'Ill';
-			$this->defaultColumns[] = 'Sizes';
-			$this->defaultColumns[] = 'Item';
-			$this->defaultColumns[] = 'Subject';
-			$this->defaultColumns[] = 'Description';
-			$this->defaultColumns[] = 'ISBN';
-			$this->defaultColumns[] = 'CallNumber';
+			$this->defaultColumns[] = 'KalaTerbit';
+			$this->defaultColumns[] = 'Edition';
+			$this->defaultColumns[] = 'Class';
+			$this->defaultColumns[] = 'PhysicalDescription';
 			$this->defaultColumns[] = 'Note';
-			$this->defaultColumns[] = 'Languages';
-			$this->defaultColumns[] = 'DeweyNo';
+			$this->defaultColumns[] = 'Currency';
+			$this->defaultColumns[] = 'ISBN';
+			$this->defaultColumns[] = 'MapScale';
+			$this->defaultColumns[] = 'MapNumber';
+			$this->defaultColumns[] = 'MapSubject';
+			$this->defaultColumns[] = 'RFID';
+			$this->defaultColumns[] = 'Price';
 			$this->defaultColumns[] = array(
-				'name' => 'ApproveDateOPAC',
-				'value' => 'Utility::dateFormat($data->ApproveDateOPAC)',
+				'name' => 'TanggalKirim',
+				'value' => 'Utility::dateFormat($data->TanggalKirim)',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
 				'filter' => Yii::app()->controller->widget('zii.widgets.jui.CJuiDatePicker', array(
 					'model'=>$this,
-					'attribute'=>'ApproveDateOPAC',
+					'attribute'=>'TanggalKirim',
 					'language' => 'ja',
 					'i18nScriptFile' => 'jquery.ui.datepicker-en.js',
 					//'mode'=>'datetime',
 					'htmlOptions' => array(
-						'id' => 'ApproveDateOPAC_filter',
+						'id' => 'TanggalKirim_filter',
 					),
 					'options'=>array(
 						'showOn' => 'focus',
@@ -430,48 +481,6 @@ class Catalogs extends OActiveRecord
 			);
 			if(!isset($_GET['type'])) {
 				$this->defaultColumns[] = array(
-					'name' => 'IsOPAC',
-					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl("IsOPAC",array("id"=>$data->ID)), $data->IsOPAC, 1)',
-					'htmlOptions' => array(
-						'class' => 'center',
-					),
-					'filter'=>array(
-						1=>Phrase::trans(588,0),
-						0=>Phrase::trans(589,0),
-					),
-					'type' => 'raw',
-				);
-			}
-			if(!isset($_GET['type'])) {
-				$this->defaultColumns[] = array(
-					'name' => 'IsBNI',
-					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl("IsBNI",array("id"=>$data->ID)), $data->IsBNI, 1)',
-					'htmlOptions' => array(
-						'class' => 'center',
-					),
-					'filter'=>array(
-						1=>Phrase::trans(588,0),
-						0=>Phrase::trans(589,0),
-					),
-					'type' => 'raw',
-				);
-			}
-			if(!isset($_GET['type'])) {
-				$this->defaultColumns[] = array(
-					'name' => 'IsKIN',
-					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl("IsKIN",array("id"=>$data->ID)), $data->IsKIN, 1)',
-					'htmlOptions' => array(
-						'class' => 'center',
-					),
-					'filter'=>array(
-						1=>Phrase::trans(588,0),
-						0=>Phrase::trans(589,0),
-					),
-					'type' => 'raw',
-				);
-			}
-			if(!isset($_GET['type'])) {
-				$this->defaultColumns[] = array(
 					'name' => 'IsDelete',
 					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl("IsDelete",array("id"=>$data->ID)), $data->IsDelete, 1)',
 					'htmlOptions' => array(
@@ -484,11 +493,20 @@ class Catalogs extends OActiveRecord
 					'type' => 'raw',
 				);
 			}
-			$this->defaultColumns[] = 'CoverURL';
-			$this->defaultColumns[] = 'FileURL';
-			$this->defaultColumns[] = 'MARC';
 			$this->defaultColumns[] = 'Branch_id';
+			$this->defaultColumns[] = 'Catalog_id';
+			$this->defaultColumns[] = 'Partner_id';
+			$this->defaultColumns[] = 'Location_id';
+			$this->defaultColumns[] = 'Rule_id';
+			$this->defaultColumns[] = 'Category_id';
+			$this->defaultColumns[] = 'Media_id';
+			$this->defaultColumns[] = 'Source_id';
 			$this->defaultColumns[] = 'Worksheet_id';
+			$this->defaultColumns[] = 'GroupingNumber';
+			$this->defaultColumns[] = 'NomorBarcode';
+			$this->defaultColumns[] = 'Status';
+			$this->defaultColumns[] = 'Keterangan_Sumber';
+			$this->defaultColumns[] = 'Penempatan';
 			$this->defaultColumns[] = 'CreateBy';
 			$this->defaultColumns[] = array(
 				'name' => 'CreateDate',
@@ -545,36 +563,10 @@ class Catalogs extends OActiveRecord
 				), true),
 			);
 			$this->defaultColumns[] = 'UpdateTerminal';
+			$this->defaultColumns[] = 'IsVerified';
 			$this->defaultColumns[] = 'SLA_REGISTER';
 			$this->defaultColumns[] = 'SENAYAN_ID';
 			$this->defaultColumns[] = 'NCIBookMan_ID';
-			$this->defaultColumns[] = 'collection_updated_count';
-			$this->defaultColumns[] = array(
-				'name' => 'tanggal',
-				'value' => 'Utility::dateFormat($data->tanggal)',
-				'htmlOptions' => array(
-					'class' => 'center',
-				),
-				'filter' => Yii::app()->controller->widget('zii.widgets.jui.CJuiDatePicker', array(
-					'model'=>$this,
-					'attribute'=>'tanggal',
-					'language' => 'ja',
-					'i18nScriptFile' => 'jquery.ui.datepicker-en.js',
-					//'mode'=>'datetime',
-					'htmlOptions' => array(
-						'id' => 'tanggal_filter',
-					),
-					'options'=>array(
-						'showOn' => 'focus',
-						'dateFormat' => 'dd-mm-yy',
-						'showOtherMonths' => true,
-						'selectOtherMonths' => true,
-						'changeMonth' => true,
-						'changeYear' => true,
-						'showButtonPanel' => true,
-					),
-				), true),
-			);
 		}
 		parent::afterConstruct();
 	}
@@ -626,7 +618,7 @@ class Catalogs extends OActiveRecord
 	/*
 	protected function beforeSave() {
 		if(parent::beforeSave()) {
-			//$this->ApproveDateOPAC = date('Y-m-d', strtotime($this->ApproveDateOPAC));
+			//$this->TanggalKirim = date('Y-m-d', strtotime($this->TanggalKirim));
 			//$this->CreateDate = date('Y-m-d', strtotime($this->CreateDate));
 			//$this->UpdateDate = date('Y-m-d', strtotime($this->UpdateDate));
 		}
