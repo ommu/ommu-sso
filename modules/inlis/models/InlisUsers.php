@@ -26,6 +26,7 @@
  * @property string $id
  * @property string $user_id
  * @property string $member_id
+ * @property integer $change_password
  * @property string $creation_date
  * @property string $creation_id
  * @property string $modified_date
@@ -69,11 +70,11 @@ class InlisUsers extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('user_id, member_id', 'required'),
-			array('user_id, member_id, creation_id, modified_id', 'length', 'max'=>11),
+			array('user_id, member_id, change_password, creation_id, modified_id', 'length', 'max'=>11),
 			array('', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, user_id, member_id, creation_date, creation_id, modified_date, modified_id,
+			array('id, user_id, member_id, change_password, creation_date, creation_id, modified_date, modified_id,
 				user_search, member_search, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
@@ -102,6 +103,7 @@ class InlisUsers extends CActiveRecord
 			'id' => Yii::t('attribute', 'ID'),
 			'user_id' => Yii::t('attribute', 'User'),
 			'member_id' => Yii::t('attribute', 'Member'),
+			'change_password' => Yii::t('attribute', 'Change Password'),
 			'creation_date' => Yii::t('attribute', 'Creation Date'),
 			'creation_id' => Yii::t('attribute', 'Creation'),
 			'modified_date' => Yii::t('attribute', 'Modified Date'),
@@ -146,7 +148,8 @@ class InlisUsers extends CActiveRecord
 			$criteria->compare('t.user_id',$_GET['user']);
 		else
 			$criteria->compare('t.user_id',$this->user_id);
-		$criteria->compare('t.member_id',strtolower($this->member_id),true);
+		$criteria->compare('t.member_id',$this->member_id);
+		$criteria->compare('t.change_password',$this->change_password);
 		if($this->creation_date != null && !in_array($this->creation_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.creation_date)',date('Y-m-d', strtotime($this->creation_date)));
 		if(isset($_GET['creation']))
@@ -216,6 +219,7 @@ class InlisUsers extends CActiveRecord
 			//$this->defaultColumns[] = 'id';
 			$this->defaultColumns[] = 'user_id';
 			$this->defaultColumns[] = 'member_id';
+			$this->defaultColumns[] = 'change_password';
 			$this->defaultColumns[] = 'creation_date';
 			$this->defaultColumns[] = 'creation_id';
 			$this->defaultColumns[] = 'modified_date';
@@ -282,6 +286,20 @@ class InlisUsers extends CActiveRecord
 					),
 				), true),
 			);
+			if(!isset($_GET['type'])) {
+				$this->defaultColumns[] = array(
+					'name' => 'change_password',
+					'value' => '$data->change_password == 1 ? Chtml::image(Yii::app()->theme->baseUrl.\'/images/icons/publish.png\') : Chtml::image(Yii::app()->theme->baseUrl.\'/images/icons/unpublish.png\')',
+					'htmlOptions' => array(
+						'class' => 'center',
+					),
+					'filter'=>array(
+						1=>Yii::t('phrase', 'Yes'),
+						0=>Yii::t('phrase', 'No'),
+					),
+					'type' => 'raw',
+				);
+			}
 		}
 		parent::afterConstruct();
 	}
