@@ -488,21 +488,12 @@ class InlisMembers extends OActiveRecord
 	 */
 	protected function afterConstruct() {
 		if(count($this->defaultColumns) == 0) {
-			/*
-			$this->defaultColumns[] = array(
-				'class' => 'CCheckBoxColumn',
-				'name' => 'id',
-				'selectableRows' => 2,
-				'checkBoxHtmlOptions' => array('name' => 'trash_id[]')
-			);
-			*/
 			$this->defaultColumns[] = array(
 				'header' => 'No',
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
 			$this->defaultColumns[] = 'MemberNo';
 			$this->defaultColumns[] = 'Fullname';
-			$this->defaultColumns[] = 'PlaceOfBirth';
 			$this->defaultColumns[] = array(
 				'name' => 'DateOfBirth',
 				'value' => 'Utility::dateFormat($data->DateOfBirth)',
@@ -529,163 +520,11 @@ class InlisMembers extends OActiveRecord
 					),
 				), true),
 			);
-			$this->defaultColumns[] = 'Address';
-			$this->defaultColumns[] = 'AddressNow';
-			$this->defaultColumns[] = 'Phone';
-			$this->defaultColumns[] = 'InstitutionName';
-			$this->defaultColumns[] = 'InstitutionAddress';
-			$this->defaultColumns[] = 'InstitutionPhone';
-			$this->defaultColumns[] = 'IdentityType';
-			$this->defaultColumns[] = 'IdentityNo';
-			$this->defaultColumns[] = 'EducationLevel';
-			$this->defaultColumns[] = 'Religion';
-			$this->defaultColumns[] = 'Sex';
-			$this->defaultColumns[] = 'MaritalStatus';
-			$this->defaultColumns[] = 'JobName';
-			$this->defaultColumns[] = array(
-				'name' => 'RegisterDate',
-				'value' => 'Utility::dateFormat($data->RegisterDate)',
-				'htmlOptions' => array(
-					'class' => 'center',
-				),
-				'filter' => Yii::app()->controller->widget('zii.widgets.jui.CJuiDatePicker', array(
-					'model'=>$this,
-					'attribute'=>'RegisterDate',
-					'language' => 'ja',
-					'i18nScriptFile' => 'jquery.ui.datepicker-en.js',
-					//'mode'=>'datetime',
-					'htmlOptions' => array(
-						'id' => 'RegisterDate_filter',
-					),
-					'options'=>array(
-						'showOn' => 'focus',
-						'dateFormat' => 'dd-mm-yy',
-						'showOtherMonths' => true,
-						'selectOtherMonths' => true,
-						'changeMonth' => true,
-						'changeYear' => true,
-						'showButtonPanel' => true,
-					),
-				), true),
-			);
-			$this->defaultColumns[] = array(
-				'name' => 'EndDate',
-				'value' => 'Utility::dateFormat($data->EndDate)',
-				'htmlOptions' => array(
-					'class' => 'center',
-				),
-				'filter' => Yii::app()->controller->widget('zii.widgets.jui.CJuiDatePicker', array(
-					'model'=>$this,
-					'attribute'=>'EndDate',
-					'language' => 'ja',
-					'i18nScriptFile' => 'jquery.ui.datepicker-en.js',
-					//'mode'=>'datetime',
-					'htmlOptions' => array(
-						'id' => 'EndDate_filter',
-					),
-					'options'=>array(
-						'showOn' => 'focus',
-						'dateFormat' => 'dd-mm-yy',
-						'showOtherMonths' => true,
-						'selectOtherMonths' => true,
-						'changeMonth' => true,
-						'changeYear' => true,
-						'showButtonPanel' => true,
-					),
-				), true),
-			);
-			$this->defaultColumns[] = 'BarCode';
-			$this->defaultColumns[] = 'PicPath';
-			$this->defaultColumns[] = 'MotherMaidenName';
-			$this->defaultColumns[] = 'Email';
-			$this->defaultColumns[] = 'JenisPermohonan';
-			$this->defaultColumns[] = 'JenisPermohonanName';
-			$this->defaultColumns[] = 'JenisAnggota';
-			$this->defaultColumns[] = 'JenisAnggotaName';
-			$this->defaultColumns[] = 'StatusAnggota';
-			$this->defaultColumns[] = 'StatusAnggotaName';
-			$this->defaultColumns[] = 'Handphone';
-			$this->defaultColumns[] = 'ParentName';
-			$this->defaultColumns[] = 'ParentAddress';
-			$this->defaultColumns[] = 'ParentPhone';
-			$this->defaultColumns[] = 'ParentHandphone';
-			$this->defaultColumns[] = 'Nationality';
-			$this->defaultColumns[] = 'LoanReturnLateCount';
-			$this->defaultColumns[] = 'Branch_id';
-			$this->defaultColumns[] = 'User_id';
-			$this->defaultColumns[] = 'CreateBy';
-			$this->defaultColumns[] = array(
-				'name' => 'CreateDate',
-				'value' => 'Utility::dateFormat($data->CreateDate)',
-				'htmlOptions' => array(
-					'class' => 'center',
-				),
-				'filter' => Yii::app()->controller->widget('zii.widgets.jui.CJuiDatePicker', array(
-					'model'=>$this,
-					'attribute'=>'CreateDate',
-					'language' => 'ja',
-					'i18nScriptFile' => 'jquery.ui.datepicker-en.js',
-					//'mode'=>'datetime',
-					'htmlOptions' => array(
-						'id' => 'CreateDate_filter',
-					),
-					'options'=>array(
-						'showOn' => 'focus',
-						'dateFormat' => 'dd-mm-yy',
-						'showOtherMonths' => true,
-						'selectOtherMonths' => true,
-						'changeMonth' => true,
-						'changeYear' => true,
-						'showButtonPanel' => true,
-					),
-				), true),
-			);
-			$this->defaultColumns[] = 'CreateTerminal';
-			$this->defaultColumns[] = 'UpdateBy';
-			$this->defaultColumns[] = array(
-				'name' => 'UpdateDate',
-				'value' => 'Utility::dateFormat($data->UpdateDate)',
-				'htmlOptions' => array(
-					'class' => 'center',
-				),
-				'filter' => Yii::app()->controller->widget('zii.widgets.jui.CJuiDatePicker', array(
-					'model'=>$this,
-					'attribute'=>'UpdateDate',
-					'language' => 'ja',
-					'i18nScriptFile' => 'jquery.ui.datepicker-en.js',
-					//'mode'=>'datetime',
-					'htmlOptions' => array(
-						'id' => 'UpdateDate_filter',
-					),
-					'options'=>array(
-						'showOn' => 'focus',
-						'dateFormat' => 'dd-mm-yy',
-						'showOtherMonths' => true,
-						'selectOtherMonths' => true,
-						'changeMonth' => true,
-						'changeYear' => true,
-						'showButtonPanel' => true,
-					),
-				), true),
-			);
-			$this->defaultColumns[] = 'UpdateTerminal';
-			$this->defaultColumns[] = 'AlamatDomisili';
-			$this->defaultColumns[] = 'RT';
-			$this->defaultColumns[] = 'RW';
-			$this->defaultColumns[] = 'Kelurahan';
-			$this->defaultColumns[] = 'Kecamatan';
-			$this->defaultColumns[] = 'Kota';
-			$this->defaultColumns[] = 'KodePos';
 			$this->defaultColumns[] = 'NoHp';
-			$this->defaultColumns[] = 'NamaDarurat';
-			$this->defaultColumns[] = 'TelpDarurat';
-			$this->defaultColumns[] = 'AlamatDarurat';
-			$this->defaultColumns[] = 'StatusHubunganDarurat';
-			$this->defaultColumns[] = 'City';
-			$this->defaultColumns[] = 'Province';
-			$this->defaultColumns[] = 'CityNow';
-			$this->defaultColumns[] = 'ProvinceNow';
-			$this->defaultColumns[] = 'JobNameDetail';
+			$this->defaultColumns[] = 'Email';
+			$this->defaultColumns[] = 'MotherMaidenName';
+			$this->defaultColumns[] = 'JenisAnggota';
+			$this->defaultColumns[] = 'StatusAnggota';
 		}
 		parent::afterConstruct();
 	}
@@ -706,77 +545,5 @@ class InlisMembers extends OActiveRecord
 			return $model;			
 		}
 	}
-
-	/**
-	 * before validate attributes
-	 */
-	/*
-	protected function beforeValidate() {
-		if(parent::beforeValidate()) {
-			// Create action
-		}
-		return true;
-	}
-	*/
-
-	/**
-	 * after validate attributes
-	 */
-	/*
-	protected function afterValidate()
-	{
-		parent::afterValidate();
-			// Create action
-		return true;
-	}
-	*/
-	
-	/**
-	 * before save attributes
-	 */
-	/*
-	protected function beforeSave() {
-		if(parent::beforeSave()) {
-			//$this->DateOfBirth = date('Y-m-d', strtotime($this->DateOfBirth));
-			//$this->RegisterDate = date('Y-m-d', strtotime($this->RegisterDate));
-			//$this->EndDate = date('Y-m-d', strtotime($this->EndDate));
-			//$this->CreateDate = date('Y-m-d', strtotime($this->CreateDate));
-			//$this->UpdateDate = date('Y-m-d', strtotime($this->UpdateDate));
-		}
-		return true;	
-	}
-	*/
-	
-	/**
-	 * After save attributes
-	 */
-	/*
-	protected function afterSave() {
-		parent::afterSave();
-		// Create action
-	}
-	*/
-
-	/**
-	 * Before delete attributes
-	 */
-	/*
-	protected function beforeDelete() {
-		if(parent::beforeDelete()) {
-			// Create action
-		}
-		return true;
-	}
-	*/
-
-	/**
-	 * After delete attributes
-	 */
-	/*
-	protected function afterDelete() {
-		parent::afterDelete();
-		// Create action
-	}
-	*/
 
 }
