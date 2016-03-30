@@ -9,6 +9,8 @@
  *
  * TOC :
  *	Index
+ *	List
+ *	Detail
  *
  *	LoadModel
  *	performAjaxValidation
@@ -51,7 +53,7 @@ class CollectionController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index'),
+				'actions'=>array('index','list','detail'),
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
@@ -76,6 +78,94 @@ class CollectionController extends Controller
 	public function actionIndex() 
 	{
 		$this->redirect(Yii::app()->createUrl('site/index'));
+	}
+	
+	/**
+	 * Lists all models.
+	 */
+	public function actionList()
+	{
+		if(Yii::app()->request->isPostRequest) {
+			$id = trim($_POST['id']);
+			
+			$criteria=new CDbCriteria;
+			$criteria->compare('t.Catalog_id',$id);
+
+			$dataProvider = new CActiveDataProvider('SyncCollections', array(
+				'criteria'=>$criteria,
+				'pagination'=>array(
+					'pageSize'=>20,
+				),
+			));			
+			$model = $dataProvider->getData();
+			
+			$data = '';
+			if(!empty($model)) {
+				foreach($model as $key => $item) {					
+					$data[] = array(
+						'id'=>$item->ID,
+						'title'=>$item->Title,
+						//'author'=>$item->Author != null || $item->Author != '' ? $item->Author : $item->AuthorAdded,
+						//'publisher'=>$item->Publisher,
+						//'publish_location'=>$item->PublishLocation,
+						//'publish_year'=>$item->PublishYear,
+						//'isbn'=>$item->ISBN != null || $item->ISBN != '' ? $item->ISBN : $item->catalog->ISBN,
+						'location'=>$item->location->Name,
+						//'worksheet'=>$item->Worksheet_id != null || $item->Worksheet_id != '' ? $item->worksheet->Name : ($item->catalog->Worksheet_id != null || $item->catalog->Worksheet_id != '' ? $item->catalog->worksheet->Name : ''),
+						'status'=>$item->Status,
+					);					
+				}
+			} else
+				$data = array();
+		
+			$pager = OFunction::getDataProviderPager($dataProvider);
+			$get = array_merge($_GET, array($pager['pageVar']=>$pager['nextPage']));
+			$nextPager = $pager['nextPage'] != 0 ? OFunction::validHostURL(Yii::app()->controller->createUrl('list', $get)) : '-';
+			$return = array(
+				'data' => $data,
+				'pager' => $pager,
+				'nextPager' => $nextPager,
+			);
+				
+			echo CJSON::encode($return);
+			
+		} else 
+			$this->redirect(Yii::app()->createUrl('site/index'));
+	}
+	
+	/**
+	 * Lists all models.
+	 */
+	public function actionDetail()
+	{
+		if(Yii::app()->request->isPostRequest) {
+			$id = trim($_POST['id']);
+			
+			$model=$this->loadModel($id);
+			
+			if(!empty($model)) {
+				$return = array(
+					'success'=>'1',
+					'id'=>$model->ID,
+					'title'=>$model->Title,
+					'author'=>$model->Author != null || $model->Author != '' ? $model->Author : $model->AuthorAdded,
+					'publisher'=>$model->Publisher,
+					'publish_location'=>$model->PublishLocation,
+					'publish_year'=>$model->PublishYear,
+					'isbn'=>$model->ISBN != null || $model->ISBN != '' ? $model->ISBN : $model->catalog->ISBN,
+					'location'=>$model->location->Name,
+					'worksheet'=>$model->Worksheet_id != null || $model->Worksheet_id != '' ? $model->worksheet->Name : ($model->catalog->Worksheet_id != null || $model->catalog->Worksheet_id != '' ? $model->catalog->worksheet->Name : ''),
+					'status'=>$model->Status,
+				);
+			} else {
+				$return = array(
+					'success'=>'0',
+				);
+			}				
+			echo CJSON::encode($return);
+			
+		} else 
+			$this->redirect(Yii::app()->createUrl('site/index'));
 	}
 
 	/**
