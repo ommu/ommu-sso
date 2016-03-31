@@ -178,14 +178,14 @@ class UserController extends Controller
 	public function actionChangePassword() 
 	{
 		if(Yii::app()->request->isPostRequest) {
-			$user = trim($_POST['user']);
+			$token = trim($_POST['token']);
 			$password = trim($_POST['password']);
 			$newpassword = trim($_POST['newpassword']);
 			$confirmpassword = trim($_POST['confirmpassword']);
 			
 			$url = Utility::getProtocol().'://'.Yii::app()->request->serverName.Yii::app()->createUrl('users/api/member/changepassword');		
 			$item = array(
-				'user' => $user,
+				'token' => $token,
 				'password' => $password,
 				'newpassword' => $newpassword,
 				'confirmpassword' => $confirmpassword,
