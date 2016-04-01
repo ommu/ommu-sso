@@ -28,6 +28,8 @@
  * @property string $bookmarks
  * @property string $favourites
  * @property string $likes
+ * @property string $views
+ * @property string $user_view
  */
 class ViewInlisCatalogs extends CActiveRecord
 {
@@ -70,10 +72,10 @@ class ViewInlisCatalogs extends CActiveRecord
 		return array(
 			array('catalog_id', 'required'),
 			array('id, catalog_id', 'length', 'max'=>11),
-			array('bookmarks, favourites, likes', 'length', 'max'=>21),
+			array('bookmarks, favourites, likes, views, user_view', 'length', 'max'=>21),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, catalog_id, bookmarks, favourites, likes', 'safe', 'on'=>'search'),
+			array('id, catalog_id, bookmarks, favourites, likes, views, user_view', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -99,6 +101,8 @@ class ViewInlisCatalogs extends CActiveRecord
 			'bookmarks' => Yii::t('attribute', 'Bookmarks'),
 			'favourites' => Yii::t('attribute', 'Favourites'),
 			'likes' => Yii::t('attribute', 'Likes'),
+			'views' => Yii::t('attribute', 'Views'),
+			'user_view' => Yii::t('attribute', 'User View'),
 		);
 		/*
 			'ID' => 'ID',
@@ -106,6 +110,8 @@ class ViewInlisCatalogs extends CActiveRecord
 			'Bookmarks' => 'Bookmarks',
 			'Favourites' => 'Favourites',
 			'Likes' => 'Likes',
+			'Views' => 'Views',
+			'User View' => 'User View',
 		
 		*/
 	}
@@ -133,6 +139,8 @@ class ViewInlisCatalogs extends CActiveRecord
 		$criteria->compare('t.bookmarks',strtolower($this->bookmarks),true);
 		$criteria->compare('t.favourites',strtolower($this->favourites),true);
 		$criteria->compare('t.likes',strtolower($this->likes),true);
+		$criteria->compare('t.views',strtolower($this->views),true);
+		$criteria->compare('t.user_view',strtolower($this->user_view),true);
 
 		if(!isset($_GET['ViewInlisCatalogs_sort']))
 			$criteria->order = 't.id DESC';
@@ -168,6 +176,8 @@ class ViewInlisCatalogs extends CActiveRecord
 			$this->defaultColumns[] = 'bookmarks';
 			$this->defaultColumns[] = 'favourites';
 			$this->defaultColumns[] = 'likes';
+			$this->defaultColumns[] = 'views';
+			$this->defaultColumns[] = 'user_view';
 		}
 
 		return $this->defaultColumns;
@@ -187,6 +197,8 @@ class ViewInlisCatalogs extends CActiveRecord
 			$this->defaultColumns[] = 'bookmarks';
 			$this->defaultColumns[] = 'favourites';
 			$this->defaultColumns[] = 'likes';
+			$this->defaultColumns[] = 'views';
+			$this->defaultColumns[] = 'user_view';
 		}
 		parent::afterConstruct();
 	}
