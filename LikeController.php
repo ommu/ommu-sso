@@ -11,6 +11,7 @@
  *	Index
  *	List
  *	Run
+ *	toggle
  *
  *	LoadModel
  *	performAjaxValidation
