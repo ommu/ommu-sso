@@ -163,7 +163,7 @@ class BookmarkController extends Controller
 						);						
 					}
 				} else
-					$return = $this->toggle($catalog, $token);				
+					$return = $this->toggle($catalog, $token);
 			} else
 				$return = $this->toggle($catalog, $token);
 			
