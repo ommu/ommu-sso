@@ -23,7 +23,6 @@
  * This is the model class for table "_view_inlis_catalogs".
  *
  * The followings are the available columns in table '_view_inlis_catalogs':
- * @property string $id
  * @property string $catalog_id
  * @property string $bookmarks
  * @property string $favourites
@@ -59,7 +58,7 @@ class ViewInlisCatalogs extends CActiveRecord
 	 */
 	public function primaryKey()
 	{
-		return 'id';
+		return 'catalog_id';
 	}
 
 	/**
@@ -71,11 +70,11 @@ class ViewInlisCatalogs extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('catalog_id', 'required'),
-			array('id, catalog_id', 'length', 'max'=>11),
+			array('catalog_id', 'length', 'max'=>11),
 			array('bookmarks, favourites, likes, views, user_view', 'length', 'max'=>21),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, catalog_id, bookmarks, favourites, likes, views, user_view', 'safe', 'on'=>'search'),
+			array('catalog_id, bookmarks, favourites, likes, views, user_view', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -96,7 +95,6 @@ class ViewInlisCatalogs extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => Yii::t('attribute', 'ID'),
 			'catalog_id' => Yii::t('attribute', 'Catalog'),
 			'bookmarks' => Yii::t('attribute', 'Bookmarks'),
 			'favourites' => Yii::t('attribute', 'Favourites'),
@@ -105,7 +103,6 @@ class ViewInlisCatalogs extends CActiveRecord
 			'user_view' => Yii::t('attribute', 'User View'),
 		);
 		/*
-			'ID' => 'ID',
 			'Catalog' => 'Catalog',
 			'Bookmarks' => 'Bookmarks',
 			'Favourites' => 'Favourites',
@@ -133,8 +130,7 @@ class ViewInlisCatalogs extends CActiveRecord
 		// @todo Please modify the following code to remove attributes that should not be searched.
 
 		$criteria=new CDbCriteria;
-
-		$criteria->compare('t.id',strtolower($this->id),true);
+		
 		$criteria->compare('t.catalog_id',strtolower($this->catalog_id),true);
 		$criteria->compare('t.bookmarks',strtolower($this->bookmarks),true);
 		$criteria->compare('t.favourites',strtolower($this->favourites),true);
@@ -143,7 +139,7 @@ class ViewInlisCatalogs extends CActiveRecord
 		$criteria->compare('t.user_view',strtolower($this->user_view),true);
 
 		if(!isset($_GET['ViewInlisCatalogs_sort']))
-			$criteria->order = 't.id DESC';
+			$criteria->order = 't.catalog_id DESC';
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -171,7 +167,6 @@ class ViewInlisCatalogs extends CActiveRecord
 				$this->defaultColumns[] = $val;
 			}
 		} else {
-			$this->defaultColumns[] = 'id';
 			$this->defaultColumns[] = 'catalog_id';
 			$this->defaultColumns[] = 'bookmarks';
 			$this->defaultColumns[] = 'favourites';
@@ -192,7 +187,6 @@ class ViewInlisCatalogs extends CActiveRecord
 				'header' => 'No',
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
-			//$this->defaultColumns[] = 'id';
 			$this->defaultColumns[] = 'catalog_id';
 			$this->defaultColumns[] = 'bookmarks';
 			$this->defaultColumns[] = 'favourites';
