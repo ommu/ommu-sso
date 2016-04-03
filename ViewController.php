@@ -10,6 +10,7 @@
  * TOC :
  *	Index
  *	List
+ *	Down
  *
  *	LoadModel
  *	performAjaxValidation
@@ -52,7 +53,7 @@ class ViewController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','list'),
+				'actions'=>array('index','list','down'),
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
@@ -133,6 +134,76 @@ class ViewController extends Controller
 					'error'=>'USERNULL',
 					'message'=>'error, user tidak ditemukan',
 				);
+			}
+			echo CJSON::encode($return);
+			
+		} else 
+			$this->redirect(Yii::app()->createUrl('site/index'));
+	}
+	
+	/**
+	 * Lists all models.
+	 */
+	public function actionDown()
+	{
+		if(Yii::app()->request->isPostRequest) {
+			$id = trim($_POST['id']);
+			$catalog = trim($_POST['catalog']);
+			$token = trim($_POST['token']);
+			
+			if($id != null && $id != '') {
+				$model=InlisViews::model()->findByPk($id);
+				
+				if($model != null) {
+					$model->delete();
+					$return = array(
+						'success'=>'1',
+						'message'=>'success, view berhasil dihapus',
+					);					
+				} else {
+					$return = array(
+						'success'=>'0',
+						'error'=>'NULL',
+						'message'=>'error, view tidak ditemukan',
+					);					
+				}
+				
+			} else {
+				$user = ViewUsers::model()->findByAttributes(array('token_password' => $token), array(
+					'select' => 'user_id',
+				));
+				
+				if($user != null) {
+					$model = InlisViews::model()->find(array(
+						'select'    => 'view_id',
+						'condition' => 'publish= :publish AND catalog_id= :catalog AND user_id= :user',
+						'params'    => array(
+							':publish' => 1,
+							':catalog' => $catalog,
+							':user' => $user->user_id,
+						),
+					));
+					if($model != null) {
+						$model->delete();
+						$return = array(
+							'success'=>'1',
+							'message'=>'success, view berhasil dihapus',
+						);
+					} else {
+						$return = array(
+							'success'=>'0',
+							'error'=>'NULL',
+							'message'=>'error, catalog tidak dalam kondisi view',
+						);					
+					}
+					
+				} else {
+					$return = array(
+						'success'=>'0',
+						'error'=>'USERNULL',
+						'message'=>'error, user tidak ditemukan',
+					);
+				}				
 			}
 			echo CJSON::encode($return);
 			
