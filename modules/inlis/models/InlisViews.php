@@ -29,6 +29,7 @@
  * @property string $user_id
  * @property string $creation_date
  * @property string $creation_ip
+ * @property string $deleted_date
  */
 class InlisViews extends CActiveRecord
 {
@@ -61,13 +62,13 @@ class InlisViews extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('catalog_id, user_id, creation_date, creation_ip', 'required'),
+			array('catalog_id, user_id, creation_date, creation_ip, deleted_date', 'required'),
 			array('publish', 'numerical', 'integerOnly'=>true),
 			array('catalog_id, user_id', 'length', 'max'=>11),
 			array('creation_ip', 'length', 'max'=>20),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('view_id, publish, catalog_id, user_id, creation_date, creation_ip', 'safe', 'on'=>'search'),
+			array('view_id, publish, catalog_id, user_id, creation_date, creation_ip, deleted_date', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -94,6 +95,7 @@ class InlisViews extends CActiveRecord
 			'user_id' => Yii::t('attribute', 'User'),
 			'creation_date' => Yii::t('attribute', 'Creation Date'),
 			'creation_ip' => Yii::t('attribute', 'Creation Ip'),
+			'deleted_date' => Yii::t('attribute', 'Deleted Date'),
 		);
 		/*
 			'View' => 'View',
@@ -102,6 +104,7 @@ class InlisViews extends CActiveRecord
 			'User' => 'User',
 			'Creation Date' => 'Creation Date',
 			'Creation Ip' => 'Creation Ip',
+			'Deleted Date' => 'Deleted Date',
 		
 		*/
 	}
@@ -143,6 +146,8 @@ class InlisViews extends CActiveRecord
 		if($this->creation_date != null && !in_array($this->creation_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.creation_date)',date('Y-m-d', strtotime($this->creation_date)));
 		$criteria->compare('t.creation_ip',strtolower($this->creation_ip),true);
+		if($this->deleted_date != null && !in_array($this->deleted_date, array('0000-00-00 00:00:00', '0000-00-00')))
+			$criteria->compare('date(t.deleted_date)',date('Y-m-d', strtotime($this->deleted_date)));
 
 		if(!isset($_GET['InlisViews_sort']))
 			$criteria->order = 't.view_id DESC';
@@ -179,6 +184,7 @@ class InlisViews extends CActiveRecord
 			$this->defaultColumns[] = 'user_id';
 			$this->defaultColumns[] = 'creation_date';
 			$this->defaultColumns[] = 'creation_ip';
+			$this->defaultColumns[] = 'deleted_date';
 		}
 
 		return $this->defaultColumns;
@@ -244,6 +250,7 @@ class InlisViews extends CActiveRecord
 				), true),
 			);
 			$this->defaultColumns[] = 'creation_ip';
+			$this->defaultColumns[] = 'deleted_date';
 		}
 		parent::afterConstruct();
 	}
