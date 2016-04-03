@@ -282,7 +282,32 @@ class InlisViews extends CActiveRecord
 					'type' => 'raw',
 				);
 			}
-			$this->defaultColumns[] = 'deleted_date';
+			$this->defaultColumns[] = array(
+				'name' => 'deleted_date',
+				'value' => 'Utility::dateFormat($data->deleted_date)',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+				'filter' => Yii::app()->controller->widget('zii.widgets.jui.CJuiDatePicker', array(
+					'model'=>$this,
+					'attribute'=>'deleted_date',
+					'language' => 'ja',
+					'i18nScriptFile' => 'jquery.ui.datepicker-en.js',
+					//'mode'=>'datetime',
+					'htmlOptions' => array(
+						'id' => 'creation_date_filter',
+					),
+					'options'=>array(
+						'showOn' => 'focus',
+						'dateFormat' => 'dd-mm-yy',
+						'showOtherMonths' => true,
+						'selectOtherMonths' => true,
+						'changeMonth' => true,
+						'changeYear' => true,
+						'showButtonPanel' => true,
+					),
+				), true),
+			);
 		}
 		parent::afterConstruct();
 	}
