@@ -249,11 +249,29 @@ class SiteController extends Controller
 						'select' => 'user_id',
 					));
 					if($user != null) {
-						$view=new InlisViews;
-						$view->catalog_id = $id;
-						$view->user_id = $user->user_id;
-						$view->save();
+						$view = InlisViews::model()->find(array(
+							'select'    => 'view_id',
+							'condition' => 'publish= :publish AND catalog_id= :catalog AND user_id= :user',
+							'params'    => array(
+								':publish' => 1,
+								':catalog' => $id,
+								':user' => $user->user_id,
+							),
+						));
+						if($view == null) {
+							$data=new InlisViews;
+							$data->catalog_id = $id;
+							$data->user_id = $user->user_id;
+							$data->save();
+						}
+						$catalog = InlisCatalogs::model()->findByAttributes(array('catalog_id' => $id));
+						$catalog->user_views = $catalog->user_views+1;
+						$catalog->save();
 					}
+				} else {
+					$catalog = InlisCatalogs::model()->findByAttributes(array('catalog_id' => $id));
+					$catalog->public_views = $catalog->public_views+1;
+					$catalog->save();
 				}
 			} else {
 				$return = array(
