@@ -147,7 +147,10 @@ class InlisViews extends CActiveRecord
 			$criteria->addInCondition('t.publish',array(0,1));
 			$criteria->compare('t.publish',$this->publish);
 		}
-		$criteria->compare('t.catalog_id',strtolower($this->catalog_id),true);
+		if(isset($_GET['catalog']))
+			$criteria->compare('t.catalog_id',$_GET['catalog']);
+		else
+			$criteria->compare('t.catalog_id',$this->catalog_id);
 		if(isset($_GET['user']))
 			$criteria->compare('t.user_id',$_GET['user']);
 		else
