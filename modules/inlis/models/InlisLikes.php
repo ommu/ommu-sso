@@ -326,7 +326,7 @@ class InlisLikes extends CActiveRecord
 	 */
 	protected function beforeValidate() {
 		if(parent::beforeValidate()) {
-			if($this->isNewRecord)
+			if($this->isNewRecord && $this->user_id == '')
 				$this->user_id = Yii::app()->user->id;
 			$this->creation_ip = $_SERVER['REMOTE_ADDR'];
 		}

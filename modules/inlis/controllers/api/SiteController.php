@@ -226,6 +226,7 @@ class SiteController extends Controller
 	{
 		if(Yii::app()->request->isPostRequest) {
 			$id = trim($_POST['id']);
+			$token = trim($_POST['token']);
 			
 			$model=$this->loadModel($id);
 			
@@ -243,6 +244,17 @@ class SiteController extends Controller
 					'callnumber'=>$model->CallNumber,
 					'worksheet'=>$model->worksheet->Name,
 				);
+				if($token != null && $token != '') {
+					$user = ViewUsers::model()->findByAttributes(array('token_password' => $token), array(
+						'select' => 'user_id',
+					));
+					if($user != null) {
+						$view=new InlisViews;
+						$view->catalog_id = $id;
+						$view->user_id = $user->user_id;
+						$view->save();
+					}
+				}
 			} else {
 				$return = array(
 					'success'=>'0',
