@@ -96,7 +96,8 @@ class FavouriteController extends Controller
 				$criteria->select = array('catalog_id','creation_date');
 				$criteria->compare('t.publish',1);
 				$criteria->compare('t.user_id',$user->user_id);
-				$criteria->order = 'favourite_id DESC';
+				$criteria->group = 't.catalog_id';
+				$criteria->order = 't.favourite_id DESC';
 				
 				$dataProvider = new CActiveDataProvider('InlisFavourites', array(
 					'criteria'=>$criteria,

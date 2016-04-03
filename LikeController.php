@@ -96,7 +96,8 @@ class LikeController extends Controller
 				$criteria->select = array('catalog_id','creation_date');
 				$criteria->compare('t.publish',1);
 				$criteria->compare('t.user_id',$user->user_id);
-				$criteria->order = 'like_id DESC';
+				$criteria->group = 't.catalog_id';
+				$criteria->order = 't.like_id DESC';
 				
 				$dataProvider = new CActiveDataProvider('InlisLikes', array(
 					'criteria'=>$criteria,
