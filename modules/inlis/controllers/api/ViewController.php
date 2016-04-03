@@ -9,6 +9,7 @@
  *
  * TOC :
  *	Index
+ *	List
  *
  *	LoadModel
  *	performAjaxValidation
@@ -51,7 +52,7 @@ class ViewController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index'),
+				'actions'=>array('index','list'),
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
@@ -76,6 +77,67 @@ class ViewController extends Controller
 	public function actionIndex() 
 	{
 		$this->redirect(Yii::app()->createUrl('site/index'));
+	}
+	
+	/**
+	 * Lists all models.
+	 */
+	public function actionList()
+	{
+		if(Yii::app()->request->isPostRequest) {
+			$token = trim($_POST['token']);
+			
+			$user = ViewUsers::model()->findByAttributes(array('token_password' => $token), array(
+				'select' => 'user_id',
+			));
+			
+			if($user != null) {
+				$criteria=new CDbCriteria;
+				$criteria->select = array('catalog_id','creation_date');
+				$criteria->compare('t.publish',1);
+				$criteria->compare('t.user_id',$user->user_id);
+				$criteria->group = 'catalog_id';
+				$criteria->order = 'view_id DESC';
+				
+				$dataProvider = new CActiveDataProvider('InlisViews', array(
+					'criteria'=>$criteria,
+					'pagination'=>array(
+						'pageSize'=>20,
+					),
+				));			
+				$model = $dataProvider->getData();
+				
+				$data = '';
+				if(!empty($model)) {
+					foreach($model as $key => $item) {					
+						$data[] = array(
+							'catalog_id'=>$item->catalog_id,
+							'creation_date'=>$item->creation_date,
+						);					
+					}
+				} else
+					$data = array();
+			
+				$pager = OFunction::getDataProviderPager($dataProvider);
+				$get = array_merge($_GET, array($pager['pageVar']=>$pager['nextPage']));
+				$nextPager = $pager['nextPage'] != 0 ? OFunction::validHostURL(Yii::app()->controller->createUrl('list', $get)) : '-';
+				$return = array(
+					'data' => $data,
+					'pager' => $pager,
+					'nextPager' => $nextPager,
+				);
+				
+			} else {
+				$return = array(
+					'success'=>'0',
+					'error'=>'USERNULL',
+					'message'=>'error, user tidak ditemukan',
+				);
+			}
+			echo CJSON::encode($return);
+			
+		} else 
+			$this->redirect(Yii::app()->createUrl('site/index'));
 	}
 
 	/**

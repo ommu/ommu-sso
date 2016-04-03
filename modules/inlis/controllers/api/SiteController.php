@@ -258,8 +258,10 @@ class SiteController extends Controller
 			} else {
 				$return = array(
 					'success'=>'0',
+					'error'=>'NULL',
+					'message'=>'error, catalog tidak ditemukan',
 				);
-			}				
+			}
 			echo CJSON::encode($return);
 			
 		} else 

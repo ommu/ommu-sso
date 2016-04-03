@@ -166,6 +166,8 @@ class CollectionController extends Controller
 			} else {
 				$return = array(
 					'success'=>'0',
+					'error'=>'NULL',
+					'message'=>'error, collection tidak ditemukan',
 				);
 			}				
 			echo CJSON::encode($return);
