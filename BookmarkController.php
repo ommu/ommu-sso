@@ -10,6 +10,8 @@
  * TOC :
  *	Index
  *	List
+ *	Up
+ *	Down
  *
  *	LoadModel
  *	performAjaxValidation
@@ -52,7 +54,7 @@ class BookmarkController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','list'),
+				'actions'=>array('index','list','up','down'),
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
@@ -133,6 +135,129 @@ class BookmarkController extends Controller
 					'error'=>'USERNULL',
 					'message'=>'error, user tidak ditemukan',
 				);
+			}
+			echo CJSON::encode($return);
+			
+		} else 
+			$this->redirect(Yii::app()->createUrl('site/index'));
+	}
+	
+	/**
+	 * Lists all models.
+	 */
+	public function actionUp()
+	{
+		if(Yii::app()->request->isPostRequest) {
+			$catalog = trim($_POST['catalog']);
+			$token = trim($_POST['token']);
+			
+			$user = ViewUsers::model()->findByAttributes(array('token_password' => $token), array(
+				'select' => 'user_id',
+			));
+			
+			if($user != null) {
+				$model = InlisBookmarks::model()->find(array(
+					'select'    => 'bookmark_id',
+					'condition' => 'publish= :publish AND catalog_id= :catalog AND user_id= :user',
+					'params'    => array(
+						':publish' => 1,
+						':catalog' => $catalog,
+						':user' => $user->user_id,
+					),
+				));
+				if($model == null) {
+					$bookmark=new InlisBookmarks;
+					$bookmark->catalog_id = $catalog;
+					$bookmark->user_id = $user->user_id;
+					$bookmark->save();
+					$return = array(
+						'success'=>'1',
+						'message'=>'success, bookmark berhasil ditambahkan',
+					);
+				} else {
+					$return = array(
+						'success'=>'0',
+						'error'=>'NOTNULL',
+						'message'=>'error, catalog dalam kondisi bookmarks',
+					);					
+				}
+				
+			} else {
+				$return = array(
+					'success'=>'0',
+					'error'=>'USERNULL',
+					'message'=>'error, user tidak ditemukan',
+				);
+			}
+			echo CJSON::encode($return);
+			
+		} else 
+			$this->redirect(Yii::app()->createUrl('site/index'));
+	}
+	
+	/**
+	 * Lists all models.
+	 */
+	public function actionDown()
+	{
+		if(Yii::app()->request->isPostRequest) {
+			$id = trim($_POST['id']);
+			$catalog = trim($_POST['catalog']);
+			$token = trim($_POST['token']);
+			
+			if($id != null && $id != '') {
+				$model=InlisBookmarks::model()->findByPk($id);
+				
+				if($model != null) {
+					$model->delete();
+					$return = array(
+						'success'=>'1',
+						'message'=>'success, bookmark berhasil dihapus',
+					);					
+				} else {
+					$return = array(
+						'success'=>'0',
+						'error'=>'NULL',
+						'message'=>'error, bookmark tidak ditemukan',
+					);					
+				}
+				
+			} else {
+				$user = ViewUsers::model()->findByAttributes(array('token_password' => $token), array(
+					'select' => 'user_id',
+				));
+				
+				if($user != null) {
+					$model = InlisBookmarks::model()->find(array(
+						'select'    => 'bookmark_id',
+						'condition' => 'publish= :publish AND catalog_id= :catalog AND user_id= :user',
+						'params'    => array(
+							':publish' => 1,
+							':catalog' => $catalog,
+							':user' => $user->user_id,
+						),
+					));
+					if($model != null) {
+						$model->delete();
+						$return = array(
+							'success'=>'1',
+							'message'=>'success, bookmark berhasil dihapus',
+						);
+					} else {
+						$return = array(
+							'success'=>'0',
+							'error'=>'NULL',
+							'message'=>'error, catalog tidak dalam kondisi bookmarks',
+						);					
+					}
+					
+				} else {
+					$return = array(
+						'success'=>'0',
+						'error'=>'USERNULL',
+						'message'=>'error, user tidak ditemukan',
+					);
+				}				
 			}
 			echo CJSON::encode($return);
 			
