@@ -34,6 +34,10 @@
 class InlisViews extends CActiveRecord
 {
 	public $defaultColumns = array();
+	
+	// Variable Search
+	public $catalog_search;
+	public $user_search;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -62,13 +66,14 @@ class InlisViews extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('catalog_id, user_id, creation_date, creation_ip, deleted_date', 'required'),
+			array('publish, catalog_id, user_id', 'required'),
 			array('publish', 'numerical', 'integerOnly'=>true),
 			array('catalog_id, user_id', 'length', 'max'=>11),
 			array('creation_ip', 'length', 'max'=>20),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('view_id, publish, catalog_id, user_id, creation_date, creation_ip, deleted_date', 'safe', 'on'=>'search'),
+			array('view_id, publish, catalog_id, user_id, creation_date, creation_ip, deleted_date,
+				catalog_search, user_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -96,6 +101,8 @@ class InlisViews extends CActiveRecord
 			'creation_date' => Yii::t('attribute', 'Creation Date'),
 			'creation_ip' => Yii::t('attribute', 'Creation Ip'),
 			'deleted_date' => Yii::t('attribute', 'Deleted Date'),
+			'catalog_search' => Yii::t('attribute', 'Catalog'),
+			'user_search' => Yii::t('attribute', 'User'),
 		);
 		/*
 			'View' => 'View',
@@ -148,6 +155,20 @@ class InlisViews extends CActiveRecord
 		$criteria->compare('t.creation_ip',strtolower($this->creation_ip),true);
 		if($this->deleted_date != null && !in_array($this->deleted_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.deleted_date)',date('Y-m-d', strtotime($this->deleted_date)));
+		
+		// Custom Search
+		$criteria->with = array(
+			'catalog' => array(
+				'alias'=>'catalog',
+				'select'=>'Title',
+			),
+			'user' => array(
+				'alias'=>'user',
+				'select'=>'displayname',
+			),
+		);
+		$criteria->compare('catalog.Title',strtolower($this->catalog_search), true);
+		$criteria->compare('user.displayname',strtolower($this->user_search), true);
 
 		if(!isset($_GET['InlisViews_sort']))
 			$criteria->order = 't.view_id DESC';
@@ -207,22 +228,14 @@ class InlisViews extends CActiveRecord
 				'header' => 'No',
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
-			if(!isset($_GET['type'])) {
-				$this->defaultColumns[] = array(
-					'name' => 'publish',
-					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl("publish",array("id"=>$data->view_id)), $data->publish, 1)',
-					'htmlOptions' => array(
-						'class' => 'center',
-					),
-					'filter'=>array(
-						1=>Phrase::trans(588,0),
-						0=>Phrase::trans(589,0),
-					),
-					'type' => 'raw',
-				);
-			}
-			$this->defaultColumns[] = 'catalog_id';
-			$this->defaultColumns[] = 'user_id';
+			$this->defaultColumns[] = array(
+				'name' => 'catalog_search',
+				'value' => '$data->catalog->Title',
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'user_search',
+				'value' => '$data->user->displayname',
+			);
 			$this->defaultColumns[] = array(
 				'name' => 'creation_date',
 				'value' => 'Utility::dateFormat($data->creation_date)',
@@ -250,6 +263,20 @@ class InlisViews extends CActiveRecord
 				), true),
 			);
 			$this->defaultColumns[] = 'creation_ip';
+			if(!isset($_GET['type'])) {
+				$this->defaultColumns[] = array(
+					'name' => 'publish',
+					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl("publish",array("id"=>$data->view_id)), $data->publish, 1)',
+					'htmlOptions' => array(
+						'class' => 'center',
+					),
+					'filter'=>array(
+						1=>Phrase::trans(588,0),
+						0=>Phrase::trans(589,0),
+					),
+					'type' => 'raw',
+				);
+			}
 			$this->defaultColumns[] = 'deleted_date';
 		}
 		parent::afterConstruct();
@@ -275,68 +302,13 @@ class InlisViews extends CActiveRecord
 	/**
 	 * before validate attributes
 	 */
-	/*
 	protected function beforeValidate() {
 		if(parent::beforeValidate()) {
-			// Create action
+			if($this->isNewRecord)
+				$this->user_id = Yii::app()->user->id;
+			$this->creation_ip = $_SERVER['REMOTE_ADDR'];
 		}
 		return true;
 	}
-	*/
-
-	/**
-	 * after validate attributes
-	 */
-	/*
-	protected function afterValidate()
-	{
-		parent::afterValidate();
-			// Create action
-		return true;
-	}
-	*/
-	
-	/**
-	 * before save attributes
-	 */
-	/*
-	protected function beforeSave() {
-		if(parent::beforeSave()) {
-		}
-		return true;	
-	}
-	*/
-	
-	/**
-	 * After save attributes
-	 */
-	/*
-	protected function afterSave() {
-		parent::afterSave();
-		// Create action
-	}
-	*/
-
-	/**
-	 * Before delete attributes
-	 */
-	/*
-	protected function beforeDelete() {
-		if(parent::beforeDelete()) {
-			// Create action
-		}
-		return true;
-	}
-	*/
-
-	/**
-	 * After delete attributes
-	 */
-	/*
-	protected function afterDelete() {
-		parent::afterDelete();
-		// Create action
-	}
-	*/
 
 }
