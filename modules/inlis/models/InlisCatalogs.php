@@ -280,7 +280,7 @@ class InlisCatalogs extends CActiveRecord
 	 */
 	protected function beforeValidate() {
 		if(parent::beforeValidate()) {
-			if($this->isNewRecord)
+			if($this->isNewRecord && $this->creation_id == '')
 				$this->creation_id = Yii::app()->user->id;
 		}
 		return true;
