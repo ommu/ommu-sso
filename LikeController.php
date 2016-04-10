@@ -154,7 +154,7 @@ class LikeController extends Controller
 			if($id != null && $id != '') {
 				$model=InlisLikes::model()->findByPk($id);
 				
-				if($model != null && $model->publish == 1) {
+				if($model != null && $model->publish == 1 && $model->user->view->token_password == $token) {
 					$model->publish = 0;
 					if($model->update()) {
 						$return = array(
