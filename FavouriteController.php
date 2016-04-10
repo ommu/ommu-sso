@@ -89,53 +89,46 @@ class FavouriteController extends Controller
 		if(Yii::app()->request->isPostRequest) {
 			$token = trim($_POST['token']);
 			
-			$user = ViewUsers::model()->findByAttributes(array('token_password' => $token), array(
-				'select' => 'user_id',
-			));
+			$criteria=new CDbCriteria;
+			$criteria->with = array(
+				'user.view' => array(
+					'alias'=>'view',
+				),
+			);
+			$criteria->select = array('catalog_id','creation_date');
+			$criteria->compare('t.publish',1);
+			$criteria->compare('view.token_password',$token);
+			$criteria->group = 't.catalog_id';
+			$criteria->order = 't.favourite_id DESC';
 			
-			if($user != null) {
-				$criteria=new CDbCriteria;
-				$criteria->select = array('catalog_id','creation_date');
-				$criteria->compare('t.publish',1);
-				$criteria->compare('t.user_id',$user->user_id);
-				$criteria->group = 't.catalog_id';
-				$criteria->order = 't.favourite_id DESC';
-				
-				$dataProvider = new CActiveDataProvider('InlisFavourites', array(
-					'criteria'=>$criteria,
-					'pagination'=>array(
-						'pageSize'=>20,
-					),
-				));			
-				$model = $dataProvider->getData();
-				
-				$data = '';
-				if(!empty($model)) {
-					foreach($model as $key => $item) {					
-						$data[] = array(
-							'catalog_id'=>$item->catalog_id,
-							'creation_date'=>$item->creation_date,
-						);					
-					}
-				} else
-					$data = array();
+			$dataProvider = new CActiveDataProvider('InlisFavourites', array(
+				'criteria'=>$criteria,
+				'pagination'=>array(
+					'pageSize'=>20,
+				),
+			));			
+			$model = $dataProvider->getData();
 			
-				$pager = OFunction::getDataProviderPager($dataProvider);
-				$get = array_merge($_GET, array($pager['pageVar']=>$pager['nextPage']));
-				$nextPager = $pager['nextPage'] != 0 ? OFunction::validHostURL(Yii::app()->controller->createUrl('list', $get)) : '-';
-				$return = array(
-					'data' => $data,
-					'pager' => $pager,
-					'nextPager' => $nextPager,
-				);
+			$data = '';
+			if(!empty($model)) {
+				foreach($model as $key => $item) {					
+					$data[] = array(
+						'catalog_id'=>$item->catalog_id,
+						'creation_date'=>$item->creation_date,
+					);					
+				}
+			} else
+				$data = array();
+		
+			$pager = OFunction::getDataProviderPager($dataProvider);
+			$get = array_merge($_GET, array($pager['pageVar']=>$pager['nextPage']));
+			$nextPager = $pager['nextPage'] != 0 ? OFunction::validHostURL(Yii::app()->controller->createUrl('list', $get)) : '-';
+			$return = array(
+				'data' => $data,
+				'pager' => $pager,
+				'nextPager' => $nextPager,
+			);
 				
-			} else {
-				$return = array(
-					'success'=>'0',
-					'error'=>'USERNULL',
-					'message'=>'error, user tidak ditemukan',
-				);
-			}
 			echo CJSON::encode($return);
 			
 		} else 
