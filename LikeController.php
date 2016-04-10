@@ -95,7 +95,7 @@ class LikeController extends Controller
 					'alias'=>'view',
 				),
 			);
-			$criteria->select = array('catalog_id','creation_date');
+			$criteria->select = array('t.catalog_id','t.creation_date');
 			$criteria->compare('t.publish',1);
 			$criteria->compare('view.token_password',$token);
 			$criteria->group = 't.catalog_id';
