@@ -115,6 +115,11 @@ class LikeController extends Controller
 					$data[] = array(
 						'catalog_id'=>$item->catalog_id,
 						'creation_date'=>$item->creation_date,
+						'title'=>$item->catalog->Title,
+						'author'=>$item->catalog->Author,
+						'publisher'=>$item->catalog->Publisher,
+						'publish_location'=>$item->catalog->PublishLocation,
+						'publish_year'=>$item->catalog->PublishYear,
 					);					
 				}
 			} else
