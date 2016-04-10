@@ -12,6 +12,8 @@
  *	Search
  *	Advanced
  *	Detail
+ *	Track
+ *	Worksheet
  *
  *	LoadModel
  *	performAjaxValidation
@@ -54,7 +56,7 @@ class SiteController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','search','advanced','detail'),
+				'actions'=>array('index','search','advanced','detail','track','worksheet'),
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
@@ -91,6 +93,7 @@ class SiteController extends Controller
 			$criteria->select = array('ID','Title','Author','Publisher','PublishLocation','PublishYear','Subject','ISBN','CallNumber','Worksheet_id');
 			$keyword = trim($_POST['keyword']);
 			$category = trim($_POST['category']);
+			$worksheet = trim($_POST['worksheet']);
 			
 			if($category == 'title')
 				$criteria->compare('t.Title',strtolower($keyword),true);
@@ -108,6 +111,10 @@ class SiteController extends Controller
 				$criteria->compare('t.BIBID',strtolower($keyword),true);
 			else if($category == 'isbn')
 				$criteria->compare('t.ISBN',strtolower($keyword),true);
+			
+			if($worksheet != 0)
+				$criteria->compare('t.Worksheet_id',$worksheet);
+			
 			$criteria->compare('t.IsOPAC',1);
 			
 			$dataProvider = new CActiveDataProvider('SyncCatalogs', array(
@@ -123,14 +130,14 @@ class SiteController extends Controller
 				foreach($model as $key => $item) {					
 					$data[] = array(
 						'id'=>$item->ID,
-						'title'=>$item->Title,
-						'author'=>$item->Author,
-						'publisher'=>$item->Publisher,
-						'publish_location'=>$item->PublishLocation,
-						'publish_year'=>$item->PublishYear,
-						'subject'=>$item->Subject,
-						'isbn'=>$item->ISBN,
-						'callnumber'=>$item->CallNumber,
+						'title'=>$item->Title != null && $item->Title != '' ? $item->Title : '-',
+						'author'=>$item->Author != null && $item->Author != '' ? $item->Author : '-',
+						'publisher'=>$item->Publisher != null && $item->Publisher != '' ? $item->Publisher : '-',
+						'publish_location'=>$item->PublishLocation != null && $item->PublishLocation != '' ? $item->PublishLocation : '-',
+						'publish_year'=>$item->PublishYear != null && $item->PublishYear != '' ? $item->PublishYear : '-',
+						'subject'=>$item->Subject != null && $item->Subject != '' ? $item->Subject : '-',
+						'isbn'=>$item->ISBN != null && $item->ISBN != '' ? $item->ISBN : '-',
+						'callnumber'=>$item->CallNumber != null && $item->CallNumber != '' ? $item->CallNumber : '-',
 						'worksheet'=>$item->worksheet->Name,
 					);					
 				}
@@ -191,16 +198,16 @@ class SiteController extends Controller
 				foreach($model as $key => $item) {					
 					$data[] = array(
 						'id'=>$item->ID,
-						'title'=>$item->Title,
-						'author'=>$item->Author,
-						'publisher'=>$item->Publisher,
-						'publish_location'=>$item->PublishLocation,
-						'publish_year'=>$item->PublishYear,
-						'subject'=>$item->Subject,
-						'isbn'=>$item->ISBN,
-						'callnumber'=>$item->CallNumber,
-						'worksheet'=>$item->worksheet->Name,
-					);					
+						'title'=>$item->Title != null && $item->Title != '' ? $item->Title : '-',
+						'author'=>$item->Author != null && $item->Author != '' ? $item->Author : '-',
+						'publisher'=>$item->Publisher != null && $item->Publisher != '' ? $item->Publisher : '-',
+						'publish_location'=>$item->PublishLocation != null && $item->PublishLocation != '' ? $item->PublishLocation : '-',
+						'publish_year'=>$item->PublishYear != null && $item->PublishYear != '' ? $item->PublishYear : '-',
+						'subject'=>$item->Subject != null && $item->Subject != '' ? $item->Subject : '-',
+						'isbn'=>$item->ISBN != null && $item->ISBN != '' ? $item->ISBN : '-',
+						'callnumber'=>$item->CallNumber != null && $item->CallNumber != '' ? $item->CallNumber : '-',
+						'worksheet'=>$item->worksheet->Name,					
+					);
 				}
 			} else
 				$data = array();
@@ -231,18 +238,26 @@ class SiteController extends Controller
 			$model=$this->loadModel($id);
 			
 			if(!empty($model)) {
+				$path = '/uploaded_files/sampul_koleksi/original/'.$item->worksheet->Name;
+				$cover = Yii::app()->params['inlis_address'].$path.'/'.$item->CoverURL;
 				$return = array(
 					'success'=>'1',
 					'id'=>$model->ID,
-					'title'=>$model->Title,
-					'author'=>$model->Author,
-					'publisher'=>$model->Publisher,
-					'publish_location'=>$model->PublishLocation,
-					'publish_year'=>$model->PublishYear,
-					'subject'=>$model->Subject,
-					'isbn'=>$model->ISBN,
-					'callnumber'=>$model->CallNumber,
+					'title'=>$model->Title != null && $model->Title != '' ? $model->Title : '-',
+					'author'=>$model->Author != null && $model->Author != '' ? $model->Author : '-',
+					'publisher'=>$model->Publisher != null && $model->Publisher != '' ? $model->Publisher : '-',
+					'publish_location'=>$model->PublishLocation != null && $model->PublishLocation != '' ? $model->PublishLocation : '-',
+					'publish_year'=>$model->PublishYear != null && $model->PublishYear != '' ? $model->PublishYear : '-',
+					'subject'=>$model->Subject != null && $model->Subject != '' ? $model->Subject : '-',
+					'isbn'=>$model->ISBN != null && $model->ISBN != '' ? $model->ISBN : '-',
+					'callnumber'=>$model->CallNumber != null && $model->CallNumber != '' ? $model->CallNumber : '-',
 					'worksheet'=>$model->worksheet->Name,
+						
+					'edition'=>$model->Edition != null && $model->Edition != '' ? $model->Edition : '-',
+					'paging'=>$model->Paging != null && $model->Paging != '' ? $model->Paging : '-',
+					'sizes'=>$model->Sizes != null && $model->Sizes != '' ? $model->Sizes : '-',
+					'description'=>$model->Description != null && $model->Description != '' ? $model->Description : '-',	
+					'cover'=>$model->CoverURL != null && $model->CoverURL != '' ? (file_exists($cover) ? $cover : '-') : '-',	
 				);
 				if($token != null && $token != '') {
 					$user = ViewUsers::model()->findByAttributes(array('token_password' => $token), array(
@@ -281,6 +296,102 @@ class SiteController extends Controller
 				);
 			}
 			echo CJSON::encode($return);
+			
+		} else 
+			$this->redirect(Yii::app()->createUrl('site/index'));
+	}
+	
+	/**
+	 * Lists all models.
+	 */
+	public function actionTrack()
+	{
+		if(Yii::app()->request->isPostRequest) {
+			$type = trim($_POST['type']);
+			$query = trim($_POST['query']);
+			
+			$criteria=new CDbCriteria;
+			$criteria->select = array('t.catalog_id','t.bookmarks','t.favourites','t.likes','t.views');
+			if($type == 'view')
+				$criteria->order = 't.views DESC';
+			else if($type == 'bookmark')
+				$criteria->order = 't.bookmarks DESC';
+			else if($type == 'favourite')
+				$criteria->order = 't.favourites DESC';
+			else if($type == 'like')
+				$criteria->order = 't.likes DESC';
+			
+			$dataProvider = new CActiveDataProvider('ViewInlisCatalogs', array(
+				'criteria'=>$criteria,
+				'pagination'=>array(
+					'pageSize'=>(($query == null && $query == '') || $query != 'small') ? 20 : 6,
+				),
+			));			
+			$model = $dataProvider->getData();
+			
+			$data = '';			
+			if(!empty($model)) {
+				$i=0-1;
+				foreach($model as $key => $item) {
+					$i++;
+					$data[$i] = array(
+						'catalog_id'=>$item->catalog_id,
+						'count'=>$type != 'view' ? ($type != 'bookmark' ? ($type == 'favourite' ? $item->favourites : $item->likes) : $item->bookmarks) : $item->views,
+						'title'=>$item->catalog->Title != null && $item->catalog->Title != '' ? $item->catalog->Title : '-',
+						'author'=>$item->catalog->Author != null && $item->catalog->Author != '' ? $item->catalog->Author : '-',
+						'publish_year'=>$item->catalog->PublishYear != null && $item->catalog->PublishYear != '' ? $item->catalog->PublishYear : '-',
+					);
+					if(($query == null && $query == '') || $query != 'small') {
+						$data[$i]['publisher'] = $item->catalog->Publisher != null && $item->catalog->Publisher != '' ? $item->catalog->Publisher : '-';
+						$data[$i]['publish_location'] = $item->catalog->PublishLocation != null && $item->catalog->PublishLocation != '' ? $item->catalog->PublishLocation : '-';
+						$data[$i]['subject'] = $item->catalog->Subject != null && $item->catalog->Subject != '' ? $item->catalog->Subject : '-';
+					} else {
+						$path = '/uploaded_files/sampul_koleksi/original/'.$item->catalog->worksheet->Name;
+						$cover = Yii::app()->params['inlis_address'].$path.'/'.$item->catalog->CoverURL;
+						$data[$i]['cover'] = $item->catalog->CoverURL != null && $item->catalog->CoverURL != '' ? (file_exists($cover) ? $cover : '-') : '-';
+					}
+				}
+			} else
+				$data = array();
+		
+			$pager = OFunction::getDataProviderPager($dataProvider);
+			$get = array_merge($_GET, array($pager['pageVar']=>$pager['nextPage']));
+			$nextPager = $pager['nextPage'] != 0 ? OFunction::validHostURL(Yii::app()->controller->createUrl('track', $get)) : '-';
+			$return = array(
+				'data' => $data,
+				'pager' => $pager,
+				'nextPager' => $nextPager,
+			);
+			echo CJSON::encode($return);
+			
+		} else 
+			$this->redirect(Yii::app()->createUrl('site/index'));
+	}
+	
+	/**
+	 * Lists all models.
+	 */
+	public function actionWorksheet()
+	{
+		if(Yii::app()->request->isPostRequest) {			
+			$criteria=new CDbCriteria;
+			$criteria->select = array('ID','Name');
+			$criteria->order = 't.Name ASC';
+			$model = SyncWorksheets::model()->findAll($criteria);
+			
+			$data = '';
+			if(!empty($model)) {
+				foreach($model as $key => $item) {
+					$data[] = array(
+						'id'=>$item->ID,
+						'name'=>$item->Name,
+					);
+				}
+				
+			} else
+				$data = array();
+				
+			echo CJSON::encode($data);
 			
 		} else 
 			$this->redirect(Yii::app()->createUrl('site/index'));

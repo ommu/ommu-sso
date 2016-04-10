@@ -108,15 +108,15 @@ class CollectionController extends Controller
 				foreach($model as $key => $item) {
 					$data[] = array(
 						'id'=>$item->ID,
-						'title'=>$item->Title,
-						//'author'=>$item->Author != null || $item->Author != '' ? $item->Author : $item->AuthorAdded,
-						//'publisher'=>$item->Publisher,
-						//'publish_location'=>$item->PublishLocation,
-						//'publish_year'=>$item->PublishYear,
-						//'isbn'=>$item->ISBN != null || $item->ISBN != '' ? $item->ISBN : $item->catalog->ISBN,
+						'title'=>$item->Title != null && $item->Title != '' ? $item->Title : '-',
+						//'author'=>$item->Author != null || $item->Author != '' ? $item->Author : ($item->AuthorAdded != null || $item->AuthorAdded != '' ? $item->AuthorAdded : ($item->catalog->Author != null && $item->catalog->Author != '' ? $item->catalog->Author : '-')),
+						//'publisher'=>$item->Publisher != null && $item->Publisher != '' ? $item->Publisher : ($item->catalog->Publisher != null && $item->catalog->Publisher != '' ? $item->catalog->Publisher : '-'),
+						//'publish_location'=>$item->PublishLocation != null && $item->PublishLocation != '' ? $item->PublishLocation : ($item->catalog->PublishLocation != null && $item->catalog->PublishLocation != '' ? $item->catalog->PublishLocation : '-'),
+						//'publish_year'=>$item->PublishYear != null && $item->PublishYear != '' ? $item->PublishYear : ($item->catalog->PublishYear != null && $item->catalog->PublishYear != '' ? $item->catalog->PublishYear : '-'),
+						//'isbn'=>$item->ISBN != null || $item->ISBN != '' ? $item->ISBN : ($item->catalog->ISBN != null && $item->catalog->ISBN != '' ? $item->catalog->ISBN : '-'),
 						'location'=>$item->location->Name,
-						//'worksheet'=>$item->Worksheet_id != null || $item->Worksheet_id != '' ? $item->worksheet->Name : ($item->catalog->Worksheet_id != null || $item->catalog->Worksheet_id != '' ? $item->catalog->worksheet->Name : ''),
-						'status'=>strtoupper($item->Status),
+						//'worksheet'=>$item->Worksheet_id != null || $item->Worksheet_id != '' ? $item->worksheet->Name : ($item->catalog->Worksheet_id != null || $item->catalog->Worksheet_id != '' ? $item->catalog->worksheet->Name : '-'),
+						'status'=>$item->Status != null && $item->Status != '' ? strtoupper($item->Status) : '-',
 					);
 				}
 			} else
@@ -153,15 +153,15 @@ class CollectionController extends Controller
 				$return = array(
 					'success'=>'1',
 					'id'=>$model->ID,
-					'title'=>$model->Title,
-					'author'=>$model->Author != null || $model->Author != '' ? $model->Author : $model->AuthorAdded,
-					'publisher'=>$model->Publisher,
-					'publish_location'=>$model->PublishLocation,
-					'publish_year'=>$model->PublishYear,
-					'isbn'=>$model->ISBN != null || $model->ISBN != '' ? $model->ISBN : $model->catalog->ISBN,
+					'title'=>$model->Title != null && $model->Title != '' ? $model->Title : '-',
+					'author'=>$model->Author != null || $model->Author != '' ? $model->Author : ($model->AuthorAdded != null || $model->AuthorAdded != '' ? $model->AuthorAdded : ($model->catalog->Author != null && $model->catalog->Author != '' ? $model->catalog->Author : '-')),
+					'publisher'=>$model->Publisher != null && $model->Publisher != '' ? $model->Publisher : ($model->catalog->Publisher != null && $model->catalog->Publisher != '' ? $model->catalog->Publisher : '-'),
+					'publish_location'=>$model->PublishLocation != null && $model->PublishLocation != '' ? $model->PublishLocation : ($model->catalog->PublishLocation != null && $model->catalog->PublishLocation != '' ? $model->catalog->PublishLocation : '-'),
+					'publish_year'=>$model->PublishYear != null && $model->PublishYear != '' ? $model->PublishYear : ($model->catalog->PublishYear != null && $model->catalog->PublishYear != '' ? $model->catalog->PublishYear : '-'),
+					'isbn'=>$model->ISBN != null || $model->ISBN != '' ? $model->ISBN : ($model->catalog->ISBN != null && $model->catalog->ISBN != '' ? $model->catalog->ISBN : '-'),
 					'location'=>$model->location->Name,
-					'worksheet'=>$model->Worksheet_id != null || $model->Worksheet_id != '' ? $model->worksheet->Name : ($model->catalog->Worksheet_id != null || $model->catalog->Worksheet_id != '' ? $model->catalog->worksheet->Name : ''),
-					'status'=>strtoupper($model->Status),
+					'worksheet'=>$model->Worksheet_id != null || $model->Worksheet_id != '' ? $model->worksheet->Name : ($model->catalog->Worksheet_id != null || $model->catalog->Worksheet_id != '' ? $model->catalog->worksheet->Name : '-'),
+					'status'=>$model->Status != null && $model->Status != '' ? strtoupper($model->Status) : '-',
 				);
 			} else {
 				$return = array(

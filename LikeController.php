@@ -120,6 +120,7 @@ class LikeController extends Controller
 						'publisher'=>$item->catalog->Publisher,
 						'publish_location'=>$item->catalog->PublishLocation,
 						'publish_year'=>$item->catalog->PublishYear,
+						'subject'=>$item->catalog->Subject,
 					);					
 				}
 			} else
