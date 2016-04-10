@@ -105,7 +105,7 @@ class CollectionController extends Controller
 			
 			$data = '';
 			if(!empty($model)) {
-				foreach($model as $key => $item) {					
+				foreach($model as $key => $item) {
 					$data[] = array(
 						'id'=>$item->ID,
 						'title'=>$item->Title,
@@ -117,7 +117,7 @@ class CollectionController extends Controller
 						'location'=>$item->location->Name,
 						//'worksheet'=>$item->Worksheet_id != null || $item->Worksheet_id != '' ? $item->worksheet->Name : ($item->catalog->Worksheet_id != null || $item->catalog->Worksheet_id != '' ? $item->catalog->worksheet->Name : ''),
 						'status'=>strtoupper($item->Status),
-					);					
+					);
 				}
 			} else
 				$data = array();
