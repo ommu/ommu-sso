@@ -90,6 +90,7 @@ class ViewInlisCatalogs extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'catalog' => array(self::BELONGS_TO, 'SyncCatalogs', 'catalog_id'),
 		);
 	}
 
