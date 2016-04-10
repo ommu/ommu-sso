@@ -115,12 +115,12 @@ class BookmarkController extends Controller
 					$data[] = array(
 						'catalog_id'=>$item->catalog_id,
 						'creation_date'=>$item->creation_date,
-						'title'=>$item->catalog->Title,
-						'author'=>$item->catalog->Author,
-						'publisher'=>$item->catalog->Publisher,
-						'publish_location'=>$item->catalog->PublishLocation,
-						'publish_year'=>$item->catalog->PublishYear,
-						'subject'=>$item->catalog->Subject,
+						'title'=>$item->catalog->Title != null && $item->catalog->Title != '' ? $item->catalog->Title : '-',
+						'author'=>$item->catalog->Author != null && $item->catalog->Author != '' ? $item->catalog->Author : '-',
+						'publisher'=>$item->catalog->Publisher != null && $item->catalog->Publisher != '' ? $item->catalog->Publisher : '-',
+						'publish_location'=>$item->catalog->PublishLocation != null && $item->catalog->PublishLocation != '' ? $item->catalog->PublishLocation : '-',
+						'publish_year'=>$item->catalog->PublishYear != null && $item->catalog->PublishYear != '' ? $item->catalog->PublishYear : '-',
+						'subject'=>$item->catalog->Subject != null && $item->catalog->Subject != '' ? $item->catalog->Subject : '-',
 					);					
 				}
 			} else
