@@ -177,15 +177,18 @@ class FavouriteController extends Controller
 		));
 		
 		if($user != null) {
-			$model = InlisFavourites::model()->find(array(
-				//'select'    => 'favourite_id',
-				'condition' => 'publish= :publish AND catalog_id= :catalog AND user_id= :user',
-				'params'    => array(
-					':publish' => 1,
-					':catalog' => $catalog,
-					':user' => $user->user_id,
+			$criteria=new CDbCriteria;
+			$criteria->with = array(
+				'user.view' => array(
+					'alias'=>'view',
 				),
-			));
+			);
+			$criteria->compare('t.publish',1);
+			$criteria->compare('t.catalog_id',$catalog);
+			//$criteria->compare('view.token_password',$token);
+			$criteria->compare('t.user_id',$user->user_id);
+			$model = InlisFavourites::model()->find($criteria);
+			
 			if($model != null) {
 				$model->publish = 0;
 				if($model->save()) {
