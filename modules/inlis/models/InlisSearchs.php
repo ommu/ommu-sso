@@ -35,6 +35,9 @@
 class InlisSearchs extends CActiveRecord
 {
 	public $defaultColumns = array();
+	
+	// Variable Search
+	public $user_search;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -63,14 +66,15 @@ class InlisSearchs extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('user_id, search_type, search_key, creation_date, creation_ip', 'required'),
+			array('user_id, search_type, search_key', 'required'),
 			array('publish, search_type', 'numerical', 'integerOnly'=>true),
 			array('user_id', 'length', 'max'=>11),
 			array('creation_ip', 'length', 'max'=>20),
 			array('deleted_date', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('search_id, publish, user_id, search_type, search_key, creation_date, creation_ip, deleted_date', 'safe', 'on'=>'search'),
+			array('search_id, publish, user_id, search_type, search_key, creation_date, creation_ip, deleted_date,
+				user_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -82,6 +86,7 @@ class InlisSearchs extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'user' => array(self::BELONGS_TO, 'Users', 'user_id'),
 		);
 	}
 
@@ -99,6 +104,7 @@ class InlisSearchs extends CActiveRecord
 			'creation_date' => Yii::t('attribute', 'Creation Date'),
 			'creation_ip' => Yii::t('attribute', 'Creation Ip'),
 			'deleted_date' => Yii::t('attribute', 'Deleted Date'),
+			'user_search' => Yii::t('attribute', 'User'),
 		);
 		/*
 			'Search' => 'Search',
@@ -153,6 +159,15 @@ class InlisSearchs extends CActiveRecord
 		$criteria->compare('t.creation_ip',strtolower($this->creation_ip),true);
 		if($this->deleted_date != null && !in_array($this->deleted_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.deleted_date)',date('Y-m-d', strtotime($this->deleted_date)));
+		
+		// Custom Search
+		$criteria->with = array(
+			'user' => array(
+				'alias'=>'user',
+				'select'=>'displayname',
+			),
+		);
+		$criteria->compare('user.displayname',strtolower($this->user_search), true);
 
 		if(!isset($_GET['InlisSearchs_sort']))
 			$criteria->order = 't.search_id DESC';
@@ -213,22 +228,18 @@ class InlisSearchs extends CActiveRecord
 				'header' => 'No',
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
-			if(!isset($_GET['type'])) {
-				$this->defaultColumns[] = array(
-					'name' => 'publish',
-					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl("publish",array("id"=>$data->search_id)), $data->publish, 1)',
-					'htmlOptions' => array(
-						'class' => 'center',
-					),
-					'filter'=>array(
-						1=>Phrase::trans(588,0),
-						0=>Phrase::trans(589,0),
-					),
-					'type' => 'raw',
-				);
-			}
-			$this->defaultColumns[] = 'user_id';
-			$this->defaultColumns[] = 'search_type';
+			$this->defaultColumns[] = array(
+				'name' => 'user_search',
+				'value' => '$data->user->displayname',
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'search_type',
+				'value' => '$data->search_type == 0 ? Yii::t("Simple", "Simple") : Yii::t("Advance", "Advance")',
+				'filter'=>array(
+					0=>Yii::t('Simple', 'Simple'),
+					1=>Yii::t('Advance', 'Advance'),
+				),
+			);
 			$this->defaultColumns[] = 'search_key';
 			$this->defaultColumns[] = array(
 				'name' => 'creation_date',
@@ -257,6 +268,20 @@ class InlisSearchs extends CActiveRecord
 				), true),
 			);
 			$this->defaultColumns[] = 'creation_ip';
+			if(!isset($_GET['type'])) {
+				$this->defaultColumns[] = array(
+					'name' => 'publish',
+					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl("publish",array("id"=>$data->search_id)), $data->publish, 1)',
+					'htmlOptions' => array(
+						'class' => 'center',
+					),
+					'filter'=>array(
+						1=>Phrase::trans(588,0),
+						0=>Phrase::trans(589,0),
+					),
+					'type' => 'raw',
+				);
+			}
 			$this->defaultColumns[] = array(
 				'name' => 'deleted_date',
 				'value' => 'Utility::dateFormat($data->deleted_date)',
@@ -270,7 +295,7 @@ class InlisSearchs extends CActiveRecord
 					'i18nScriptFile' => 'jquery.ui.datepicker-en.js',
 					//'mode'=>'datetime',
 					'htmlOptions' => array(
-						'id' => 'deleted_date_filter',
+						'id' => 'creation_date_filter',
 					),
 					'options'=>array(
 						'showOn' => 'focus',
@@ -307,68 +332,13 @@ class InlisSearchs extends CActiveRecord
 	/**
 	 * before validate attributes
 	 */
-	/*
 	protected function beforeValidate() {
 		if(parent::beforeValidate()) {
-			// Create action
+			if($this->isNewRecord && $this->user_id == '')
+				$this->user_id = Yii::app()->user->id;
+			$this->creation_ip = $_SERVER['REMOTE_ADDR'];
 		}
 		return true;
 	}
-	*/
-
-	/**
-	 * after validate attributes
-	 */
-	/*
-	protected function afterValidate()
-	{
-		parent::afterValidate();
-			// Create action
-		return true;
-	}
-	*/
-	
-	/**
-	 * before save attributes
-	 */
-	/*
-	protected function beforeSave() {
-		if(parent::beforeSave()) {
-		}
-		return true;	
-	}
-	*/
-	
-	/**
-	 * After save attributes
-	 */
-	/*
-	protected function afterSave() {
-		parent::afterSave();
-		// Create action
-	}
-	*/
-
-	/**
-	 * Before delete attributes
-	 */
-	/*
-	protected function beforeDelete() {
-		if(parent::beforeDelete()) {
-			// Create action
-		}
-		return true;
-	}
-	*/
-
-	/**
-	 * After delete attributes
-	 */
-	/*
-	protected function afterDelete() {
-		parent::afterDelete();
-		// Create action
-	}
-	*/
 
 }
