@@ -89,12 +89,15 @@ class SiteController extends Controller
 	public function actionSearch() 
 	{
 		if(Yii::app()->request->isPostRequest) {
-			$criteria=new CDbCriteria;
-			$criteria->select = array('ID','Title','Author','Publisher','PublishLocation','PublishYear','Subject','ISBN','CallNumber','Worksheet_id');
+			$token = trim($_POST['token']);
 			$keyword = trim($_POST['keyword']);
 			$category = trim($_POST['category']);
 			$worksheet = trim($_POST['worksheet']);
 			
+			InlisSearchs::insertSearch($_POST);
+			
+			$criteria=new CDbCriteria;
+			$criteria->select = array('ID','Title','Author','Publisher','PublishLocation','PublishYear','Subject','ISBN','CallNumber','Worksheet_id');			
 			if($category == 'title')
 				$criteria->compare('t.Title',strtolower($keyword),true);
 			else if($category == 'author')
@@ -164,6 +167,7 @@ class SiteController extends Controller
 	public function actionAdvanced()
 	{
 		if(Yii::app()->request->isPostRequest) {
+			$token = trim($_POST['token']);
 			$title = trim($_POST['title']);
 			$author = trim($_POST['author']);
 			$publisher = trim($_POST['publisher']);
@@ -172,6 +176,8 @@ class SiteController extends Controller
 			$callnumber = trim($_POST['callnumber']);
 			$bibid = trim($_POST['bibid']);
 			$isbn = trim($_POST['isbn']);
+			
+			InlisSearchs::insertSearch($_POST, 1);
 			
 			$criteria=new CDbCriteria;
 			$criteria->select = array('ID','Title','Author','Publisher','PublishLocation','PublishYear','Subject','ISBN','CallNumber','Worksheet_id');
