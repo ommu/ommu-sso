@@ -9,6 +9,7 @@
  *
  * TOC :
  *	Index
+ *	Popular
  *
  *	LoadModel
  *	performAjaxValidation
@@ -51,7 +52,7 @@ class LoanController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index'),
+				'actions'=>array('index','popular'),
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
@@ -76,6 +77,77 @@ class LoanController extends Controller
 	public function actionIndex() 
 	{
 		$this->redirect(Yii::app()->createUrl('site/index'));
+	}
+	
+	/**
+	 * Lists all models.
+	 */
+	public function actionPopular()
+	{
+		if(Yii::app()->request->isPostRequest) 
+		{
+			$type = trim($_POST['type']);
+			$query = trim($_POST['query']);
+			
+			$criteria=new CDbCriteria;
+			$criteria->with = array(
+				'collection' => array(
+					'alias'=>'collection',
+				),
+			);
+			$criteria->select = array('Collection_id, collection.Catalog_id as Catalog_id','COUNT(CollectionLoan_id) as loans');
+			$criteria->together = true;
+			$criteria->distinct = true;
+			$criteria->group = 'collection.Catalog_id';
+			$criteria->order = 'loans DESC';
+			
+			$dataProvider = new CActiveDataProvider('SyncCollectionloanitems', array(
+				'criteria'=>$criteria,
+				'pagination'=>array(
+					'pageSize'=>(($query == null && $query == '') || $query != 'small') ? 20 : 6,
+					
+				),
+			));
+			$model = $dataProvider->getData();
+			
+			$data = '';
+			if(!empty($model)) {
+				$i=0-1;
+				foreach($model as $key => $item) {					
+					$i++;
+					$data[$i] = array(
+						'catalog_id'=>$item->collection->Catalog_id,
+						'loans'=>$item->loans,
+						'title'=>$item->collection->catalog->Title != null && $item->collection->catalog->Title != '' ? $item->collection->catalog->Title : '-',
+						'author'=>$item->collection->catalog->Author != null && $item->collection->catalog->Author != '' ? $item->collection->catalog->Author : '-',
+						'publish_year'=>$item->collection->catalog->PublishYear != null && $item->collection->catalog->PublishYear != '' ? $item->collection->catalog->PublishYear : '-',
+					);
+					if(($query == null && $query == '') || $query != 'small') {
+						$data[$i]['publisher'] = $item->collection->catalog->Publisher != null && $item->collection->catalog->Publisher != '' ? $item->collection->catalog->Publisher : '-';
+						$data[$i]['publish_location'] = $item->collection->catalog->PublishLocation != null && $item->collection->catalog->PublishLocation != '' ? $item->collection->catalog->PublishLocation : '-';
+						$data[$i]['subject'] = $item->collection->catalog->Subject != null && $item->collection->catalog->Subject != '' ? $item->collection->catalog->Subject : '-';
+					} else {
+						$path = '/uploaded_files/sampul_koleksi/original/'.$item->collection->catalog->worksheet->Name;
+						$cover = Yii::app()->params['inlis_address'].$path.'/'.$item->collection->catalog->CoverURL;
+						$data[$i]['cover'] = $item->collection->catalog->CoverURL != null && $item->collection->catalog->CoverURL != '' ? (file_exists($cover) ? $cover : '-') : '-';
+					}
+				}
+			} else
+				$data = array();
+		
+			$pager = OFunction::getDataProviderPager($dataProvider);
+			$get = array_merge($_GET, array($pager['pageVar']=>$pager['nextPage']));
+			$nextPager = $pager['nextPage'] != 0 ? OFunction::validHostURL(Yii::app()->controller->createUrl('popular', $get)) : '-';
+			$return = array(
+				'data' => $data,
+				'pager' => $pager,
+				'nextPager' => $nextPager,
+			);
+				
+			echo CJSON::encode($return);
+			
+		} else 
+			$this->redirect(Yii::app()->createUrl('site/index'));
 	}
 
 	/**

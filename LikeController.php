@@ -106,7 +106,7 @@ class LikeController extends Controller
 				'pagination'=>array(
 					'pageSize'=>20,
 				),
-			));			
+			));
 			$model = $dataProvider->getData();
 			
 			$data = '';
