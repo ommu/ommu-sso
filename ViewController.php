@@ -154,72 +154,41 @@ class ViewController extends Controller
 			if($id != null && $id != '') {
 				$model=InlisViews::model()->findByPk($id);
 				
-				if($model != null && $model->publish == 1 && $model->user->view->token_password == $token) {
-					$model->publish = 0;
-					if($model->update()) {
+				if($model != null && $model->publish == 1) {
+					if($model->user->view->token_password == $token) {
+						$model->publish = 0;
+						if($model->update()) {
+							$return = array(
+								'success'=>'1',
+								'message'=>'success, view berhasil dihapus',
+							);						
+						}						
+					} else {
 						$return = array(
-							'success'=>'1',
-							'message'=>'success, view berhasil dihapus',
+							'success'=>'0',
+							'error'=>'USERERROR',
+							'message'=>'error, user tidak diizinkan untuk menghapus',
 						);						
 					}
-				} else
-					$return = $this->toggle($catalog, $token);
-			} else
-				$return = $this->toggle($catalog, $token);
+				} else {
+					$return = array(
+						'success'=>'0',
+						'error'=>'IDNULL',
+						'message'=>'error, id tidak ditemukan',
+					);
+				}
+			} else {
+				$return = array(
+					'success'=>'0',
+					'error'=>'IDNULL',
+					'message'=>'error, id tidak ditemukan',
+				);				
+			}
 			
 			echo CJSON::encode($return);
 			
 		} else 
 			$this->redirect(Yii::app()->createUrl('site/index'));
-	}
-	
-	/**
-	 * Lists all models.
-	 */
-	public function toggle($catalog, $token)
-	{
-		$user = ViewUsers::model()->findByAttributes(array('token_password' => $token), array(
-			'select' => 'user_id',
-		));
-		
-		if($user != null) {
-			$criteria=new CDbCriteria;
-			$criteria->with = array(
-				'user.view' => array(
-					'alias'=>'view',
-				),
-			);
-			$criteria->compare('t.publish',1);
-			$criteria->compare('t.catalog_id',$catalog);
-			//$criteria->compare('view.token_password',$token);
-			$criteria->compare('t.user_id',$user->user_id);
-			$model = InlisViews::model()->find($criteria);
-			
-			if($model != null) {
-				$model->publish = 0;
-				if($model->save()) {
-					$return = array(
-						'success'=>'1',
-						'message'=>'success, view berhasil dihapus',
-					);					
-				}
-			} else {
-				$return = array(
-					'success'=>'0',
-					'error'=>'NULL',
-					'message'=>'error, catalog tidak dalam kondisi view',
-				);
-			}
-			
-		} else {
-			$return = array(
-				'success'=>'0',
-				'error'=>'USERNULL',
-				'message'=>'error, user tidak ditemukan',
-			);
-		}
-		
-		return $return;		
 	}
 
 	/**

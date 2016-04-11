@@ -10,6 +10,7 @@
  * TOC :
  *	Index
  *	List
+ *	Run
  *
  *	LoadModel
  *	performAjaxValidation
@@ -52,7 +53,7 @@ class SearchController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','list'),
+				'actions'=>array('index','list','run'),
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
@@ -141,6 +142,55 @@ class SearchController extends Controller
 				
 			} else
 				echo CJSON::encode($data);
+			
+		} else 
+			$this->redirect(Yii::app()->createUrl('site/index'));
+	}
+	
+	/**
+	 * Lists all models.
+	 */
+	public function actionRun()
+	{
+		if(Yii::app()->request->isPostRequest) {
+			$token = trim($_POST['token']);
+			$id = trim($_POST['id']);
+			
+			if($id != null && $id != '') {
+				$model=InlisSearchs::model()->findByPk($id);
+				
+				if($model != null && $model->publish == 1) {
+					if($model->user->view->token_password == $token) {
+						$model->publish = 0;
+						if($model->update()) {
+							$return = array(
+								'success'=>'1',
+								'message'=>'success, search history berhasil dihapus',
+							);						
+						}						
+					} else {
+						$return = array(
+							'success'=>'0',
+							'error'=>'USERERROR',
+							'message'=>'error, user tidak diizinkan untuk menghapus',
+						);
+					}
+				} else {
+					$return = array(
+						'success'=>'0',
+						'error'=>'IDNULL',
+						'message'=>'error, id tidak ditemukan',
+					);
+				}
+			} else {
+				$return = array(
+					'success'=>'0',
+					'error'=>'IDNULL',
+					'message'=>'error, id tidak ditemukan',
+				);
+			}
+			
+			echo CJSON::encode($return);
 			
 		} else 
 			$this->redirect(Yii::app()->createUrl('site/index'));
