@@ -246,6 +246,7 @@ class SiteController extends Controller
 			if(!empty($model)) {
 				$path = '/uploaded_files/sampul_koleksi/original/'.$item->worksheet->Name;
 				$cover = Yii::app()->params['inlis_address'].$path.'/'.$item->CoverURL;
+				
 				$return = array(
 					'success'=>'1',
 					'id'=>$model->ID,
@@ -263,6 +264,7 @@ class SiteController extends Controller
 					'paging'=>$model->Paging != null && $model->Paging != '' ? $model->Paging : '-',
 					'sizes'=>$model->Sizes != null && $model->Sizes != '' ? $model->Sizes : '-',
 					'description'=>$model->Description != null && $model->Description != '' ? $model->Description : '-',	
+					'note'=>$model->Note != null && $model->Note != '' ? $model->Note : '-',	
 					'cover'=>$model->CoverURL != null && $model->CoverURL != '' ? (file_exists($cover) ? $cover : '-') : '-',	
 				);
 				if($token != null && $token != '') {

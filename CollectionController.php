@@ -108,14 +108,9 @@ class CollectionController extends Controller
 				foreach($model as $key => $item) {
 					$data[] = array(
 						'id'=>$item->ID,
-						'title'=>$item->Title != null && $item->Title != '' ? $item->Title : '-',
-						//'author'=>$item->Author != null || $item->Author != '' ? $item->Author : ($item->AuthorAdded != null || $item->AuthorAdded != '' ? $item->AuthorAdded : ($item->catalog->Author != null && $item->catalog->Author != '' ? $item->catalog->Author : '-')),
-						//'publisher'=>$item->Publisher != null && $item->Publisher != '' ? $item->Publisher : ($item->catalog->Publisher != null && $item->catalog->Publisher != '' ? $item->catalog->Publisher : '-'),
-						//'publish_location'=>$item->PublishLocation != null && $item->PublishLocation != '' ? $item->PublishLocation : ($item->catalog->PublishLocation != null && $item->catalog->PublishLocation != '' ? $item->catalog->PublishLocation : '-'),
-						//'publish_year'=>$item->PublishYear != null && $item->PublishYear != '' ? $item->PublishYear : ($item->catalog->PublishYear != null && $item->catalog->PublishYear != '' ? $item->catalog->PublishYear : '-'),
-						//'isbn'=>$item->ISBN != null || $item->ISBN != '' ? $item->ISBN : ($item->catalog->ISBN != null && $item->catalog->ISBN != '' ? $item->catalog->ISBN : '-'),
+						'number_induk'=>$item->NoInduk != null && $item->NoInduk != '' ? $item->NoInduk : '-',
 						'location'=>$item->location->Name,
-						//'worksheet'=>$item->Worksheet_id != null || $item->Worksheet_id != '' ? $item->worksheet->Name : ($item->catalog->Worksheet_id != null || $item->catalog->Worksheet_id != '' ? $item->catalog->worksheet->Name : '-'),
+						'number_barcode'=>$item->NomorBarcode != null && $item->NomorBarcode != '' ? $item->NomorBarcode : '-',
 						'status'=>$item->Status != null && $item->Status != '' ? strtoupper($item->Status) : '-',
 					);
 				}
