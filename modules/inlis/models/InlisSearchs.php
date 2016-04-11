@@ -328,6 +328,44 @@ class InlisSearchs extends CActiveRecord
 			return $model;			
 		}
 	}
+	
+	/**
+	 * Lists all models.
+	 */
+	public static function insertSearch($post, $type=null) 
+	{
+		$token = trim($post['token']);
+		
+		$keyPost = array_diff_key($post, array_flip((array) ['token','dump','variable']));
+		$key = serialize(array_map('trim', $keyPost));
+			
+		if($token != null && $token != '') {
+			$user = ViewUsers::model()->findByAttributes(array('token_password' => $token), array(
+				'select' => 'user_id',
+			));
+			if($user != null) {
+				$search = InlisSearchs::model()->find(array(
+					'select'    => 'search_id',
+					'condition' => 'publish= :publish AND user_id= :user AND search_type= :type AND search_key= :key',
+					'params'    => array(
+						':publish' => 1,
+						':user' => $user->user_id,
+						':type' => $type != null ? $type : 0,
+						':key' => $key,
+					),
+				));
+				if($search == null) {
+					$data=new InlisSearchs;
+					$data->user_id = $user->user_id;
+					$data->search_type = $type;
+					$data->search_key = $key;
+					$data->save();
+				}
+			}
+		}
+		
+		return true;
+	}
 
 	/**
 	 * before validate attributes
