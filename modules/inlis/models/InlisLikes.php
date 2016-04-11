@@ -276,7 +276,7 @@ class InlisLikes extends CActiveRecord
 			}
 			$this->defaultColumns[] = array(
 				'name' => 'deleted_date',
-				'value' => 'Utility::dateFormat($data->deleted_date)',
+				'value' => '!in_array($data->deleted_date, array("0000-00-00 00:00:00","1970-01-01 00:00:00")) ? Utility::dateFormat($data->deleted_date) : "-"',	
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
