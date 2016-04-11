@@ -9,6 +9,7 @@
  *
  * TOC :
  *	Index
+ *	List
  *
  *	LoadModel
  *	performAjaxValidation
@@ -51,7 +52,7 @@ class SearchController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index'),
+				'actions'=>array('index','list'),
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
@@ -76,6 +77,73 @@ class SearchController extends Controller
 	public function actionIndex() 
 	{
 		$this->redirect(Yii::app()->createUrl('site/index'));
+	}
+	
+	/**
+	 * Lists all models.
+	 */
+	public function actionList()
+	{
+		if(Yii::app()->request->isPostRequest) {
+			$token = trim($_POST['token']);
+			$toolbar = trim($_POST['toolbar']);
+			
+			$criteria=new CDbCriteria;
+			$criteria->with = array(
+				'user.view' => array(
+					'alias'=>'view',
+				),
+			);
+			$criteria->select = array('t.search_id','t.search_type','t.search_key');
+			$criteria->compare('t.publish',1);
+			$criteria->compare('view.token_password',$token);
+			$criteria->group = 't.search_key';
+			$criteria->order = 't.creation_date DESC';
+			if($toolbar != null && $toolbar != '' && $toolbar == 'true')
+				$criteria->limit = 5;
+			
+			if($toolbar != null && $toolbar != '' && $toolbar == 'true')
+				$model = InlisSearchs::model()->findAll($criteria);
+				
+			else {
+				$dataProvider = new CActiveDataProvider('InlisSearchs', array(
+					'criteria'=>$criteria,
+					'pagination'=>array(
+						'pageSize'=>20,
+					),
+				));			
+				$model = $dataProvider->getData();				
+			}
+			
+			$data = '';
+			if(!empty($model)) {
+				foreach($model as $key => $item) {					
+					$data[] = array(
+						'search_id'=>$item->search_id,
+						'search_type'=>$item->search_type,
+						'search_key'=>$item->search_key,
+					);					
+				}
+			} else
+				$data = array();
+		
+			if($toolbar == null && $toolbar != '' && $toolbar == 'true') {
+				$pager = OFunction::getDataProviderPager($dataProvider);
+				$get = array_merge($_GET, array($pager['pageVar']=>$pager['nextPage']));
+				$nextPager = $pager['nextPage'] != 0 ? OFunction::validHostURL(Yii::app()->controller->createUrl('list', $get)) : '-';
+				$return = array(
+					'data' => $data,
+					'pager' => $pager,
+					'nextPager' => $nextPager,
+				);
+				
+				echo CJSON::encode($return);
+				
+			} else
+				echo CJSON::encode($data);
+			
+		} else 
+			$this->redirect(Yii::app()->createUrl('site/index'));
 	}
 
 	/**
