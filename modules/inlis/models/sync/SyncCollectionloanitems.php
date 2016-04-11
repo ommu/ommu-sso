@@ -48,6 +48,8 @@
 class SyncCollectionloanitems extends OActiveRecord
 {
 	public $defaultColumns = array();
+	public $Catalog_id;
+	public $loans;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -76,6 +78,14 @@ class SyncCollectionloanitems extends OActiveRecord
 		preg_match("/dbname=([^;]+)/i", $this->dbConnection->connectionString, $matches);
 		return $matches[1].'.collectionloanitems';
 		//return 'collectionloanitems';
+	}
+
+	/**
+	 * @return string the primarykey column
+	 */
+	public function primaryKey()
+	{
+		return 'CollectionLoan_id';
 	}
 
 	/**
