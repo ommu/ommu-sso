@@ -86,18 +86,26 @@ class LoanController extends Controller
 	{
 		if(Yii::app()->request->isPostRequest) 
 		{
-			$type = trim($_POST['type']);
+			$now = trim($_POST['now']);
+			$curdate = trim($_POST['curdate']);
 			$query = trim($_POST['query']);
 			
 			$criteria=new CDbCriteria;
+			$criteria->together = true;
 			$criteria->with = array(
 				'collection' => array(
 					'alias'=>'collection',
 				),
 			);
 			$criteria->select = array('Collection_id, collection.Catalog_id as Catalog_id','COUNT(CollectionLoan_id) as loans');
-			$criteria->together = true;
-			$criteria->distinct = true;
+			if($now != null && $now != '' && $now == 'true') {
+				if($curdate == null && $curdate == '')
+					$criteria->condition = 'DATE(t.LoanDate) BETWEEN DATE_SUB(CURDATE(), INTERVAL 30 DAY) AND CURDATE()';
+				else {
+					$criteria->condition = 'DATE(t.LoanDate) BETWEEN DATE_SUB(DATE(:curdate), INTERVAL 30 DAY) AND DATE(:curdate)';
+					$criteria->params = array(':curdate'=>date('Y-m-d', strtotime($curdate)));
+				}
+			}
 			$criteria->group = 'collection.Catalog_id';
 			$criteria->order = 'loans DESC';
 			
