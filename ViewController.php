@@ -147,9 +147,8 @@ class ViewController extends Controller
 	public function actionRun()
 	{
 		if(Yii::app()->request->isPostRequest) {
-			$id = trim($_POST['id']);
-			$catalog = trim($_POST['catalog']);
 			$token = trim($_POST['token']);
+			$id = trim($_POST['id']);
 			
 			if($id != null && $id != '') {
 				$model=InlisViews::model()->findByPk($id);
@@ -173,8 +172,8 @@ class ViewController extends Controller
 				} else {
 					$return = array(
 						'success'=>'0',
-						'error'=>'IDNULL',
-						'message'=>'error, id tidak ditemukan',
+						'error'=>'NULL',
+						'message'=>'error, view tidak dalam kondisi view',
 					);
 				}
 			} else {

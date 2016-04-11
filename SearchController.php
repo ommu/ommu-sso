@@ -178,8 +178,8 @@ class SearchController extends Controller
 				} else {
 					$return = array(
 						'success'=>'0',
-						'error'=>'IDNULL',
-						'message'=>'error, id tidak ditemukan',
+						'error'=>'NULL',
+						'message'=>'error, search tidak dalam kondisi search',
 					);
 				}
 			} else {
