@@ -202,6 +202,11 @@ class FavouriteController extends Controller
 						'success'=>'1',
 						'message'=>'success, favourite berhasil dihapus',
 					);					
+				} else {
+					$return = array(
+						'success'=>'0',
+						'message'=>'error, favourite gagal diperbarui',
+					);
 				}
 			} else {
 				$favourite=new InlisFavourites;
@@ -212,7 +217,12 @@ class FavouriteController extends Controller
 						'success'=>'1',
 						'message'=>'success, favourite berhasil ditambahkan',
 					);					
-				}					
+				} else {
+					$return = array(
+						'success'=>'0',
+						'message'=>'error, favourite gagal diperbarui',
+					);
+				}
 			}
 			
 		} else {

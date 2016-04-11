@@ -202,6 +202,11 @@ class LikeController extends Controller
 						'success'=>'1',
 						'message'=>'success, like berhasil dihapus',
 					);					
+				} else {
+					$return = array(
+						'success'=>'0',
+						'message'=>'error, like gagal diperbarui',
+					);
 				}
 			} else {
 				$like=new InlisLikes;
@@ -211,8 +216,13 @@ class LikeController extends Controller
 					$return = array(
 						'success'=>'1',
 						'message'=>'success, like berhasil ditambahkan',
-					);					
-				}					
+					);
+				} else {
+					$return = array(
+						'success'=>'0',
+						'message'=>'error, like gagal diperbarui',
+					);
+				}
 			}
 			
 		} else {

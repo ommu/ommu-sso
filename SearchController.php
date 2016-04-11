@@ -166,8 +166,13 @@ class SearchController extends Controller
 							$return = array(
 								'success'=>'1',
 								'message'=>'success, search history berhasil dihapus',
-							);						
-						}						
+							);
+						} else {
+							$return = array(
+								'success'=>'0',
+								'message'=>'success, search history tidak berhasil dihapus',
+							);							
+						}					
 					} else {
 						$return = array(
 							'success'=>'0',

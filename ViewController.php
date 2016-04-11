@@ -160,8 +160,13 @@ class ViewController extends Controller
 							$return = array(
 								'success'=>'1',
 								'message'=>'success, view berhasil dihapus',
-							);						
-						}						
+							);
+						} else {
+							$return = array(
+								'success'=>'0',
+								'message'=>'success, view tidak berhasil dihapus',
+							);							
+						}
 					} else {
 						$return = array(
 							'success'=>'0',

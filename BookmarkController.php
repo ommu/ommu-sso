@@ -201,7 +201,12 @@ class BookmarkController extends Controller
 					$return = array(
 						'success'=>'1',
 						'message'=>'success, bookmark berhasil dihapus',
-					);					
+					);
+				} else {
+					$return = array(
+						'success'=>'0',
+						'message'=>'error, bookmark gagal diperbarui',
+					);
 				}
 			} else {
 				$bookmark=new InlisBookmarks;
@@ -211,10 +216,14 @@ class BookmarkController extends Controller
 					$return = array(
 						'success'=>'1',
 						'message'=>'success, bookmark berhasil ditambahkan',
+					);
+				} else {
+					$return = array(
+						'success'=>'0',
+						'message'=>'error, bookmark gagal diperbarui',
 					);					
 				}					
-			}
-			
+			}			
 		} else {
 			$return = array(
 				'success'=>'0',
