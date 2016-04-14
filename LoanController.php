@@ -125,7 +125,7 @@ class LoanController extends Controller
 					$i++;
 					$data[$i] = array(
 						'catalog_id'=>$item->collection->Catalog_id,
-						'loans'=>$item->loans,
+						'count'=>$item->loans,
 						'title'=>$item->collection->catalog->Title != null && $item->collection->catalog->Title != '' ? $item->collection->catalog->Title : '-',
 						'author'=>$item->collection->catalog->Author != null && $item->collection->catalog->Author != '' ? $item->collection->catalog->Author : '-',
 						'publish_year'=>$item->collection->catalog->PublishYear != null && $item->collection->catalog->PublishYear != '' ? $item->collection->catalog->PublishYear : '-',
