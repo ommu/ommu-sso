@@ -1,30 +1,30 @@
 <?php
 /**
- * LocationController
- * @var $this LocationController
- * @var $model SyncLocations
+ * WorksheetController
+ * @var $this WorksheetController
+ * @var $model SyncWorksheets
  * @var $form CActiveForm
  * version: 0.0.1
  * Reference start
  *
  * TOC :
  *	Index
- *	View
  *	Manage
+ *	View
  *
  *	LoadModel
  *	performAjaxValidation
  *
  * @author Putra Sudaryanto <putra.sudaryanto@gmail.com>
  * @copyright Copyright (c) 2016 Ommu Platform (ommu.co)
- * @created date 29 March 2016, 11:07 WIB
+ * @created date 29 March 2016, 10:00 WIB
  * @link http://company.ommu.co
  * @contect (+62)856-299-4114
  *
  *----------------------------------------------------------------------------------------------------------
  */
 
-class LocationController extends Controller
+class WorksheetController extends Controller
 {
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
@@ -81,7 +81,7 @@ class LocationController extends Controller
 				//'expression'=>'isset(Yii::app()->user->level) && (Yii::app()->user->level != 1)',
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('view','manage'),
+				'actions'=>array('manage','view'),
 				'users'=>array('@'),
 				'expression'=>'isset(Yii::app()->user->level) && in_array(Yii::app()->user->level, array(1,2))',
 			),
@@ -102,36 +102,16 @@ class LocationController extends Controller
 	{
 		$this->redirect(array('manage'));
 	}
-	
-	/**
-	 * Displays a particular model.
-	 * @param integer $id the ID of the model to be displayed
-	 */
-	public function actionView($id) 
-	{
-		$this->dialogDetail = true;
-		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
-		$this->dialogWidth = 600;
-		
-		$model=$this->loadModel($id);
-
-		$this->pageTitle = Yii::t('phrase', 'View Inlis Locations');
-		$this->pageDescription = '';
-		$this->pageMeta = $setting->meta_keyword;
-		$this->render('admin_view',array(
-			'model'=>$model,
-		));
-	}	
 
 	/**
 	 * Manages all models.
 	 */
 	public function actionManage() 
 	{
-		$model=new SyncLocations('search');
+		$model=new SyncWorksheets('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['SyncLocations'])) {
-			$model->attributes=$_GET['SyncLocations'];
+		if(isset($_GET['SyncWorksheets'])) {
+			$model->attributes=$_GET['SyncWorksheets'];
 		}
 
 		$columnTemp = array();
@@ -144,12 +124,32 @@ class LocationController extends Controller
 		}
 		$columns = $model->getGridColumn($columnTemp);
 
-		$this->pageTitle = Yii::t('phrase', 'Inlis Locations Manage');
+		$this->pageTitle = Yii::t('phrase', 'Inlis Worksheets Manage');
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_manage',array(
 			'model'=>$model,
 			'columns' => $columns,
+		));
+	}
+	
+	/**
+	 * Displays a particular model.
+	 * @param integer $id the ID of the model to be displayed
+	 */
+	public function actionView($id) 
+	{
+		$this->dialogDetail = true;
+		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
+		$this->dialogWidth = 600;
+			
+		$model=$this->loadModel($id);
+
+		$this->pageTitle = Yii::t('phrase', 'View Inlis Worksheets');
+		$this->pageDescription = '';
+		$this->pageMeta = '';
+		$this->render('admin_view',array(
+			'model'=>$model,
 		));
 	}	
 
@@ -160,7 +160,7 @@ class LocationController extends Controller
 	 */
 	public function loadModel($id) 
 	{
-		$model = SyncLocations::model()->findByPk($id);
+		$model = SyncWorksheets::model()->findByPk($id);
 		if($model===null)
 			throw new CHttpException(404, Yii::t('phrase', 'The requested page does not exist.'));
 		return $model;
@@ -172,7 +172,7 @@ class LocationController extends Controller
 	 */
 	protected function performAjaxValidation($model) 
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='inlis-locations-form') {
+		if(isset($_POST['ajax']) && $_POST['ajax']==='inlis-worksheets-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}

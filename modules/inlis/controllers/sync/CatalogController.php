@@ -1,8 +1,8 @@
 <?php
 /**
- * MemberController
- * @var $this MemberController
- * @var $model SyncMembers
+ * CatalogController
+ * @var $this CatalogController
+ * @var $model SyncCatalogs
  * @var $form CActiveForm
  * version: 0.0.1
  * Reference start
@@ -10,20 +10,21 @@
  * TOC :
  *	Index
  *	Manage
+ *	View
  *
  *	LoadModel
  *	performAjaxValidation
  *
  * @author Putra Sudaryanto <putra.sudaryanto@gmail.com>
  * @copyright Copyright (c) 2016 Ommu Platform (ommu.co)
- * @created date 29 March 2016, 10:07 WIB
+ * @created date 29 March 2016, 10:02 WIB
  * @link http://company.ommu.co
  * @contect (+62)856-299-4114
  *
  *----------------------------------------------------------------------------------------------------------
  */
 
-class MemberController extends Controller
+class CatalogController extends Controller
 {
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
@@ -80,7 +81,7 @@ class MemberController extends Controller
 				//'expression'=>'isset(Yii::app()->user->level) && (Yii::app()->user->level != 1)',
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('view','manage'),
+				'actions'=>array('manage','view'),
 				'users'=>array('@'),
 				'expression'=>'isset(Yii::app()->user->level) && in_array(Yii::app()->user->level, array(1,2))',
 			),
@@ -101,32 +102,16 @@ class MemberController extends Controller
 	{
 		$this->redirect(array('manage'));
 	}
-	
-	/**
-	 * Displays a particular model.
-	 * @param integer $id the ID of the model to be displayed
-	 */
-	public function actionView($id) 
-	{
-		$model=$this->loadModel($id);
-
-		$this->pageTitle = Yii::t('phrase', 'View Inlis Members');
-		$this->pageDescription = '';
-		$this->pageMeta = '';
-		$this->render('admin_view',array(
-			'model'=>$model,
-		));
-	}	
 
 	/**
 	 * Manages all models.
 	 */
 	public function actionManage() 
 	{
-		$model=new SyncMembers('search');
+		$model=new SyncCatalogs('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['SyncMembers'])) {
-			$model->attributes=$_GET['SyncMembers'];
+		if(isset($_GET['SyncCatalogs'])) {
+			$model->attributes=$_GET['SyncCatalogs'];
 		}
 
 		$columnTemp = array();
@@ -139,7 +124,7 @@ class MemberController extends Controller
 		}
 		$columns = $model->getGridColumn($columnTemp);
 
-		$this->pageTitle = Yii::t('phrase', 'Inlis Members Manage');
+		$this->pageTitle = Yii::t('phrase', 'Inlis Catalogs Manage');
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_manage',array(
@@ -147,6 +132,22 @@ class MemberController extends Controller
 			'columns' => $columns,
 		));
 	}
+	
+	/**
+	 * Displays a particular model.
+	 * @param integer $id the ID of the model to be displayed
+	 */
+	public function actionView($id) 
+	{
+		$model=$this->loadModel($id);
+
+		$this->pageTitle = Yii::t('phrase', 'View Inlis Catalogs');
+		$this->pageDescription = '';
+		$this->pageMeta = '';
+		$this->render('admin_view',array(
+			'model'=>$model,
+		));
+	}	
 
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.
@@ -155,7 +156,7 @@ class MemberController extends Controller
 	 */
 	public function loadModel($id) 
 	{
-		$model = SyncMembers::model()->findByPk($id);
+		$model = SyncCatalogs::model()->findByPk($id);
 		if($model===null)
 			throw new CHttpException(404, Yii::t('phrase', 'The requested page does not exist.'));
 		return $model;
@@ -167,7 +168,7 @@ class MemberController extends Controller
 	 */
 	protected function performAjaxValidation($model) 
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='inlis-members-form') {
+		if(isset($_POST['ajax']) && $_POST['ajax']==='inlis-catalogs-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}

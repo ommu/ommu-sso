@@ -36,7 +36,7 @@
 
 <?php //begin.Search ?>
 <div class="search-form">
-<?php $this->renderPartial('/o/worksheet_sub/_search',array(
+<?php $this->renderPartial('/sync/worksheet_sub/_search',array(
 	'model'=>$model,
 )); ?>
 </div>
@@ -44,7 +44,7 @@
 
 <?php //begin.Grid Option ?>
 <div class="grid-form">
-<?php $this->renderPartial('/o/worksheet_sub/_option_form',array(
+<?php $this->renderPartial('/sync/worksheet_sub/_option_form',array(
 	'model'=>$model,
 )); ?>
 </div>

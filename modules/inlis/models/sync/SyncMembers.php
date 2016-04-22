@@ -525,7 +525,13 @@ class SyncMembers extends OActiveRecord
 			$this->defaultColumns[] = 'Email';
 			$this->defaultColumns[] = 'MotherMaidenName';
 			$this->defaultColumns[] = 'JenisAnggota';
-			$this->defaultColumns[] = 'StatusAnggota';
+			$this->defaultColumns[] = array(
+				'name' => 'StatusAnggota',
+				'value' => '$data->StatusAnggota',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+			);
 		}
 		parent::afterConstruct();
 	}

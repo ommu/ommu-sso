@@ -1,8 +1,8 @@
 <?php
 /**
- * WorksheetController
- * @var $this WorksheetController
- * @var $model SyncWorksheets
+ * WorksheetsubController
+ * @var $this WorksheetsubController
+ * @var $model SyncWorksheetSub
  * @var $form CActiveForm
  * version: 0.0.1
  * Reference start
@@ -10,6 +10,7 @@
  * TOC :
  *	Index
  *	Manage
+ *	View
  *
  *	LoadModel
  *	performAjaxValidation
@@ -23,7 +24,7 @@
  *----------------------------------------------------------------------------------------------------------
  */
 
-class WorksheetController extends Controller
+class WorksheetsubController extends Controller
 {
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
@@ -80,7 +81,7 @@ class WorksheetController extends Controller
 				//'expression'=>'isset(Yii::app()->user->level) && (Yii::app()->user->level != 1)',
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('view','manage'),
+				'actions'=>array('manage','view'),
 				'users'=>array('@'),
 				'expression'=>'isset(Yii::app()->user->level) && in_array(Yii::app()->user->level, array(1,2))',
 			),
@@ -101,36 +102,16 @@ class WorksheetController extends Controller
 	{
 		$this->redirect(array('manage'));
 	}
-	
-	/**
-	 * Displays a particular model.
-	 * @param integer $id the ID of the model to be displayed
-	 */
-	public function actionView($id) 
-	{
-		$this->dialogDetail = true;
-		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
-		$this->dialogWidth = 600;
-			
-		$model=$this->loadModel($id);
-
-		$this->pageTitle = Yii::t('phrase', 'View Inlis Worksheets');
-		$this->pageDescription = '';
-		$this->pageMeta = '';
-		$this->render('admin_view',array(
-			'model'=>$model,
-		));
-	}	
 
 	/**
 	 * Manages all models.
 	 */
 	public function actionManage() 
 	{
-		$model=new SyncWorksheets('search');
+		$model=new SyncWorksheetSub('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['SyncWorksheets'])) {
-			$model->attributes=$_GET['SyncWorksheets'];
+		if(isset($_GET['SyncWorksheetSub'])) {
+			$model->attributes=$_GET['SyncWorksheetSub'];
 		}
 
 		$columnTemp = array();
@@ -143,14 +124,34 @@ class WorksheetController extends Controller
 		}
 		$columns = $model->getGridColumn($columnTemp);
 
-		$this->pageTitle = Yii::t('phrase', 'Inlis Worksheets Manage');
+		$this->pageTitle = Yii::t('phrase', 'Inlis Worksheet Subs Manage');
 		$this->pageDescription = '';
 		$this->pageMeta = '';
-		$this->render('admin_manage',array(
+		$this->render('/sync/worksheet_sub/admin_manage',array(
 			'model'=>$model,
 			'columns' => $columns,
 		));
 	}
+	
+	/**
+	 * Displays a particular model.
+	 * @param integer $id the ID of the model to be displayed
+	 */
+	public function actionView($id) 
+	{
+		$this->dialogDetail = true;
+		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
+		$this->dialogWidth = 600;
+		
+		$model=$this->loadModel($id);
+
+		$this->pageTitle = Yii::t('phrase', 'View Inlis Worksheet Subs');
+		$this->pageDescription = '';
+		$this->pageMeta = '';
+		$this->render('/sync/worksheet_sub/admin_view',array(
+			'model'=>$model,
+		));
+	}	
 
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.
@@ -159,7 +160,7 @@ class WorksheetController extends Controller
 	 */
 	public function loadModel($id) 
 	{
-		$model = SyncWorksheets::model()->findByPk($id);
+		$model = SyncWorksheetSub::model()->findByPk($id);
 		if($model===null)
 			throw new CHttpException(404, Yii::t('phrase', 'The requested page does not exist.'));
 		return $model;
@@ -171,7 +172,7 @@ class WorksheetController extends Controller
 	 */
 	protected function performAjaxValidation($model) 
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='inlis-worksheets-form') {
+		if(isset($_POST['ajax']) && $_POST['ajax']==='inlis-worksheet-sub-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}

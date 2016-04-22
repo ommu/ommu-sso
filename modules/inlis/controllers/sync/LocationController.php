@@ -1,8 +1,8 @@
 <?php
 /**
- * WorksheetsubController
- * @var $this WorksheetsubController
- * @var $model SyncWorksheetSub
+ * LocationController
+ * @var $this LocationController
+ * @var $model SyncLocations
  * @var $form CActiveForm
  * version: 0.0.1
  * Reference start
@@ -10,20 +10,21 @@
  * TOC :
  *	Index
  *	Manage
+ *	View
  *
  *	LoadModel
  *	performAjaxValidation
  *
  * @author Putra Sudaryanto <putra.sudaryanto@gmail.com>
  * @copyright Copyright (c) 2016 Ommu Platform (ommu.co)
- * @created date 29 March 2016, 10:00 WIB
+ * @created date 29 March 2016, 11:07 WIB
  * @link http://company.ommu.co
  * @contect (+62)856-299-4114
  *
  *----------------------------------------------------------------------------------------------------------
  */
 
-class WorksheetsubController extends Controller
+class LocationController extends Controller
 {
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
@@ -80,7 +81,7 @@ class WorksheetsubController extends Controller
 				//'expression'=>'isset(Yii::app()->user->level) && (Yii::app()->user->level != 1)',
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('view','manage'),
+				'actions'=>array('manage','view'),
 				'users'=>array('@'),
 				'expression'=>'isset(Yii::app()->user->level) && in_array(Yii::app()->user->level, array(1,2))',
 			),
@@ -101,6 +102,36 @@ class WorksheetsubController extends Controller
 	{
 		$this->redirect(array('manage'));
 	}
+
+	/**
+	 * Manages all models.
+	 */
+	public function actionManage() 
+	{
+		$model=new SyncLocations('search');
+		$model->unsetAttributes();  // clear any default values
+		if(isset($_GET['SyncLocations'])) {
+			$model->attributes=$_GET['SyncLocations'];
+		}
+
+		$columnTemp = array();
+		if(isset($_GET['GridColumn'])) {
+			foreach($_GET['GridColumn'] as $key => $val) {
+				if($_GET['GridColumn'][$key] == 1) {
+					$columnTemp[] = $key;
+				}
+			}
+		}
+		$columns = $model->getGridColumn($columnTemp);
+
+		$this->pageTitle = Yii::t('phrase', 'Inlis Locations Manage');
+		$this->pageDescription = '';
+		$this->pageMeta = '';
+		$this->render('admin_manage',array(
+			'model'=>$model,
+			'columns' => $columns,
+		));
+	}
 	
 	/**
 	 * Displays a particular model.
@@ -114,43 +145,13 @@ class WorksheetsubController extends Controller
 		
 		$model=$this->loadModel($id);
 
-		$this->pageTitle = Yii::t('phrase', 'View Inlis Worksheet Subs');
+		$this->pageTitle = Yii::t('phrase', 'View Inlis Locations');
 		$this->pageDescription = '';
-		$this->pageMeta = '';
-		$this->render('/o/worksheet_sub/admin_view',array(
+		$this->pageMeta = $setting->meta_keyword;
+		$this->render('admin_view',array(
 			'model'=>$model,
 		));
 	}	
-
-	/**
-	 * Manages all models.
-	 */
-	public function actionManage() 
-	{
-		$model=new SyncWorksheetSub('search');
-		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['SyncWorksheetSub'])) {
-			$model->attributes=$_GET['SyncWorksheetSub'];
-		}
-
-		$columnTemp = array();
-		if(isset($_GET['GridColumn'])) {
-			foreach($_GET['GridColumn'] as $key => $val) {
-				if($_GET['GridColumn'][$key] == 1) {
-					$columnTemp[] = $key;
-				}
-			}
-		}
-		$columns = $model->getGridColumn($columnTemp);
-
-		$this->pageTitle = Yii::t('phrase', 'Inlis Worksheet Subs Manage');
-		$this->pageDescription = '';
-		$this->pageMeta = '';
-		$this->render('/o/worksheet_sub/admin_manage',array(
-			'model'=>$model,
-			'columns' => $columns,
-		));
-	}
 
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.
@@ -159,7 +160,7 @@ class WorksheetsubController extends Controller
 	 */
 	public function loadModel($id) 
 	{
-		$model = SyncWorksheetSub::model()->findByPk($id);
+		$model = SyncLocations::model()->findByPk($id);
 		if($model===null)
 			throw new CHttpException(404, Yii::t('phrase', 'The requested page does not exist.'));
 		return $model;
@@ -171,7 +172,7 @@ class WorksheetsubController extends Controller
 	 */
 	protected function performAjaxValidation($model) 
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='inlis-worksheet-sub-form') {
+		if(isset($_POST['ajax']) && $_POST['ajax']==='inlis-locations-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}
