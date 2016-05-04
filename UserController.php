@@ -94,36 +94,31 @@ class UserController extends Controller
 			$criteria->compare('MemberNo', $membernumber);
 			
 			$model = SyncMembers::model()->find($criteria);
-			$return = '';
 				
 			if($model != null) {
 				if($model->users == null) {
-					if($model->StatusAnggota == 'ACTIVE') {
-						$return['success'] = '1';
-						$return['message'] = 'success';
-					} else {
-						$return['success'] = '0';
-						if($model->StatusAnggota == 'SUSPEND')
-							$return['error'] = 'SUSPEND';
-						if($model->StatusAnggota == 'PENDING')
-							$return['error'] = 'PENDING';
-						if($model->StatusAnggota == 'NOTACTIVE')
-							$return['error'] = 'NOTACTIVE';
-						$return['message'] = 'error, member sudah tidak berlaku';	
-					}					
+					$return['success'] = '1';
 				} else {
 					$return['success'] = '0';
-					$return['error'] = 'ENABLE';
-					$return['message'] = 'error, member online sudah terdaftar silahkan login';
+					$return['error'] = 'USER_ENABLE';
+					$return['message'] = 'error, member sudah terdaftar silahkan login';
 				}
+				//$image = '/uploaded_files/foto_anggota/'.$model->PicPath;
+				//$photo = Yii::app()->params['inlis_address'].$image;
+				
 				$return['member_id'] = $model->ID;
+				$return['member_number'] = $model->MemberNo;
 				$return['fullname'] = ucwords(strtolower(trim($model->Fullname)));
-				$return['birthday'] = $model->PlaceOfBirth != '' ? ucwords(strtolower(trim($model->PlaceOfBirth.', '.Utility::dateFormat($model->DateOfBirth)))) : Utility::dateFormat($model->DateOfBirth);
-				$return['phone_number'] = $model->NoHp;
-				$return['member_type'] = ucwords(strtolower(trim($model->JenisAnggota)));
+				$return['email'] = $model->Email != null && $model->Email != '' ? $model->Email : '-';
+				$return['phone_number'] = $model->NoHp != null && $model->NoHp != '' ? $model->NoHp : '-';
+				$return['status'] = strtoupper(trim($model->StatusAnggota));
+				$return['member_type'] = strtoupper(trim($model->JenisAnggota));
+				//$return['address'] = ucwords(strtolower(trim($model->Address)));
+				//$return['photo'] = $model->PicPath != null && $model->PicPath != '' ? (file_exists($photo) ? $photo : '-') : '-';
+				//$return['birthday'] = $model->PlaceOfBirth != '' ? ucwords(strtolower(trim($model->PlaceOfBirth.', '.Utility::dateFormat($model->DateOfBirth)))) : Utility::dateFormat($model->DateOfBirth);
 			} else {
 				$return['success'] = '0';
-				$return['error'] = 'NULL';
+				$return['error'] = 'MEMBER_NULL';
 				$return['message'] = 'error, member tidak ditemukan';
 			}
 			echo CJSON::encode($return);
@@ -156,15 +151,25 @@ class UserController extends Controller
 						$user->member_id = $member;
 						if($user->save())
 							$return['message'] = 'success';
+						
+						else {
+							$return['success'] = '0';
+							$return['error'] = 'USER_INLIS_NOT_SAVE';
+							$return['message'] = 'error, user inlis gagal ditambahkan';							
+						}
+					} else {
+						$return['success'] = '0';
+						$return['error'] = 'USER_NOT_SAVE';
+						$return['message'] = 'error, user gagal ditambahkan';
 					}
 				} else {
 					$return['success'] = '0';
-					$return['error'] = 'ENABLE';
-					$return['message'] = 'error, member online sudah terdaftar silahkan login';					
-				}				
+					$return['error'] = 'USER_ENABLE';
+					$return['message'] = 'error, member sudah terdaftar silahkan login';
+				}
 			} else {
 				$return['success'] = '0';
-				$return['error'] = 'NOTNULL';
+				$return['error'] = 'USER_EMAIL_ENABLE';
 				$return['message'] = 'error, email sudah terdaftar sebagai member';
 			}
 			echo CJSON::encode($return);
@@ -197,21 +202,29 @@ class UserController extends Controller
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $items);
 			$output=curl_exec($ch);
 			
-			$return = '';
 			if($output === false) {
 				$return['success'] = '0';
-				$return['error'] = 'NOTCONENCT';
+				$return['error'] = 'NETWORK_NOTCONENCT';
 				$return['message'] = 'error, not connected';
 				
 			} else {
 				$object = json_decode($output);
 				$return = $object;
+				
 				$user = ViewUsers::model()->findByAttributes(array('token_password' => $object->token));
 				$member = InlisUsers::model()->findByAttributes(array('user_id' => $user->user_id));
-				if($member != null) {
-					$return->member_id = $member->member->ID;
-					$return->member_number = $member->member->MemberNo;
-				}
+				
+				$image = '/uploaded_files/foto_anggota/'.$member->member->PicPath;
+				$photo = Yii::app()->params['inlis_address'].$image;
+				
+				$return->member_id = $member != null ? $member->member->ID : '-';
+				$return->member_number = $member != null ? $member->member->MemberNo : '-';
+				$return->address = $member != null ? ucwords(strtolower(trim($member->member->Address))) : '-';
+				$return->photo = $member != null ? ($member->member->PicPath != null && $member->member->PicPath != '' ? (file_exists($photo) ? $photo : '-') : '-') : '-';
+				$return->birthday = $member != null ? ($member->member->PlaceOfBirth != '' ? ucwords(strtolower(trim($member->member->PlaceOfBirth.', '.Utility::dateFormat($member->member->DateOfBirth)))) : Utility::dateFormat($member->member->DateOfBirth)) : '-';
+				$return->phone_number = $member != null ? ($member->member->NoHp != null && $member->member->NoHp != '' ? $member->member->NoHp : '-') : '-';
+				$return->status = $member != null ? strtoupper(trim($member->member->StatusAnggota)) : '-';
+				$return->member_type = $member != null ? strtoupper(trim($member->member->JenisAnggota)) : '-';
 			}
 			echo CJSON::encode($return);
 			
@@ -250,7 +263,7 @@ class UserController extends Controller
 			$return = '';
 			if($output === false) {
 				$return['success'] = '0';
-				$return['error'] = 'NOTCONENCT';
+				$return['error'] = 'NETWORK_NOTCONENCT';
 				$return['message'] = 'error, not connected';
 				
 			} else {
