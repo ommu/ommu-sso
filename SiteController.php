@@ -240,6 +240,7 @@ class SiteController extends Controller
 		if(Yii::app()->request->isPostRequest) {
 			$id = trim($_POST['id']);
 			$token = trim($_POST['token']);
+			$apikey = trim($_POST['apikey']);
 			
 			$model=$this->loadModel($id);
 			
@@ -292,9 +293,31 @@ class SiteController extends Controller
 						$catalog->save();
 					}
 				} else {
-					$catalog = InlisCatalogs::model()->findByAttributes(array('catalog_id' => $id));
-					$catalog->public_views = $catalog->public_views+1;
-					$catalog->save();
+					$device = UserDevice::model()->findByAttributes(array('android_id' => $apikey), array(
+						'select' => 'id, user_id',
+					));
+					if($device != null) {
+						$view = InlisViews::model()->find(array(
+							'select'    => 'view_id',
+							'condition' => 'publish= :publish AND catalog_id= :catalog AND device_id= :device',
+							'params'    => array(
+								':publish' => 1,
+								':catalog' => $id,
+								':device' => $device->id,
+							),
+						));
+						if($view == null) {
+							$data=new InlisViews;
+							$data->catalog_id = $id;
+							if($device->user_id != 0)
+								$data->user_id = $device->user_id;
+							$data->device_id = $device->id;
+							$data->save();
+						}
+						$catalog = InlisCatalogs::model()->findByAttributes(array('catalog_id' => $id));
+						$catalog->public_views = $catalog->public_views+1;
+						$catalog->save();
+					}
 				}
 			} else {
 				$return = array(
@@ -319,57 +342,75 @@ class SiteController extends Controller
 			$query = trim($_POST['query']);
 			
 			$criteria=new CDbCriteria;
-			$criteria->select = array('t.catalog_id','t.bookmarks','t.favourites','t.likes','t.views');
+			$criteria->select = array('t.catalog_id','t.bookmark_unique','t.favourite_unique','t.like_unique','t.view_unique');
 			if($type == 'view')
-				$criteria->order = 't.views DESC';
+				$criteria->order = 't.view_unique DESC';
 			else if($type == 'bookmark')
-				$criteria->order = 't.bookmarks DESC';
+				$criteria->order = 't.bookmark_unique DESC';
 			else if($type == 'favourite')
-				$criteria->order = 't.favourites DESC';
+				$criteria->order = 't.favourite_unique DESC';
 			else if($type == 'like')
-				$criteria->order = 't.likes DESC';
+				$criteria->order = 't.like_unique DESC';
 			
-			$dataProvider = new CActiveDataProvider('ViewInlisCatalogs', array(
-				'criteria'=>$criteria,
-				'pagination'=>array(
-					'pageSize'=>(($query == null && $query == '') || $query != 'small') ? 20 : 6,
-				),
-			));			
-			$model = $dataProvider->getData();
+			if(($query == null && $query == '') || $query == 'large') {
+				$dataProvider = new CActiveDataProvider('ViewInlisCatalogs', array(
+					'criteria'=>$criteria,
+					'pagination'=>array(
+						'pageSize'=>20,
+					),
+				));			
+				$model = $dataProvider->getData();
 			
-			$data = '';			
-			if(!empty($model)) {
-				$i=0-1;
-				foreach($model as $key => $item) {
-					$i++;
-					$data[$i] = array(
-						'catalog_id'=>$item->catalog_id,
-						'count'=>$type != 'view' ? ($type != 'bookmark' ? ($type == 'favourite' ? $item->favourites : $item->likes) : $item->bookmarks) : $item->views,
-						'title'=>$item->catalog->Title != null && $item->catalog->Title != '' ? $item->catalog->Title : '-',
-						'author'=>$item->catalog->Author != null && $item->catalog->Author != '' ? $item->catalog->Author : '-',
-						'publish_year'=>$item->catalog->PublishYear != null && $item->catalog->PublishYear != '' ? $item->catalog->PublishYear : '-',
-					);
-					if(($query == null && $query == '') || $query != 'small') {
-						$data[$i]['publisher'] = $item->catalog->Publisher != null && $item->catalog->Publisher != '' ? $item->catalog->Publisher : '-';
-						$data[$i]['publish_location'] = $item->catalog->PublishLocation != null && $item->catalog->PublishLocation != '' ? $item->catalog->PublishLocation : '-';
-						$data[$i]['subject'] = $item->catalog->Subject != null && $item->catalog->Subject != '' ? $item->catalog->Subject : '-';
-					} else {
+				$data = '';			
+				if(!empty($model)) {
+					foreach($model as $key => $item) {
+						$data[] = array(
+							'catalog_id'=>$item->catalog_id,
+							'count'=>$type != 'view' ? ($type != 'bookmark' ? ($type == 'favourite' ? $item->favourite_unique : $item->like_unique) : $item->bookmark_unique) : $item->view_unique,
+							'title'=>$item->catalog->Title != null && $item->catalog->Title != '' ? $item->catalog->Title : '-',
+							'author'=>$item->catalog->Author != null && $item->catalog->Author != '' ? $item->catalog->Author : '-',
+							'publish_year'=>$item->catalog->PublishYear != null && $item->catalog->PublishYear != '' ? $item->catalog->PublishYear : '-',
+							'publisher'=>$item->catalog->Publisher != null && $item->catalog->Publisher != '' ? $item->catalog->Publisher : '-',
+							'publish_location'=>$item->catalog->PublishLocation != null && $item->catalog->PublishLocation != '' ? $item->catalog->PublishLocation : '-',
+							'subject'=>$item->catalog->Subject != null && $item->catalog->Subject != '' ? $item->catalog->Subject : '-',
+						);
+					}
+				} else
+					$data = array();
+			
+				$pager = OFunction::getDataProviderPager($dataProvider);
+				$get = array_merge($_GET, array($pager['pageVar']=>$pager['nextPage']));
+				$nextPager = $pager['nextPage'] != 0 ? OFunction::validHostURL(Yii::app()->controller->createUrl('track', $get)) : '-';
+				$return = array(
+					'data' => $data,
+					'pager' => $pager,
+					'nextPager' => $nextPager,
+				);
+				
+			} else {
+				$criteria->limit = 10;
+				$model = ViewInlisCatalogs::model()->findAll($criteria);
+			
+				$data = '';
+				if(!empty($model)) {
+					foreach($model as $key => $item) {
 						$path = '/uploaded_files/sampul_koleksi/original/'.$item->catalog->worksheet->Name;
 						$cover = Yii::app()->params['inlis_address'].$path.'/'.$item->catalog->CoverURL;
-						$data[$i]['cover'] = $item->catalog->CoverURL != null && $item->catalog->CoverURL != '' ? (file_exists($cover) ? $cover : '-') : '-';
+						
+						$data[] = array(
+							'catalog_id'=>$item->catalog_id,
+							'count'=>$type != 'view' ? ($type != 'bookmark' ? ($type == 'favourite' ? $item->favourite_unique : $item->like_unique) : $item->bookmark_unique) : $item->view_unique,
+							'title'=>$item->catalog->Title != null && $item->catalog->Title != '' ? $item->catalog->Title : '-',
+							'author'=>$item->catalog->Author != null && $item->catalog->Author != '' ? $item->catalog->Author : '-',
+							'publish_year'=>$item->catalog->PublishYear != null && $item->catalog->PublishYear != '' ? $item->catalog->PublishYear : '-',
+							'cover'=>$item->catalog->CoverURL != null && $item->catalog->CoverURL != '' ? (file_exists($cover) ? $cover : '-') : '-',
+						);
 					}
-				}
-			} else
-				$data = array();
-		
-			$pager = OFunction::getDataProviderPager($dataProvider);
-			$get = array_merge($_GET, array($pager['pageVar']=>$pager['nextPage']));
-			$nextPager = $pager['nextPage'] != 0 ? OFunction::validHostURL(Yii::app()->controller->createUrl('track', $get)) : '-';
-			$return = array(
-				'data' => $data,
-				'pager' => $pager,
-				'nextPager' => $nextPager,
-			);
+				} else
+					$data = array();
+				$return = $data;
+			}
+			
 			echo CJSON::encode($return);
 			
 		} else 
@@ -395,6 +436,10 @@ class SiteController extends Controller
 						'name'=>$item->Name,
 					);
 				}
+				$data[] = array(
+					'id'=>0,
+					'name'=>'Semua Jenis Bahan',
+				);
 				
 			} else
 				$data = array();
