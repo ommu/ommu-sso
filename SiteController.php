@@ -143,6 +143,10 @@ class SiteController extends Controller
 						'isbn'=>$item->ISBN != null && $item->ISBN != '' ? $item->ISBN : '-',
 						'callnumber'=>$item->CallNumber != null && $item->CallNumber != '' ? $item->CallNumber : '-',
 						'worksheet'=>$item->worksheet->Name,
+						'bookmark'=>InlisBookmarks::getBookmark($_POST, $item->ID),
+						'favourite'=>InlisFavourites::getFavourite($_POST, $item->ID),
+						'like'=>InlisLikes::getLike($_POST, $item->ID),
+						'share'=>'-',
 					);					
 				}
 			} else
@@ -215,7 +219,11 @@ class SiteController extends Controller
 						'subject'=>$item->Subject != null && $item->Subject != '' ? $item->Subject : '-',
 						'isbn'=>$item->ISBN != null && $item->ISBN != '' ? $item->ISBN : '-',
 						'callnumber'=>$item->CallNumber != null && $item->CallNumber != '' ? $item->CallNumber : '-',
-						'worksheet'=>$item->worksheet->Name,					
+						'worksheet'=>$item->worksheet->Name,
+						'bookmark'=>InlisBookmarks::getBookmark($_POST, $item->ID),
+						'favourite'=>InlisFavourites::getFavourite($_POST, $item->ID),
+						'like'=>InlisLikes::getLike($_POST, $item->ID),
+						'share'=>'-',
 					);
 				}
 			} else
@@ -269,7 +277,12 @@ class SiteController extends Controller
 					'sizes'=>$model->Sizes != null && $model->Sizes != '' ? $model->Sizes : '-',
 					'description'=>$model->Description != null && $model->Description != '' ? $model->Description : '-',	
 					'note'=>$model->Note != null && $model->Note != '' ? $model->Note : '-',	
-					'cover'=>$model->CoverURL != null && $model->CoverURL != '' ? (file_exists($cover) ? $cover : '-') : '-',	
+					'cover'=>$model->CoverURL != null && $model->CoverURL != '' ? (file_exists($cover) ? $cover : '-') : '-',
+					
+					'bookmark'=>InlisBookmarks::getBookmark($_POST, $model->ID, true),
+					'favourite'=>InlisFavourites::getFavourite($_POST, $model->ID, true),
+					'like'=>InlisLikes::getLike($_POST, $model->ID, true),
+					'share'=>'-',
 				);
 				if($token != null && $token != '') {
 					$user = ViewUsers::model()->findByAttributes(array('token_password' => $token), array(
@@ -373,6 +386,10 @@ class SiteController extends Controller
 							'author'=>$item->catalog->Author != null && $item->catalog->Author != '' ? $item->catalog->Author : '-',
 							'publish_year'=>$item->catalog->PublishYear != null && $item->catalog->PublishYear != '' ? $item->catalog->PublishYear : '-',
 							'cover'=>$item->catalog->CoverURL != null && $item->catalog->CoverURL != '' ? (file_exists($cover) ? $cover : '-') : '-',
+							'bookmark'=>InlisBookmarks::getBookmark($_POST, $item->catalog_id),
+							'favourite'=>InlisFavourites::getFavourite($_POST, $item->catalog_id),
+							'like'=>InlisLikes::getLike($_POST, $item->catalog_id),
+							'share'=>'-',
 						);
 					}
 				} else
@@ -400,6 +417,10 @@ class SiteController extends Controller
 							'publisher'=>$item->catalog->Publisher != null && $item->catalog->Publisher != '' ? $item->catalog->Publisher : '-',
 							'publish_location'=>$item->catalog->PublishLocation != null && $item->catalog->PublishLocation != '' ? $item->catalog->PublishLocation : '-',
 							'subject'=>$item->catalog->Subject != null && $item->catalog->Subject != '' ? $item->catalog->Subject : '-',
+							'bookmark'=>InlisBookmarks::getBookmark($_POST, $item->catalog_id),
+							'favourite'=>InlisFavourites::getFavourite($_POST, $item->catalog_id),
+							'like'=>InlisLikes::getLike($_POST, $item->catalog_id),
+							'share'=>'-',
 						);
 					}
 				} else
