@@ -27,6 +27,7 @@
  * @property integer $publish
  * @property string $catalog_id
  * @property string $user_id
+ * @property string $device_id
  * @property string $creation_date
  * @property string $creation_ip
  * @property string $deleted_date
@@ -66,13 +67,14 @@ class InlisFavourites extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('publish, catalog_id, user_id', 'required'),
+			array('publish, catalog_id', 'required'),
 			array('publish', 'numerical', 'integerOnly'=>true),
-			array('catalog_id, user_id', 'length', 'max'=>11),
+			array('catalog_id, user_id, device_id', 'length', 'max'=>11),
 			array('creation_ip', 'length', 'max'=>20),
+			array('user_id, device_id', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('favourite_id, publish, catalog_id, user_id, creation_date, creation_ip, deleted_date,
+			array('favourite_id, publish, catalog_id, user_id, device_id, creation_date, creation_ip, deleted_date,
 				catalog_search, user_search', 'safe', 'on'=>'search'),
 		);
 	}
@@ -87,6 +89,7 @@ class InlisFavourites extends CActiveRecord
 		return array(
 			'catalog' => array(self::BELONGS_TO, 'SyncCatalogs', 'catalog_id'),
 			'user' => array(self::BELONGS_TO, 'Users', 'user_id'),
+			'device' => array(self::BELONGS_TO, 'UserDevice', 'device_id'),
 		);
 	}
 
@@ -100,6 +103,7 @@ class InlisFavourites extends CActiveRecord
 			'publish' => Yii::t('attribute', 'Publish'),
 			'catalog_id' => Yii::t('attribute', 'Catalog'),
 			'user_id' => Yii::t('attribute', 'User'),
+			'device_id' => Yii::t('attribute', 'Device'),
 			'creation_date' => Yii::t('attribute', 'Creation Date'),
 			'creation_ip' => Yii::t('attribute', 'Creation Ip'),
 			'deleted_date' => Yii::t('attribute', 'Deleted Date'),
@@ -111,6 +115,7 @@ class InlisFavourites extends CActiveRecord
 			'Publish' => 'Publish',
 			'Catalog' => 'Catalog',
 			'User' => 'User',
+			'Device' => 'Device',
 			'Creation Date' => 'Creation Date',
 			'Creation Ip' => 'Creation Ip',
 			'Deleted Date' => 'Deleted Date',
@@ -155,6 +160,10 @@ class InlisFavourites extends CActiveRecord
 			$criteria->compare('t.user_id',$_GET['user']);
 		else
 			$criteria->compare('t.user_id',$this->user_id);
+		if(isset($_GET['device']))
+			$criteria->compare('t.device_id',$_GET['device']);
+		else
+			$criteria->compare('t.device_id',$this->device_id);
 		if($this->creation_date != null && !in_array($this->creation_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.creation_date)',date('Y-m-d', strtotime($this->creation_date)));
 		$criteria->compare('t.creation_ip',strtolower($this->creation_ip),true);
@@ -208,6 +217,7 @@ class InlisFavourites extends CActiveRecord
 			$this->defaultColumns[] = 'publish';
 			$this->defaultColumns[] = 'catalog_id';
 			$this->defaultColumns[] = 'user_id';
+			$this->defaultColumns[] = 'device_id';
 			$this->defaultColumns[] = 'creation_date';
 			$this->defaultColumns[] = 'creation_ip';
 			$this->defaultColumns[] = 'deleted_date';
@@ -268,8 +278,8 @@ class InlisFavourites extends CActiveRecord
 						'class' => 'center',
 					),
 					'filter'=>array(
-						1=>Phrase::trans(588,0),
-						0=>Phrase::trans(589,0),
+						1=>Yii::t('phrase', 'Yes'),
+						0=>Yii::t('phrase', 'No'),
 					),
 					'type' => 'raw',
 				);

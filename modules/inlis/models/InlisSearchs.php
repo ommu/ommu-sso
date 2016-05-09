@@ -26,6 +26,7 @@
  * @property string $search_id
  * @property integer $publish
  * @property string $user_id
+ * @property string $device_id
  * @property integer $search_type
  * @property string $search_key
  * @property string $creation_date
@@ -66,14 +67,14 @@ class InlisSearchs extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('user_id, search_type, search_key', 'required'),
+			array('search_type, search_key', 'required'),
 			array('publish, search_type', 'numerical', 'integerOnly'=>true),
-			array('user_id', 'length', 'max'=>11),
+			array('user_id, device_id', 'length', 'max'=>11),
 			array('creation_ip', 'length', 'max'=>20),
-			array('deleted_date', 'safe'),
+			array('user_id, device_id', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('search_id, publish, user_id, search_type, search_key, creation_date, creation_ip, deleted_date,
+			array('search_id, publish, user_id, device_id, search_type, search_key, creation_date, creation_ip, deleted_date,
 				user_search', 'safe', 'on'=>'search'),
 		);
 	}
@@ -87,6 +88,7 @@ class InlisSearchs extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'user' => array(self::BELONGS_TO, 'Users', 'user_id'),
+			'device' => array(self::BELONGS_TO, 'UserDevice', 'device_id'),
 		);
 	}
 
@@ -99,6 +101,7 @@ class InlisSearchs extends CActiveRecord
 			'search_id' => Yii::t('attribute', 'Search'),
 			'publish' => Yii::t('attribute', 'Publish'),
 			'user_id' => Yii::t('attribute', 'User'),
+			'device_id' => Yii::t('attribute', 'Device'),
 			'search_type' => Yii::t('attribute', 'Search Type'),
 			'search_key' => Yii::t('attribute', 'Search Key'),
 			'creation_date' => Yii::t('attribute', 'Creation Date'),
@@ -110,6 +113,7 @@ class InlisSearchs extends CActiveRecord
 			'Search' => 'Search',
 			'Publish' => 'Publish',
 			'User' => 'User',
+			'Device' => 'Device',
 			'Search Type' => 'Search Type',
 			'Search Key' => 'Search Key',
 			'Creation Date' => 'Creation Date',
@@ -152,6 +156,10 @@ class InlisSearchs extends CActiveRecord
 			$criteria->compare('t.user_id',$_GET['user']);
 		else
 			$criteria->compare('t.user_id',$this->user_id);
+		if(isset($_GET['device']))
+			$criteria->compare('t.device_id',$_GET['device']);
+		else
+			$criteria->compare('t.device_id',$this->device_id);
 		$criteria->compare('t.search_type',$this->search_type);
 		$criteria->compare('t.search_key',strtolower($this->search_key),true);
 		if($this->creation_date != null && !in_array($this->creation_date, array('0000-00-00 00:00:00', '0000-00-00')))
@@ -201,6 +209,7 @@ class InlisSearchs extends CActiveRecord
 			//$this->defaultColumns[] = 'search_id';
 			$this->defaultColumns[] = 'publish';
 			$this->defaultColumns[] = 'user_id';
+			$this->defaultColumns[] = 'device_id';
 			$this->defaultColumns[] = 'search_type';
 			$this->defaultColumns[] = 'search_key';
 			$this->defaultColumns[] = 'creation_date';
@@ -276,8 +285,8 @@ class InlisSearchs extends CActiveRecord
 						'class' => 'center',
 					),
 					'filter'=>array(
-						1=>Phrase::trans(588,0),
-						0=>Phrase::trans(589,0),
+						1=>Yii::t('phrase', 'Yes'),
+						0=>Yii::t('phrase', 'No'),
 					),
 					'type' => 'raw',
 				);
@@ -335,8 +344,10 @@ class InlisSearchs extends CActiveRecord
 	public static function insertSearch($post, $type=null) 
 	{
 		$token = trim($post['token']);
+		$apikey = trim($post['apikey']);
+		$type = $type != null ? $type : 0;
 		
-		$keyPost = array_diff_key($post, array_flip((array) ['token','dump','variable']));
+		$keyPost = array_diff_key($post, array_flip((array) ['pagesize','token','apikey','dump','variable']));
 		$key = serialize(array_map('trim', $keyPost));
 			
 		if($token != null && $token != '') {
@@ -350,7 +361,7 @@ class InlisSearchs extends CActiveRecord
 					'params'    => array(
 						':publish' => 1,
 						':user' => $user->user_id,
-						':type' => $type != null ? $type : 0,
+						':type' => $type,
 						':key' => $key,
 					),
 				));
@@ -362,6 +373,32 @@ class InlisSearchs extends CActiveRecord
 					$data->save();
 				}
 			}
+			
+		} else {
+			$device = UserDevice::model()->findByAttributes(array('android_id' => $apikey), array(
+				'select' => 'id, user_id',
+			));
+			if($device != null) {
+				$search = InlisSearchs::model()->find(array(
+					'select'    => 'search_id',
+					'condition' => 'publish= :publish AND device_id= :device AND search_type= :type AND search_key= :key',
+					'params'    => array(
+						':publish' => 1,
+						':device' => $device->id,
+						':type' => $type,
+						':key' => $key,
+					),
+				));
+				if($search == null) {
+					$data=new InlisSearchs;
+					if($device->user_id != 0)
+						$data->user_id = $device->user_id;
+					$data->device_id = $device->id;
+					$data->search_type = $type;
+					$data->search_key = $key;
+					$data->save();
+				}				
+			}			
 		}
 		
 		return true;

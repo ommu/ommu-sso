@@ -25,12 +25,16 @@
  * The followings are the available columns in table '_view_inlis_catalogs':
  * @property string $catalog_id
  * @property string $bookmarks
+ * @property string $bookmark_unique
  * @property string $bookmark_all
  * @property string $favourites
+ * @property string $favourite_unique
  * @property string $favourite_all
  * @property string $likes
+ * @property string $like_unique
  * @property string $like_all
  * @property string $views
+ * @property string $view_unique
  * @property string $view_all
  * @property string $user_view
  */
@@ -75,10 +79,10 @@ class ViewInlisCatalogs extends CActiveRecord
 		return array(
 			array('catalog_id', 'required'),
 			array('catalog_id', 'length', 'max'=>11),
-			array('bookmarks, bookmark_all, favourites, favourite_all, likes, like_all, views, view_all, user_view', 'length', 'max'=>21),
+			array('bookmarks, bookmark_unique, bookmark_all, favourites, favourite_unique, favourite_all, likes, like_unique, like_all, views, view_unique, view_all, user_view', 'length', 'max'=>21),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('catalog_id, bookmarks, bookmark_all, favourites, favourite_all, likes, like_all, views, view_all, user_view', 'safe', 'on'=>'search'),
+			array('catalog_id, bookmarks, bookmark_unique, bookmark_all, favourites, favourite_unique, favourite_all, likes, like_unique, like_all, views, view_unique, view_all, user_view', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -102,24 +106,32 @@ class ViewInlisCatalogs extends CActiveRecord
 		return array(
 			'catalog_id' => Yii::t('attribute', 'Catalog'),
 			'bookmarks' => Yii::t('attribute', 'Bookmarks'),
+			'bookmark_unique' => Yii::t('attribute', 'Bookmark Unique'),	
 			'bookmark_all' => Yii::t('attribute', 'Bookmark All'),	
 			'favourites' => Yii::t('attribute', 'Favourites'),
+			'favourite_unique' => Yii::t('attribute', 'Favourite Unique'),
 			'favourite_all' => Yii::t('attribute', 'Favourite All'),
 			'likes' => Yii::t('attribute', 'Likes'),
+			'like_unique' => Yii::t('attribute', 'Like Unique'),
 			'like_all' => Yii::t('attribute', 'Like All'),
 			'views' => Yii::t('attribute', 'Views'),
+			'view_unique' => Yii::t('attribute', 'View Unique'),
 			'view_all' => Yii::t('attribute', 'View All'),
 			'user_view' => Yii::t('attribute', 'User View'),
 		);
 		/*
 			'Catalog' => 'Catalog',
 			'Bookmarks' => 'Bookmarks',
+			'Bookmark Unique' => 'Bookmark Unique',
 			'Bookmark All' => 'Bookmark All',
 			'Favourites' => 'Favourites',
+			'Favourite Unique' => 'Favourite Unique',
 			'Favourite All' => 'Favourite All',
 			'Likes' => 'Likes',
+			'Like Unique' => 'Like Unique',
 			'Like All' => 'Like All',
 			'Views' => 'Views',
+			'View Unique' => 'View Unique',
 			'View All' => 'View All',
 			'User View' => 'User View',
 		
@@ -146,12 +158,16 @@ class ViewInlisCatalogs extends CActiveRecord
 		
 		$criteria->compare('t.catalog_id',strtolower($this->catalog_id),true);
 		$criteria->compare('t.bookmarks',strtolower($this->bookmarks),true);
+		$criteria->compare('t.bookmark_unique',strtolower($this->bookmark_unique),true);
 		$criteria->compare('t.bookmark_all',strtolower($this->bookmark_all),true);
 		$criteria->compare('t.favourites',strtolower($this->favourites),true);
+		$criteria->compare('t.favourite_unique',strtolower($this->favourite_unique),true);
 		$criteria->compare('t.favourite_all',strtolower($this->favourite_all),true);
 		$criteria->compare('t.likes',strtolower($this->likes),true);
+		$criteria->compare('t.like_unique',strtolower($this->like_unique),true);
 		$criteria->compare('t.like_all',strtolower($this->like_all),true);
 		$criteria->compare('t.views',strtolower($this->views),true);
+		$criteria->compare('t.view_unique',strtolower($this->view_unique),true);
 		$criteria->compare('t.view_all',strtolower($this->view_all),true);
 		$criteria->compare('t.user_view',strtolower($this->user_view),true);
 
@@ -186,12 +202,16 @@ class ViewInlisCatalogs extends CActiveRecord
 		} else {
 			$this->defaultColumns[] = 'catalog_id';
 			$this->defaultColumns[] = 'bookmarks';
+			$this->defaultColumns[] = 'bookmark_unique';
 			$this->defaultColumns[] = 'bookmark_all';
 			$this->defaultColumns[] = 'favourites';
+			$this->defaultColumns[] = 'favourite_unique';
 			$this->defaultColumns[] = 'favourite_all';
 			$this->defaultColumns[] = 'likes';
+			$this->defaultColumns[] = 'like_unique';
 			$this->defaultColumns[] = 'like_all';
 			$this->defaultColumns[] = 'views';
+			$this->defaultColumns[] = 'view_unique';
 			$this->defaultColumns[] = 'view_all';
 			$this->defaultColumns[] = 'user_view';
 		}
@@ -210,14 +230,17 @@ class ViewInlisCatalogs extends CActiveRecord
 			);
 			$this->defaultColumns[] = 'catalog_id';
 			$this->defaultColumns[] = 'bookmarks';
+			$this->defaultColumns[] = 'bookmark_unique';
 			$this->defaultColumns[] = 'bookmark_all';
 			$this->defaultColumns[] = 'favourites';
+			$this->defaultColumns[] = 'favourite_unique';
 			$this->defaultColumns[] = 'favourite_all';
 			$this->defaultColumns[] = 'likes';
+			$this->defaultColumns[] = 'like_unique';
 			$this->defaultColumns[] = 'like_all';
 			$this->defaultColumns[] = 'views';
+			$this->defaultColumns[] = 'view_unique';
 			$this->defaultColumns[] = 'view_all';
-			$this->defaultColumns[] = 'user_view';
 			$this->defaultColumns[] = 'user_view';
 		}
 		parent::afterConstruct();
