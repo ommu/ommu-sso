@@ -330,6 +330,55 @@ class InlisFavourites extends CActiveRecord
 			return $model;			
 		}
 	}
+	
+	/**
+	 * Lists all models.
+	 */
+	public static function getFavourite($post, $id, $detail=false) 
+	{
+		$return = 0;
+		$token = trim($post['token']);
+		$apikey = trim($post['apikey']);
+			
+		if($token != null && $token != '') {
+			$user = ViewUsers::model()->findByAttributes(array('token_password' => $token), array(
+				'select' => 'user_id',
+			));
+			if($user != null) {
+				$favourite = self::model()->find(array(
+					'select'    => 'favourite_id',
+					'condition' => 'publish= :publish AND catalog_id= :catalog AND user_id= :user',
+					'params'    => array(
+						':publish' => 1,
+						':catalog' => $id,
+						':user' => $user->user_id,
+					),
+				));
+				if($favourite != null)
+					$return = $detail == true ? $favourite->favourite_id : 1;
+			}
+			
+		} else {
+			$device = UserDevice::model()->findByAttributes(array('android_id' => $apikey), array(
+				'select' => 'id, user_id',
+			));
+			if($device != null) {
+				$favourite = self::model()->find(array(
+					'select'    => 'favourite_id',
+					'condition' => 'publish= :publish AND catalog_id= :catalog AND device_id= :device',
+					'params'    => array(
+						':publish' => 1,
+						':catalog' => $id,
+						':device' => $device->id,
+					),
+				));
+				if($favourite != null)
+					$return = $detail == true ? $favourite->favourite_id : 1;
+			}			
+		}
+		
+		return $return;
+	}
 
 	/**
 	 * before validate attributes

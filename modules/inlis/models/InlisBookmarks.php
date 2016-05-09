@@ -330,6 +330,55 @@ class InlisBookmarks extends CActiveRecord
 			return $model;			
 		}
 	}
+	
+	/**
+	 * Lists all models.
+	 */
+	public static function getBookmark($post, $id, $detail=false) 
+	{
+		$return = 0;
+		$token = trim($post['token']);
+		$apikey = trim($post['apikey']);
+			
+		if($token != null && $token != '') {
+			$user = ViewUsers::model()->findByAttributes(array('token_password' => $token), array(
+				'select' => 'user_id',
+			));
+			if($user != null) {
+				$bookmark = self::model()->find(array(
+					'select'    => 'bookmark_id',
+					'condition' => 'publish= :publish AND catalog_id= :catalog AND user_id= :user',
+					'params'    => array(
+						':publish' => 1,
+						':catalog' => $id,
+						':user' => $user->user_id,
+					),
+				));
+				if($bookmark != null)
+					$return = $detail == true ? $bookmark->bookmark_id : 1;
+			}
+			
+		} else {
+			$device = UserDevice::model()->findByAttributes(array('android_id' => $apikey), array(
+				'select' => 'id, user_id',
+			));
+			if($device != null) {
+				$bookmark = self::model()->find(array(
+					'select'    => 'bookmark_id',
+					'condition' => 'publish= :publish AND catalog_id= :catalog AND device_id= :device',
+					'params'    => array(
+						':publish' => 1,
+						':catalog' => $id,
+						':device' => $device->id,
+					),
+				));
+				if($bookmark != null)
+					$return = $detail == true ? $bookmark->bookmark_id : 1;
+			}			
+		}
+		
+		return $return;
+	}
 
 	/**
 	 * before validate attributes

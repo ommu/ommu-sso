@@ -330,6 +330,55 @@ class InlisLikes extends CActiveRecord
 			return $model;			
 		}
 	}
+	
+	/**
+	 * Lists all models.
+	 */
+	public static function getLike($post, $id, $detail=false) 
+	{
+		$return = 0;
+		$token = trim($post['token']);
+		$apikey = trim($post['apikey']);
+			
+		if($token != null && $token != '') {
+			$user = ViewUsers::model()->findByAttributes(array('token_password' => $token), array(
+				'select' => 'user_id',
+			));
+			if($user != null) {
+				$like = self::model()->find(array(
+					'select'    => 'like_id',
+					'condition' => 'publish= :publish AND catalog_id= :catalog AND user_id= :user',
+					'params'    => array(
+						':publish' => 1,
+						':catalog' => $id,
+						':user' => $user->user_id,
+					),
+				));
+				if($like != null)
+					$return = $detail == true ? $like->like_id : 1;
+			}
+			
+		} else {
+			$device = UserDevice::model()->findByAttributes(array('android_id' => $apikey), array(
+				'select' => 'id, user_id',
+			));
+			if($device != null) {
+				$like = self::model()->find(array(
+					'select'    => 'like_id',
+					'condition' => 'publish= :publish AND catalog_id= :catalog AND device_id= :device',
+					'params'    => array(
+						':publish' => 1,
+						':catalog' => $id,
+						':device' => $device->id,
+					),
+				));
+				if($like != null)
+					$return = $detail == true ? $like->like_id : 1;
+			}			
+		}
+		
+		return $return;
+	}
 
 	/**
 	 * before validate attributes
