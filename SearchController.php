@@ -86,8 +86,10 @@ class SearchController extends Controller
 	public function actionList()
 	{
 		if(Yii::app()->request->isPostRequest) {
-			$token = trim($_POST['token']);
 			$toolbar = trim($_POST['toolbar']);
+			$pagesize = trim($_POST['pagesize']);
+			$token = trim($_POST['token']);
+			$apikey = trim($_POST['apikey']);
 			
 			$criteria=new CDbCriteria;
 			$criteria->with = array(
@@ -97,38 +99,48 @@ class SearchController extends Controller
 			);
 			$criteria->select = array('t.search_id','t.search_type','t.search_key');
 			$criteria->compare('t.publish',1);
-			$criteria->compare('view.token_password',$token);
+			if($token != null && $token != '')
+				$criteria->compare('view.token_password',$token);
+			else {
+				$device = UserDevice::model()->findByAttributes(array('android_id' => $apikey), array(
+					'select' => 'id, user_id',
+				));
+				if($device != null)
+					$criteria->compare('t.device_id',$device->id);
+			}
 			$criteria->group = 't.search_key';
 			$criteria->order = 't.creation_date DESC';
-			if($toolbar != null && $toolbar != '' && $toolbar == 'true')
-				$criteria->limit = 5;
 			
-			if($toolbar != null && $toolbar != '' && $toolbar == 'true')
+			if($toolbar != null && $toolbar != '' && $toolbar == 'true') {
+				$criteria->limit = $pagesize != null && $pagesize != '' ? $pagesize : 5;
 				$model = InlisSearchs::model()->findAll($criteria);
 				
-			else {
+			} else {
 				$dataProvider = new CActiveDataProvider('InlisSearchs', array(
 					'criteria'=>$criteria,
 					'pagination'=>array(
-						'pageSize'=>20,
+						'pageSize'=>$pagesize != null && $pagesize != '' ? $pagesize : 20,
 					),
 				));			
 				$model = $dataProvider->getData();				
 			}
 			
-			$data = '';
 			if(!empty($model)) {
-				foreach($model as $key => $item) {					
+				foreach($model as $key => $item) {
 					$data[] = array(
 						'search_id'=>$item->search_id,
 						'search_type'=>$item->search_type,
+						'search_keyword'=>InlisSearchs::getKeyword(unserialize($item->search_key), $item->search_type),
 						'search_key'=>$item->search_key,
 					);					
 				}
 			} else
 				$data = array();
 		
-			if($toolbar == null && $toolbar != '' && $toolbar == 'true') {
+			if($toolbar != null && $toolbar != '' && $toolbar == 'true')
+				echo CJSON::encode($data);
+				
+			else {
 				$pager = OFunction::getDataProviderPager($dataProvider);
 				$get = array_merge($_GET, array($pager['pageVar']=>$pager['nextPage']));
 				$nextPager = $pager['nextPage'] != 0 ? OFunction::validHostURL(Yii::app()->controller->createUrl('list', $get)) : '-';
@@ -138,10 +150,8 @@ class SearchController extends Controller
 					'nextPager' => $nextPager,
 				);
 				
-				echo CJSON::encode($return);
-				
-			} else
-				echo CJSON::encode($data);
+				echo CJSON::encode($return);				
+			}
 			
 		} else 
 			$this->redirect(Yii::app()->createUrl('site/index'));

@@ -87,7 +87,9 @@ class FavouriteController extends Controller
 	public function actionList()
 	{
 		if(Yii::app()->request->isPostRequest) {
+			$pagesize = trim($_POST['pagesize']);
 			$token = trim($_POST['token']);
+			$apikey = trim($_POST['apikey']);
 			
 			$criteria=new CDbCriteria;
 			$criteria->with = array(
@@ -97,14 +99,22 @@ class FavouriteController extends Controller
 			);
 			$criteria->select = array('t.catalog_id','t.creation_date');
 			$criteria->compare('t.publish',1);
-			$criteria->compare('view.token_password',$token);
+			if($token != null && $token != '')
+				$criteria->compare('view.token_password',$token);
+			else {
+				$device = UserDevice::model()->findByAttributes(array('android_id' => $apikey), array(
+					'select' => 'id, user_id',
+				));
+				if($device != null)
+					$criteria->compare('t.device_id',$device->id);
+			}
 			$criteria->group = 't.catalog_id';
 			$criteria->order = 't.favourite_id DESC';
 			
 			$dataProvider = new CActiveDataProvider('InlisFavourites', array(
 				'criteria'=>$criteria,
 				'pagination'=>array(
-					'pageSize'=>20,
+					'pageSize'=>$pagesize != null && $pagesize != '' ? $pagesize : 20,
 				),
 			));			
 			$model = $dataProvider->getData();
@@ -121,6 +131,10 @@ class FavouriteController extends Controller
 						'publish_location'=>$item->catalog->PublishLocation != null && $item->catalog->PublishLocation != '' ? $item->catalog->PublishLocation : '-',
 						'publish_year'=>$item->catalog->PublishYear != null && $item->catalog->PublishYear != '' ? $item->catalog->PublishYear : '-',
 						'subject'=>$item->catalog->Subject != null && $item->catalog->Subject != '' ? $item->catalog->Subject : '-',
+						'bookmark'=>InlisBookmarks::getBookmark($_POST, $item->catalog_id),
+						'favourite'=>InlisFavourites::getFavourite($_POST, $item->catalog_id),
+						'like'=>InlisLikes::getLike($_POST, $item->catalog_id),
+						'share'=>'-',
 					);					
 				}
 			} else
