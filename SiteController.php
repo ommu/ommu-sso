@@ -131,10 +131,12 @@ class SiteController extends Controller
 			$model = $dataProvider->getData();
 			
 			if(!empty($model)) {
-				foreach($model as $key => $item) {					
+				foreach($model as $key => $item) {
+					$title = $item->Title != null && $item->Title != '' ? $item->Title : '-';
+					
 					$data[] = array(
 						'id'=>$item->ID,
-						'title'=>$item->Title != null && $item->Title != '' ? $item->Title : '-',
+						'title'=>$title,
 						'author'=>$item->Author != null && $item->Author != '' ? $item->Author : '-',
 						'publisher'=>$item->Publisher != null && $item->Publisher != '' ? $item->Publisher : '-',
 						'publish_location'=>$item->PublishLocation != null && $item->PublishLocation != '' ? $item->PublishLocation : '-',
@@ -146,7 +148,7 @@ class SiteController extends Controller
 						'bookmark'=>InlisBookmarks::getBookmark($_POST, $item->ID),
 						'favourite'=>InlisFavourites::getFavourite($_POST, $item->ID),
 						'like'=>InlisLikes::getLike($_POST, $item->ID),
-						'share'=>'-',
+						'share'=>InlisCatalogs::getShareUrl($item->ID, $title),
 					);					
 				}
 			} else
@@ -208,10 +210,12 @@ class SiteController extends Controller
 			
 			$data = '';
 			if(!empty($model)) {
-				foreach($model as $key => $item) {					
+				foreach($model as $key => $item) {
+					$title = $item->Title != null && $item->Title != '' ? $item->Title : '-';
+					
 					$data[] = array(
 						'id'=>$item->ID,
-						'title'=>$item->Title != null && $item->Title != '' ? $item->Title : '-',
+						'title'=>$title,
 						'author'=>$item->Author != null && $item->Author != '' ? $item->Author : '-',
 						'publisher'=>$item->Publisher != null && $item->Publisher != '' ? $item->Publisher : '-',
 						'publish_location'=>$item->PublishLocation != null && $item->PublishLocation != '' ? $item->PublishLocation : '-',
@@ -223,7 +227,7 @@ class SiteController extends Controller
 						'bookmark'=>InlisBookmarks::getBookmark($_POST, $item->ID),
 						'favourite'=>InlisFavourites::getFavourite($_POST, $item->ID),
 						'like'=>InlisLikes::getLike($_POST, $item->ID),
-						'share'=>'-',
+						'share'=>InlisCatalogs::getShareUrl($item->ID, $title),
 					);
 				}
 			} else
@@ -258,11 +262,12 @@ class SiteController extends Controller
 			if(!empty($model)) {
 				$path = '/uploaded_files/sampul_koleksi/original/'.$item->worksheet->Name;
 				$cover = Yii::app()->params['inlis_address'].$path.'/'.$item->CoverURL;
+				$title = $model->Title != null && $model->Title != '' ? $model->Title : '-';
 				
 				$return = array(
 					'success'=>'1',
 					'id'=>$model->ID,
-					'title'=>$model->Title != null && $model->Title != '' ? $model->Title : '-',
+					'title'=>$title,
 					'author'=>$model->Author != null && $model->Author != '' ? $model->Author : '-',
 					'publisher'=>$model->Publisher != null && $model->Publisher != '' ? $model->Publisher : '-',
 					'publish_location'=>$model->PublishLocation != null && $model->PublishLocation != '' ? $model->PublishLocation : '-',
@@ -282,7 +287,7 @@ class SiteController extends Controller
 					'bookmark'=>InlisBookmarks::getBookmark($_POST, $model->ID, true),
 					'favourite'=>InlisFavourites::getFavourite($_POST, $model->ID, true),
 					'like'=>InlisLikes::getLike($_POST, $model->ID, true),
-					'share'=>'-',
+					'share'=>InlisCatalogs::getShareUrl($item->ID, $title),
 				);
 				if($token != null && $token != '') {
 					$user = ViewUsers::model()->findByAttributes(array('token_password' => $token), array(
@@ -357,6 +362,8 @@ class SiteController extends Controller
 			$type = trim($_POST['type']);
 			$query = trim($_POST['query']);
 			$pagesize = trim($_POST['pagesize']);
+			$token = trim($_POST['token']);
+			$apikey = trim($_POST['apikey']);
 			
 			$criteria=new CDbCriteria;
 			$criteria->select = array('t.catalog_id','t.bookmark_unique','t.favourite_unique','t.like_unique','t.view_unique');
@@ -378,18 +385,19 @@ class SiteController extends Controller
 					foreach($model as $key => $item) {
 						$path = '/uploaded_files/sampul_koleksi/original/'.$item->catalog->worksheet->Name;
 						$cover = Yii::app()->params['inlis_address'].$path.'/'.$item->catalog->CoverURL;
+						$title = $item->catalog->Title != null && $item->catalog->Title != '' ? $item->catalog->Title : '-';
 						
 						$data[] = array(
 							'catalog_id'=>$item->catalog_id,
 							'count'=>$type != 'view' ? ($type != 'bookmark' ? ($type == 'favourite' ? $item->favourite_unique : $item->like_unique) : $item->bookmark_unique) : $item->view_unique,
-							'title'=>$item->catalog->Title != null && $item->catalog->Title != '' ? $item->catalog->Title : '-',
+							'title'=>$title,
 							'author'=>$item->catalog->Author != null && $item->catalog->Author != '' ? $item->catalog->Author : '-',
 							'publish_year'=>$item->catalog->PublishYear != null && $item->catalog->PublishYear != '' ? $item->catalog->PublishYear : '-',
 							'cover'=>$item->catalog->CoverURL != null && $item->catalog->CoverURL != '' ? (file_exists($cover) ? $cover : '-') : '-',
 							'bookmark'=>InlisBookmarks::getBookmark($_POST, $item->catalog_id),
 							'favourite'=>InlisFavourites::getFavourite($_POST, $item->catalog_id),
 							'like'=>InlisLikes::getLike($_POST, $item->catalog_id),
-							'share'=>'-',
+							'share'=>InlisCatalogs::getShareUrl($item->catalog_id, $title),
 						);
 					}
 				} else
@@ -408,10 +416,12 @@ class SiteController extends Controller
 				$data = '';			
 				if(!empty($model)) {
 					foreach($model as $key => $item) {
+						$title = $item->catalog->Title != null && $item->catalog->Title != '' ? $item->catalog->Title : '-';
+						
 						$data[] = array(
 							'catalog_id'=>$item->catalog_id,
 							'count'=>$type != 'view' ? ($type != 'bookmark' ? ($type == 'favourite' ? $item->favourite_unique : $item->like_unique) : $item->bookmark_unique) : $item->view_unique,
-							'title'=>$item->catalog->Title != null && $item->catalog->Title != '' ? $item->catalog->Title : '-',
+							'title'=>$title,
 							'author'=>$item->catalog->Author != null && $item->catalog->Author != '' ? $item->catalog->Author : '-',
 							'publish_year'=>$item->catalog->PublishYear != null && $item->catalog->PublishYear != '' ? $item->catalog->PublishYear : '-',
 							'publisher'=>$item->catalog->Publisher != null && $item->catalog->Publisher != '' ? $item->catalog->Publisher : '-',
@@ -420,7 +430,7 @@ class SiteController extends Controller
 							'bookmark'=>InlisBookmarks::getBookmark($_POST, $item->catalog_id),
 							'favourite'=>InlisFavourites::getFavourite($_POST, $item->catalog_id),
 							'like'=>InlisLikes::getLike($_POST, $item->catalog_id),
-							'share'=>'-',
+							'share'=>InlisCatalogs::getShareUrl($item->catalog_id, $title),
 						);
 					}
 				} else

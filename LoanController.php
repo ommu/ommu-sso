@@ -89,6 +89,9 @@ class LoanController extends Controller
 			$now = trim($_POST['now']);
 			$curdate = trim($_POST['curdate']);
 			$query = trim($_POST['query']);
+			$pagesize = trim($_POST['pagesize']);
+			$token = trim($_POST['token']);
+			$apikey = trim($_POST['apikey']);
 			
 			$criteria=new CDbCriteria;
 			$criteria->together = true;
@@ -99,59 +102,86 @@ class LoanController extends Controller
 			);
 			$criteria->select = array('Collection_id, collection.Catalog_id as Catalog_id','COUNT(CollectionLoan_id) as loans');
 			if($now != null && $now != '' && $now == 'true') {
-				if($curdate == null && $curdate == '')
-					$criteria->condition = 'DATE(t.LoanDate) BETWEEN DATE_SUB(CURDATE(), INTERVAL 30 DAY) AND CURDATE()';
-				else {
+				if($curdate != null && $curdate != '') {
 					$criteria->condition = 'DATE(t.LoanDate) BETWEEN DATE_SUB(DATE(:curdate), INTERVAL 30 DAY) AND DATE(:curdate)';
 					$criteria->params = array(':curdate'=>date('Y-m-d', strtotime($curdate)));
-				}
+				} else 
+					$criteria->condition = 'DATE(t.LoanDate) BETWEEN DATE_SUB(CURDATE(), INTERVAL 30 DAY) AND CURDATE()';
 			}
 			$criteria->group = 'collection.Catalog_id';
 			$criteria->order = 'loans DESC';
 			
-			$dataProvider = new CActiveDataProvider('SyncCollectionloanitems', array(
-				'criteria'=>$criteria,
-				'pagination'=>array(
-					'pageSize'=>(($query == null && $query == '') || $query != 'small') ? 20 : 6,
-					
-				),
-			));
-			$model = $dataProvider->getData();
+			if($query != null && $query != '' && $query == 'small') {
+				$criteria->limit = $pagesize != null && $pagesize != '' ? $pagesize : 10;
+				$model = SyncCollectionloanitems::model()->findAll($criteria);
 			
-			$data = '';
-			if(!empty($model)) {
-				$i=0-1;
-				foreach($model as $key => $item) {					
-					$i++;
-					$data[$i] = array(
-						'catalog_id'=>$item->collection->Catalog_id,
-						'count'=>$item->loans,
-						'title'=>$item->collection->catalog->Title != null && $item->collection->catalog->Title != '' ? $item->collection->catalog->Title : '-',
-						'author'=>$item->collection->catalog->Author != null && $item->collection->catalog->Author != '' ? $item->collection->catalog->Author : '-',
-						'publish_year'=>$item->collection->catalog->PublishYear != null && $item->collection->catalog->PublishYear != '' ? $item->collection->catalog->PublishYear : '-',
-					);
-					if(($query == null && $query == '') || $query != 'small') {
-						$data[$i]['publisher'] = $item->collection->catalog->Publisher != null && $item->collection->catalog->Publisher != '' ? $item->collection->catalog->Publisher : '-';
-						$data[$i]['publish_location'] = $item->collection->catalog->PublishLocation != null && $item->collection->catalog->PublishLocation != '' ? $item->collection->catalog->PublishLocation : '-';
-						$data[$i]['subject'] = $item->collection->catalog->Subject != null && $item->collection->catalog->Subject != '' ? $item->collection->catalog->Subject : '-';
-					} else {
+				if(!empty($model)) {
+					foreach($model as $key => $item) {
 						$path = '/uploaded_files/sampul_koleksi/original/'.$item->collection->catalog->worksheet->Name;
 						$cover = Yii::app()->params['inlis_address'].$path.'/'.$item->collection->catalog->CoverURL;
-						$data[$i]['cover'] = $item->collection->catalog->CoverURL != null && $item->collection->catalog->CoverURL != '' ? (file_exists($cover) ? $cover : '-') : '-';
+						$title = $item->collection->catalog->Title != null && $item->collection->catalog->Title != '' ? $item->collection->catalog->Title : '-';
+						
+						$data[] = array(
+							'catalog_id'=>$item->collection->Catalog_id,
+							'count'=>$item->loans,
+							'title'=>$title,
+							'author'=>$item->collection->catalog->Author != null && $item->collection->catalog->Author != '' ? $item->collection->catalog->Author : '-',
+							'publish_year'=>$item->collection->catalog->PublishYear != null && $item->collection->catalog->PublishYear != '' ? $item->collection->catalog->PublishYear : '-',
+							'cover'=>$item->collection->catalog->CoverURL != null && $item->collection->catalog->CoverURL != '' ? (file_exists($cover) ? $cover : '-') : '-',
+							'bookmark'=>InlisBookmarks::getBookmark($_POST, $item->collection->Catalog_id),
+							'favourite'=>InlisFavourites::getFavourite($_POST, $item->collection->Catalog_id),
+							'like'=>InlisLikes::getLike($_POST, $item->collection->Catalog_id),
+							'share'=>InlisCatalogs::getShareUrl($item->collection->Catalog_id, $title),
+						);
 					}
-				}
-			} else
-				$data = array();
-		
-			$pager = OFunction::getDataProviderPager($dataProvider);
-			$get = array_merge($_GET, array($pager['pageVar']=>$pager['nextPage']));
-			$nextPager = $pager['nextPage'] != 0 ? OFunction::validHostURL(Yii::app()->controller->createUrl('popular', $get)) : '-';
-			$return = array(
-				'data' => $data,
-				'pager' => $pager,
-				'nextPager' => $nextPager,
-			);
+					
+				} else
+					$data = array();
+				$return = $data;
 				
+			} else {			
+				$dataProvider = new CActiveDataProvider('SyncCollectionloanitems', array(
+					'criteria'=>$criteria,
+					'pagination'=>array(
+						'pageSize'=>$pagesize != null && $pagesize != '' ? $pagesize : 20,
+						
+					),
+				));
+				$model = $dataProvider->getData();
+			
+				if(!empty($model)) {
+					foreach($model as $key => $item) {	
+						$title = $item->collection->catalog->Title != null && $item->collection->catalog->Title != '' ? $item->collection->catalog->Title : '-';
+						
+						$data[] = array(
+							'catalog_id'=>$item->collection->Catalog_id,
+							'count'=>$item->loans,
+							'title'=>$title,
+							'author'=>$item->collection->catalog->Author != null && $item->collection->catalog->Author != '' ? $item->collection->catalog->Author : '-',
+							'publish_year'=>$item->collection->catalog->PublishYear != null && $item->collection->catalog->PublishYear != '' ? $item->collection->catalog->PublishYear : '-',							
+							'publisher'=>$item->collection->catalog->Publisher != null && $item->collection->catalog->Publisher != '' ? $item->collection->catalog->Publisher : '-',
+							'publish_location'=>$item->collection->catalog->PublishLocation != null && $item->collection->catalog->PublishLocation != '' ? $item->collection->catalog->PublishLocation : '-',
+							'subject'=>$item->collection->catalog->Subject != null && $item->collection->catalog->Subject != '' ? $item->collection->catalog->Subject : '-',
+							'bookmark'=>InlisBookmarks::getBookmark($_POST, $item->collection->Catalog_id),
+							'favourite'=>InlisFavourites::getFavourite($_POST, $item->collection->Catalog_id),
+							'like'=>InlisLikes::getLike($_POST, $item->collection->Catalog_id),
+							'share'=>InlisCatalogs::getShareUrl($item->collection->Catalog_id, $title),
+						);
+					}
+					
+				} else
+					$data = array();
+			
+				$pager = OFunction::getDataProviderPager($dataProvider);
+				$get = array_merge($_GET, array($pager['pageVar']=>$pager['nextPage']));
+				$nextPager = $pager['nextPage'] != 0 ? OFunction::validHostURL(Yii::app()->controller->createUrl('popular', $get)) : '-';
+				$return = array(
+					'data' => $data,
+					'pager' => $pager,
+					'nextPager' => $nextPager,
+				);
+			}
+			
 			echo CJSON::encode($return);
 			
 		} else 

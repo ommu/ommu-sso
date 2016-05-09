@@ -121,11 +121,13 @@ class BookmarkController extends Controller
 			
 			$data = '';
 			if(!empty($model)) {
-				foreach($model as $key => $item) {					
+				foreach($model as $key => $item) {
+					$title = $item->catalog->Title != null && $item->catalog->Title != '' ? $item->catalog->Title : '-';
+					
 					$data[] = array(
 						'catalog_id'=>$item->catalog_id,
 						'creation_date'=>$item->creation_date,
-						'title'=>$item->catalog->Title != null && $item->catalog->Title != '' ? $item->catalog->Title : '-',
+						'title'=>$title,
 						'author'=>$item->catalog->Author != null && $item->catalog->Author != '' ? $item->catalog->Author : '-',
 						'publisher'=>$item->catalog->Publisher != null && $item->catalog->Publisher != '' ? $item->catalog->Publisher : '-',
 						'publish_location'=>$item->catalog->PublishLocation != null && $item->catalog->PublishLocation != '' ? $item->catalog->PublishLocation : '-',
@@ -134,7 +136,7 @@ class BookmarkController extends Controller
 						'bookmark'=>InlisBookmarks::getBookmark($_POST, $item->catalog_id),
 						'favourite'=>InlisFavourites::getFavourite($_POST, $item->catalog_id),
 						'like'=>InlisLikes::getLike($_POST, $item->catalog_id),
-						'share'=>'-',
+						'share'=>InlisCatalogs::getShareUrl($item->catalog_id, $title),
 					);					
 				}
 			} else
