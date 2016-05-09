@@ -89,10 +89,12 @@ class SiteController extends Controller
 	public function actionSearch() 
 	{
 		if(Yii::app()->request->isPostRequest) {
-			$token = trim($_POST['token']);
 			$keyword = trim($_POST['keyword']);
 			$category = trim($_POST['category']);
 			$worksheet = trim($_POST['worksheet']);
+			$pagesize = trim($_POST['pagesize']);
+			$token = trim($_POST['token']);
+			$apikey = trim($_POST['apikey']);
 			
 			InlisSearchs::insertSearch($_POST);
 			
@@ -123,12 +125,11 @@ class SiteController extends Controller
 			$dataProvider = new CActiveDataProvider('SyncCatalogs', array(
 				'criteria'=>$criteria,
 				'pagination'=>array(
-					'pageSize'=>20,
+					'pageSize'=>$pagesize != null && $pagesize != '' ? $pagesize : 20,
 				),
 			));			
 			$model = $dataProvider->getData();
 			
-			$data = '';
 			if(!empty($model)) {
 				foreach($model as $key => $item) {					
 					$data[] = array(
@@ -167,7 +168,6 @@ class SiteController extends Controller
 	public function actionAdvanced()
 	{
 		if(Yii::app()->request->isPostRequest) {
-			$token = trim($_POST['token']);
 			$title = trim($_POST['title']);
 			$author = trim($_POST['author']);
 			$publisher = trim($_POST['publisher']);
@@ -176,6 +176,9 @@ class SiteController extends Controller
 			$callnumber = trim($_POST['callnumber']);
 			$bibid = trim($_POST['bibid']);
 			$isbn = trim($_POST['isbn']);
+			$pagesize = trim($_POST['pagesize']);
+			$token = trim($_POST['token']);
+			$apikey = trim($_POST['apikey']);
 			
 			InlisSearchs::insertSearch($_POST, 1);
 			
@@ -194,7 +197,7 @@ class SiteController extends Controller
 			$dataProvider = new CActiveDataProvider('SyncCatalogs', array(
 				'criteria'=>$criteria,
 				'pagination'=>array(
-					'pageSize'=>20,
+					'pageSize'=>$pagesize != null && $pagesize != '' ? $pagesize : 20,
 				),
 			));			
 			$model = $dataProvider->getData();
@@ -340,6 +343,7 @@ class SiteController extends Controller
 		if(Yii::app()->request->isPostRequest) {
 			$type = trim($_POST['type']);
 			$query = trim($_POST['query']);
+			$pagesize = trim($_POST['pagesize']);
 			
 			$criteria=new CDbCriteria;
 			$criteria->select = array('t.catalog_id','t.bookmark_unique','t.favourite_unique','t.like_unique','t.view_unique');
@@ -352,11 +356,34 @@ class SiteController extends Controller
 			else if($type == 'like')
 				$criteria->order = 't.like_unique DESC';
 			
-			if(($query == null && $query == '') || $query == 'large') {
+			if($query != null && $query != '' && $query == 'small') {
+				$criteria->limit = $pagesize != null && $pagesize != '' ? $pagesize : 10;
+				$model = ViewInlisCatalogs::model()->findAll($criteria);
+			
+				$data = '';
+				if(!empty($model)) {
+					foreach($model as $key => $item) {
+						$path = '/uploaded_files/sampul_koleksi/original/'.$item->catalog->worksheet->Name;
+						$cover = Yii::app()->params['inlis_address'].$path.'/'.$item->catalog->CoverURL;
+						
+						$data[] = array(
+							'catalog_id'=>$item->catalog_id,
+							'count'=>$type != 'view' ? ($type != 'bookmark' ? ($type == 'favourite' ? $item->favourite_unique : $item->like_unique) : $item->bookmark_unique) : $item->view_unique,
+							'title'=>$item->catalog->Title != null && $item->catalog->Title != '' ? $item->catalog->Title : '-',
+							'author'=>$item->catalog->Author != null && $item->catalog->Author != '' ? $item->catalog->Author : '-',
+							'publish_year'=>$item->catalog->PublishYear != null && $item->catalog->PublishYear != '' ? $item->catalog->PublishYear : '-',
+							'cover'=>$item->catalog->CoverURL != null && $item->catalog->CoverURL != '' ? (file_exists($cover) ? $cover : '-') : '-',
+						);
+					}
+				} else
+					$data = array();
+				$return = $data;
+				
+			} else {
 				$dataProvider = new CActiveDataProvider('ViewInlisCatalogs', array(
 					'criteria'=>$criteria,
 					'pagination'=>array(
-						'pageSize'=>20,
+						'pageSize'=>$pagesize != null && $pagesize != '' ? $pagesize : 20,
 					),
 				));			
 				$model = $dataProvider->getData();
@@ -386,29 +413,6 @@ class SiteController extends Controller
 					'pager' => $pager,
 					'nextPager' => $nextPager,
 				);
-				
-			} else {
-				$criteria->limit = 10;
-				$model = ViewInlisCatalogs::model()->findAll($criteria);
-			
-				$data = '';
-				if(!empty($model)) {
-					foreach($model as $key => $item) {
-						$path = '/uploaded_files/sampul_koleksi/original/'.$item->catalog->worksheet->Name;
-						$cover = Yii::app()->params['inlis_address'].$path.'/'.$item->catalog->CoverURL;
-						
-						$data[] = array(
-							'catalog_id'=>$item->catalog_id,
-							'count'=>$type != 'view' ? ($type != 'bookmark' ? ($type == 'favourite' ? $item->favourite_unique : $item->like_unique) : $item->bookmark_unique) : $item->view_unique,
-							'title'=>$item->catalog->Title != null && $item->catalog->Title != '' ? $item->catalog->Title : '-',
-							'author'=>$item->catalog->Author != null && $item->catalog->Author != '' ? $item->catalog->Author : '-',
-							'publish_year'=>$item->catalog->PublishYear != null && $item->catalog->PublishYear != '' ? $item->catalog->PublishYear : '-',
-							'cover'=>$item->catalog->CoverURL != null && $item->catalog->CoverURL != '' ? (file_exists($cover) ? $cover : '-') : '-',
-						);
-					}
-				} else
-					$data = array();
-				$return = $data;
 			}
 			
 			echo CJSON::encode($return);

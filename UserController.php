@@ -102,20 +102,14 @@ class UserController extends Controller
 					$return['success'] = '0';
 					$return['error'] = 'USER_ENABLE';
 					$return['message'] = 'error, member sudah terdaftar silahkan login';
-				}
-				//$image = '/uploaded_files/foto_anggota/'.$model->PicPath;
-				//$photo = Yii::app()->params['inlis_address'].$image;
-				
+				}				
 				$return['member_id'] = $model->ID;
-				$return['member_number'] = $model->MemberNo;
+				$return['member_number'] = trim($model->MemberNo);
 				$return['fullname'] = ucwords(strtolower(trim($model->Fullname)));
-				$return['email'] = $model->Email != null && $model->Email != '' ? $model->Email : '-';
-				$return['phone_number'] = $model->NoHp != null && $model->NoHp != '' ? $model->NoHp : '-';
+				$return['email'] = $model->Email != null && $model->Email != '' ? strtoupper(trim($model->Email)) : '-';
+				$return['phone_number'] = $model->NoHp != null && $model->NoHp != '' ? trim($model->NoHp) : '-';
 				$return['status'] = strtoupper(trim($model->StatusAnggota));
 				$return['member_type'] = strtoupper(trim($model->JenisAnggota));
-				//$return['address'] = ucwords(strtolower(trim($model->Address)));
-				//$return['photo'] = $model->PicPath != null && $model->PicPath != '' ? (file_exists($photo) ? $photo : '-') : '-';
-				//$return['birthday'] = $model->PlaceOfBirth != '' ? ucwords(strtolower(trim($model->PlaceOfBirth.', '.Utility::dateFormat($model->DateOfBirth)))) : Utility::dateFormat($model->DateOfBirth);
 			} else {
 				$return['success'] = '0';
 				$return['error'] = 'MEMBER_NULL';
@@ -172,6 +166,7 @@ class UserController extends Controller
 				$return['error'] = 'USER_EMAIL_ENABLE';
 				$return['message'] = 'error, email sudah terdaftar sebagai member';
 			}
+			
 			echo CJSON::encode($return);
 			
 		} else
@@ -218,13 +213,14 @@ class UserController extends Controller
 				$photo = Yii::app()->params['inlis_address'].$image;
 				
 				$return->member_id = $member != null ? $member->member->ID : '-';
-				$return->member_number = $member != null ? $member->member->MemberNo : '-';
+				$return->member_number = $member != null ? trim($member->member->MemberNo) : '-';
 				$return->address = $member != null ? ucwords(strtolower(trim($member->member->Address))) : '-';
 				$return->photo = $member != null ? ($member->member->PicPath != null && $member->member->PicPath != '' ? (file_exists($photo) ? $photo : '-') : '-') : '-';
-				$return->birthday = $member != null ? ($member->member->PlaceOfBirth != '' ? ucwords(strtolower(trim($member->member->PlaceOfBirth.', '.Utility::dateFormat($member->member->DateOfBirth)))) : Utility::dateFormat($member->member->DateOfBirth)) : '-';
-				$return->phone_number = $member != null ? ($member->member->NoHp != null && $member->member->NoHp != '' ? $member->member->NoHp : '-') : '-';
+				$return->birthday = $member != null ? ($member->member->PlaceOfBirth != '' ? ucwords(strtolower(trim($member->member->PlaceOfBirth.', '.Utility::dateFormat($member->member->DateOfBirth)))) : ucwords(strtolower(Utility::dateFormat($member->member->DateOfBirth)))) : '-';
+				$return->phone_number = $member != null ? ($member->member->NoHp != null && $member->member->NoHp != '' ? trim($member->member->NoHp) : '-') : '-';
 				$return->status = $member != null ? strtoupper(trim($member->member->StatusAnggota)) : '-';
 				$return->member_type = $member != null ? strtoupper(trim($member->member->JenisAnggota)) : '-';
+				$return->change_password = $member != null ? $member->change_password : '-';
 			}
 			echo CJSON::encode($return);
 			
@@ -241,8 +237,9 @@ class UserController extends Controller
 			$token = trim($_POST['token']);
 			$password = trim($_POST['password']);
 			$newpassword = trim($_POST['newpassword']);
-			$confirmpassword = trim($_POST['confirmpassword']);
+			$confirmpassword = trim($_POST['confirmpassword']);			
 			
+			$user = ViewUsers::model()->findByAttributes(array('token_password' => $token));
 			$url = Utility::getProtocol().'://'.Yii::app()->request->serverName.Yii::app()->createUrl('users/api/member/changepassword');		
 			$item = array(
 				'token' => $token,
@@ -260,7 +257,6 @@ class UserController extends Controller
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $items);
 			$output=curl_exec($ch);
 			
-			$return = '';
 			if($output === false) {
 				$return['success'] = '0';
 				$return['error'] = 'NETWORK_NOTCONENCT';
@@ -268,14 +264,14 @@ class UserController extends Controller
 				
 			} else {
 				$object = json_decode($output);
-				if($object->success == 1) {
-					$member = InlisUsers::model()->findByAttributes(array('user_id' => $user));
-					if($member != null) {
-						$member->change_password = '1';
-						$member->save();
-					}					
-				}
 				$return = $object;
+				if($object->success == 1) {
+					$member = InlisUsers::model()->findByAttributes(array('user_id' => $user->user_id));
+					if($member != null && $member->change_password == 0) {
+						$member->change_password = 1;
+						$member->save();
+					}
+				}				
 			}
 			echo CJSON::encode($return);
 			
