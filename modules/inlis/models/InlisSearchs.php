@@ -403,6 +403,26 @@ class InlisSearchs extends CActiveRecord
 		
 		return true;
 	}
+	
+	/**
+	 * Lists all models.
+	 */
+	public static function getKeyword($data, $type=null) 
+	{
+		$keyword = '';
+		$type = $type != null ? $type : 0;
+		if($type == 0)
+			$keyword = ucwords(strtolower(trim($data['keyword']))).' ('.$data['category'].'), '.SyncWorksheets::getInfo($data['worksheet'], 'Name').' (worksheet)';
+			
+		else {
+			foreach($data as $key => $val) {
+				if($val != '')
+					$keyword .= ucwords(strtolower(trim($val))).' ('.$key.') ';
+			}
+		}
+		
+		return trim($keyword);
+	}
 
 	/**
 	 * before validate attributes
