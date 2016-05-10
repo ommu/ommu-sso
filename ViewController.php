@@ -163,44 +163,46 @@ class ViewController extends Controller
 	public function actionRun()
 	{
 		if(Yii::app()->request->isPostRequest) {
-			$token = trim($_POST['token']);
 			$id = trim($_POST['id']);
+			$token = trim($_POST['token']);
+			$apikey = trim($_POST['apikey']);
 			
-			if($id != null && $id != '') {
+			if($id != null && $id != '' && $id != 0) {
 				$model=InlisViews::model()->findByPk($id);
 				
 				if($model != null && $model->publish == 1) {
-					if($model->user->view->token_password == $token) {
+					if($model->user->view->token_password == $token || $model->device->android_id == $apikey) {
 						$model->publish = 0;
 						if($model->update()) {
 							$return = array(
-								'success'=>'1',
+								'success'=>1,
 								'message'=>'success, view berhasil dihapus',
 							);
 						} else {
 							$return = array(
-								'success'=>'0',
+								'success'=>0,
+								'error'=>'VIEW_NOT_UPDATE',
 								'message'=>'success, view tidak berhasil dihapus',
 							);							
 						}
 					} else {
 						$return = array(
-							'success'=>'0',
-							'error'=>'USERERROR',
+							'success'=>0,
+							'error'=>'USER_ERROR',
 							'message'=>'error, user tidak diizinkan untuk menghapus',
 						);						
 					}
 				} else {
 					$return = array(
-						'success'=>'0',
-						'error'=>'NULL',
-						'message'=>'error, view tidak dalam kondisi view',
+						'success'=>0,
+						'error'=>'VIEW_IS_NULL',
+						'message'=>'error, view tidak dalam kondisi publish',
 					);
 				}
 			} else {
 				$return = array(
-					'success'=>'0',
-					'error'=>'IDNULL',
+					'success'=>0,
+					'error'=>'VIEW_IS_NULL',
 					'message'=>'error, id tidak ditemukan',
 				);				
 			}

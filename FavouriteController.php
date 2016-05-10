@@ -166,22 +166,24 @@ class FavouriteController extends Controller
 			$id = trim($_POST['id']);
 			$catalog = trim($_POST['catalog']);
 			$token = trim($_POST['token']);
+			$apikey = trim($_POST['apikey']);
 			
-			if($id != null && $id != '') {
+			if($id != null && $id != '' && $id != 0) {
 				$model=InlisFavourites::model()->findByPk($id);
 				
-				if($model != null && $model->publish == 1 && $model->user->view->token_password == $token) {
+				if($model != null && $model->publish == 1 && ($model->user->view->token_password == $token || $model->device->android_id == $apikey)) {
 					$model->publish = 0;
 					if($model->update()) {
 						$return = array(
-							'success'=>'1',
-							'message'=>'success, bookmark berhasil dihapus',
+							'success'=>1,
+							'result'=>0,
+							'message'=>'success, favourite berhasil dihapus',
 						);						
 					}
 				} else
-					$return = $this->toggle($catalog, $token);
+					$return = $this->toggle($_POST);
 			} else
-				$return = $this->toggle($catalog, $token);
+				$return = $this->toggle($_POST);
 			
 			echo CJSON::encode($return);
 			
@@ -192,13 +194,19 @@ class FavouriteController extends Controller
 	/**
 	 * Lists all models.
 	 */
-	public function toggle($catalog, $token)
+	public function toggle($post)
 	{
+		$catalog = trim($post['catalog']);
+		$token = trim($post['token']);
+		$apikey = trim($post['apikey']);
+		
 		$user = ViewUsers::model()->findByAttributes(array('token_password' => $token), array(
 			'select' => 'user_id',
 		));
-		
-		if($user != null) {
+		$device = UserDevice::model()->findByAttributes(array('android_id' => $apikey), array(
+			'select' => 'id, user_id',
+		));
+		if($user != null || $device != null) {
 			$criteria=new CDbCriteria;
 			$criteria->with = array(
 				'user.view' => array(
@@ -207,44 +215,56 @@ class FavouriteController extends Controller
 			);
 			$criteria->compare('t.publish',1);
 			$criteria->compare('t.catalog_id',$catalog);
-			//$criteria->compare('view.token_password',$token);
-			$criteria->compare('t.user_id',$user->user_id);
+			if($token != null && $token != '')
+				$criteria->compare('t.user_id',$user->user_id);				
+			else
+				$criteria->compare('t.device_id',$device->id);
 			$model = InlisFavourites::model()->find($criteria);
-			
+		
 			if($model != null) {
 				$model->publish = 0;
 				if($model->save()) {
 					$return = array(
-						'success'=>'1',
+						'success'=>1,
+						'result'=>0,
 						'message'=>'success, favourite berhasil dihapus',
-					);					
+					);
 				} else {
 					$return = array(
-						'success'=>'0',
+						'success'=>0,
+						'error'=>'FAVOURITE_NOT_UPDATE',
 						'message'=>'error, favourite gagal diperbarui',
 					);
 				}
 			} else {
 				$favourite=new InlisFavourites;
 				$favourite->catalog_id = $catalog;
-				$favourite->user_id = $user->user_id;
+				if($token != null && $token != '')
+					$favourite->user_id = $user->user_id;
+				else {
+					if($device->user_id != 0)
+						$favourite->user_id = $device->user_id;
+					$favourite->device_id = $device->id;
+				}
 				if($favourite->save()) {
 					$return = array(
-						'success'=>'1',
+						'success'=>1,
+						'result'=>$favourite->favourite_id,
 						'message'=>'success, favourite berhasil ditambahkan',
-					);					
+					);
 				} else {
 					$return = array(
-						'success'=>'0',
-						'message'=>'error, favourite gagal diperbarui',
+						'success'=>0,
+						'error'=>'FAVOURITE_NOT_SAVE',
+						'message'=>'error, favourite gagal ditambahkan',
 					);
 				}
 			}
 			
 		} else {
 			$return = array(
-				'success'=>'0',
-				'error'=>'USERNULL',
+				'success'=>0,
+				'error'=>'USER_NULL',
 				'message'=>'error, user tidak ditemukan',
 			);
 		}

@@ -166,22 +166,24 @@ class BookmarkController extends Controller
 			$id = trim($_POST['id']);
 			$catalog = trim($_POST['catalog']);
 			$token = trim($_POST['token']);
+			$apikey = trim($_POST['apikey']);
 			
-			if($id != null && $id != '') {
+			if($id != null && $id != '' && $id != 0) {
 				$model=InlisBookmarks::model()->findByPk($id);
 				
-				if($model != null && $model->publish == 1 && $model->user->view->token_password == $token) {
+				if($model != null && $model->publish == 1 && ($model->user->view->token_password == $token || $model->device->android_id == $apikey)) {
 					$model->publish = 0;
 					if($model->update()) {
 						$return = array(
-							'success'=>'1',
+							'success'=>1,
+							'result'=>0,
 							'message'=>'success, bookmark berhasil dihapus',
 						);						
 					}
 				} else
-					$return = $this->toggle($catalog, $token);
+					$return = $this->toggle($_POST);
 			} else
-				$return = $this->toggle($catalog, $token);
+				$return = $this->toggle($_POST);
 			
 			echo CJSON::encode($return);
 			
@@ -192,13 +194,19 @@ class BookmarkController extends Controller
 	/**
 	 * Lists all models.
 	 */
-	public function toggle($catalog, $token)
+	public function toggle($post)
 	{
+		$catalog = trim($post['catalog']);
+		$token = trim($post['token']);
+		$apikey = trim($post['apikey']);
+		
 		$user = ViewUsers::model()->findByAttributes(array('token_password' => $token), array(
 			'select' => 'user_id',
 		));
-		
-		if($user != null) {		
+		$device = UserDevice::model()->findByAttributes(array('android_id' => $apikey), array(
+			'select' => 'id, user_id',
+		));
+		if($user != null || $device != null) {
 			$criteria=new CDbCriteria;
 			$criteria->with = array(
 				'user.view' => array(
@@ -207,43 +215,56 @@ class BookmarkController extends Controller
 			);
 			$criteria->compare('t.publish',1);
 			$criteria->compare('t.catalog_id',$catalog);
-			//$criteria->compare('view.token_password',$token);
-			$criteria->compare('t.user_id',$user->user_id);
+			if($token != null && $token != '')
+				$criteria->compare('t.user_id',$user->user_id);				
+			else
+				$criteria->compare('t.device_id',$device->id);
 			$model = InlisBookmarks::model()->find($criteria);
 		
 			if($model != null) {
 				$model->publish = 0;
 				if($model->save()) {
 					$return = array(
-						'success'=>'1',
+						'success'=>1,
+						'result'=>0,
 						'message'=>'success, bookmark berhasil dihapus',
 					);
 				} else {
 					$return = array(
-						'success'=>'0',
+						'success'=>0,
+						'error'=>'BOOKMARK_NOT_UPDATE',
 						'message'=>'error, bookmark gagal diperbarui',
 					);
 				}
 			} else {
 				$bookmark=new InlisBookmarks;
 				$bookmark->catalog_id = $catalog;
-				$bookmark->user_id = $user->user_id;
+				if($token != null && $token != '')
+					$bookmark->user_id = $user->user_id;
+				else {
+					if($device->user_id != 0)
+						$bookmark->user_id = $device->user_id;
+					$bookmark->device_id = $device->id;
+				}
 				if($bookmark->save()) {
 					$return = array(
-						'success'=>'1',
+						'success'=>1,
+						'result'=>$bookmark->bookmark_id,
 						'message'=>'success, bookmark berhasil ditambahkan',
 					);
 				} else {
 					$return = array(
 						'success'=>'0',
-						'message'=>'error, bookmark gagal diperbarui',
+						'error'=>'BOOKMARK_NOT_SAVE',
+						'message'=>'error, bookmark gagal ditambahkan',
 					);					
 				}					
-			}			
+			}
+			
 		} else {
 			$return = array(
 				'success'=>'0',
-				'error'=>'USERNULL',
+				'error'=>'USER_NULL',
 				'message'=>'error, user tidak ditemukan',
 			);
 		}
