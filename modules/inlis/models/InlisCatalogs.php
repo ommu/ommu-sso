@@ -261,6 +261,18 @@ class InlisCatalogs extends CActiveRecord
 	/**
 	 * User get information
 	 */
+	public static function getShareUrl($id, $t=null)
+	{
+		if($t != null && $t != '' && $t != '-')
+			return Utility::getProtocol().'://'.Yii::app()->request->serverName.Yii::app()->controller->createUrl('site/detail', array('id'=>$id, 't'=>Utility::getUrlTitle($t)));
+		else
+			return Utility::getProtocol().'://'.Yii::app()->request->serverName.Yii::app()->controller->createUrl('site/detail', array('id'=>$id));
+			
+	}
+
+	/**
+	 * User get information
+	 */
 	public static function getInfo($id, $column=null)
 	{
 		if($column != null) {
