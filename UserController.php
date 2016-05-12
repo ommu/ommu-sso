@@ -206,21 +206,23 @@ class UserController extends Controller
 				$object = json_decode($output);
 				$return = $object;
 				
-				$user = ViewUsers::model()->findByAttributes(array('token_password' => $object->token));
-				$member = InlisUsers::model()->findByAttributes(array('user_id' => $user->user_id));
-				
-				$image = '/uploaded_files/foto_anggota/'.$member->member->PicPath;
-				$photo = Yii::app()->params['inlis_address'].$image;
-				
-				$return->member_id = $member != null ? $member->member->ID : '-';
-				$return->member_number = $member != null ? trim($member->member->MemberNo) : '-';
-				$return->address = $member != null ? ucwords(strtolower(trim($member->member->Address))) : '-';
-				$return->photo = $member != null ? ($member->member->PicPath != null && $member->member->PicPath != '' ? (file_exists($photo) ? $photo : '-') : '-') : '-';
-				$return->birthday = $member != null ? ($member->member->PlaceOfBirth != '' ? ucwords(strtolower(trim($member->member->PlaceOfBirth.', '.Utility::dateFormat($member->member->DateOfBirth)))) : ucwords(strtolower(Utility::dateFormat($member->member->DateOfBirth)))) : '-';
-				$return->phone_number = $member != null ? ($member->member->NoHp != null && $member->member->NoHp != '' ? trim($member->member->NoHp) : '-') : '-';
-				$return->status = $member != null ? strtoupper(trim($member->member->StatusAnggota)) : '-';
-				$return->member_type = $member != null ? strtoupper(trim($member->member->JenisAnggota)) : '-';
-				$return->change_password = $member != null ? $member->change_password : '-';
+				if($object->success == 1) {
+					$user = ViewUsers::model()->findByAttributes(array('token_password' => $object->token));
+					$member = InlisUsers::model()->findByAttributes(array('user_id' => $user->user_id));
+					
+					$image = '/uploaded_files/foto_anggota/'.$member->member->PicPath;
+					$photo = Yii::app()->params['inlis_address'].$image;
+					
+					$return->member_id = $member != null ? $member->member->ID : '-';
+					$return->member_number = $member != null ? trim($member->member->MemberNo) : '-';
+					$return->address = $member != null ? ucwords(strtolower(trim($member->member->Address))) : '-';
+					$return->photo = $member != null ? ($member->member->PicPath != null && $member->member->PicPath != '' ? (file_exists($photo) ? $photo : '-') : '-') : '-';
+					$return->birthday = $member != null ? ($member->member->PlaceOfBirth != '' ? ucwords(strtolower(trim($member->member->PlaceOfBirth.', '.Utility::dateFormat($member->member->DateOfBirth)))) : ucwords(strtolower(Utility::dateFormat($member->member->DateOfBirth)))) : '-';
+					$return->phone_number = $member != null ? ($member->member->NoHp != null && $member->member->NoHp != '' ? trim($member->member->NoHp) : '-') : '-';
+					$return->status = $member != null ? strtoupper(trim($member->member->StatusAnggota)) : '-';
+					$return->member_type = $member != null ? strtoupper(trim($member->member->JenisAnggota)) : '-';
+					$return->change_password = $member != null ? $member->change_password : '-';
+				}
 			}
 			echo CJSON::encode($return);
 			
