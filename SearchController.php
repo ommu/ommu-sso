@@ -109,7 +109,7 @@ class SearchController extends Controller
 					$criteria->compare('t.device_id',$device->id);
 			}
 			$criteria->group = 't.search_key';
-			$criteria->order = 't.creation_date DESC';
+			$criteria->order = 't.search_id DESC';
 			
 			if($toolbar != null && $toolbar != '' && $toolbar == 'true') {
 				$criteria->limit = $pagesize != null && $pagesize != '' ? $pagesize : 5;

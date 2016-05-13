@@ -89,7 +89,7 @@ class CollectionController extends Controller
 			$id = trim($_POST['id']);
 			
 			$criteria=new CDbCriteria;
-			$criteria->select = array('ID','Title','Catalog_id','Location_id','Worksheet_id','Status');
+			$criteria->select = array('ID','NoInduk','Title','Catalog_id','Location_id','Worksheet_id','NomorBarcode','Status');
 			$criteria->compare('t.Catalog_id',$id);
 
 			/*
@@ -142,7 +142,7 @@ class CollectionController extends Controller
 		if(Yii::app()->request->isPostRequest) {
 			$id = trim($_POST['id']);
 			
-			$model=$this->loadModel($id);
+			$model = SyncCollections::model()->findByPk($id);
 			
 			if(!empty($model)) {
 				$return = array(

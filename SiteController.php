@@ -121,6 +121,7 @@ class SiteController extends Controller
 				$criteria->compare('t.Worksheet_id',$worksheet);
 			
 			$criteria->compare('t.IsOPAC',1);
+			$criteria->order = 't.ID DESC';
 			
 			$dataProvider = new CActiveDataProvider('SyncCatalogs', array(
 				'criteria'=>$criteria,
@@ -199,6 +200,7 @@ class SiteController extends Controller
 			$criteria->compare('t.BIBID',strtolower($bibid),true);
 			$criteria->compare('t.ISBN',strtolower($isbn),true);
 			$criteria->compare('t.IsOPAC',1);
+			$criteria->order = 't.ID DESC';
 
 			$dataProvider = new CActiveDataProvider('SyncCatalogs', array(
 				'criteria'=>$criteria,
@@ -257,9 +259,9 @@ class SiteController extends Controller
 			$token = trim($_POST['token']);
 			$apikey = trim($_POST['apikey']);
 			
-			$model=$this->loadModel($id);
+			$model = SyncCatalogs::model()->findByPk($id);
 			
-			if(!empty($model)) {
+			if($model != null) {
 				$path = '/uploaded_files/sampul_koleksi/original/'.$item->worksheet->Name;
 				$cover = Yii::app()->params['inlis_address'].$path.'/'.$item->CoverURL;
 				$title = $model->Title != null && $model->Title != '' ? $model->Title : '-';
@@ -287,7 +289,7 @@ class SiteController extends Controller
 					'bookmark'=>InlisBookmarks::getBookmark($_POST, $model->ID, true),
 					'favourite'=>InlisFavourites::getFavourite($_POST, $model->ID, true),
 					'like'=>InlisLikes::getLike($_POST, $model->ID, true),
-					'share'=>InlisCatalogs::getShareUrl($item->ID, $title),
+					'share'=>InlisCatalogs::getShareUrl($model->ID, $title),
 				);
 				if($token != null && $token != '') {
 					$user = ViewUsers::model()->findByAttributes(array('token_password' => $token), array(
