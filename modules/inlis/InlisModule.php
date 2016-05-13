@@ -24,13 +24,15 @@ class InlisModule extends CWebModule
 			//list public controller in this module
 			$publicControllers = array(
 				'site',
-				'api/user',
-				'api/site',
-				'api/collection',
-				'api/view',
 				'api/bookmark',
+				'api/collection',
 				'api/favourite',
 				'api/like',
+				'api/loan',
+				'api/search',
+				'api/site',
+				'api/user',
+				'api/view',
 			);
 			
 			// pake ini untuk set theme per action di controller..
