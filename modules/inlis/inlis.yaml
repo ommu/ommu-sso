@@ -52,7 +52,13 @@ plugin_menu		:
 				urlPath: {url: sync/collection/manage, attr: -, icon: -}		
 			- urlTitle: Member
 				urlRules: {siteType: 0,1, userLevel: 1,2}
-				urlPath: {url: sync/member/manage, attr: -, icon: -}
+				urlPath: {url: sync/member/manage, attr: -, icon: -}		
+			- urlTitle: Location
+				urlRules: {siteType: 0,1, userLevel: 1,2}
+				urlPath: {url: sync/location/manage, attr: -, icon: -}		
+			- urlTitle: Worksheet
+				urlRules: {siteType: 0,1, userLevel: 1,2}
+				urlPath: {url: sync/worksheet/manage, attr: -, icon: -}
 
 content_menu	:
 # controller sync/catalog
