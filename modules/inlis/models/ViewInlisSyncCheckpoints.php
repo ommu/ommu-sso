@@ -175,11 +175,12 @@ class ViewInlisSyncCheckpoints extends CActiveRecord
 	protected function afterConstruct() {
 		if(count($this->defaultColumns) == 0) {
 			$this->defaultColumns[] = array(
+				'header' => 'No',
+				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
+			);
+			$this->defaultColumns[] = array(
 				'name' => 'date_key',
 				'value' => 'Utility::dateFormat($data->date_key)',
-				'htmlOptions' => array(
-					'class' => 'center',
-				),
 				'filter' => Yii::app()->controller->widget('zii.widgets.jui.CJuiDatePicker', array(
 					'model'=>$this,
 					'attribute'=>'date_key',
@@ -200,9 +201,18 @@ class ViewInlisSyncCheckpoints extends CActiveRecord
 					),
 				), true),
 			);
-			$this->defaultColumns[] = 'checkpoints';
-			$this->defaultColumns[] = 'checkpoint_member';
-			$this->defaultColumns[] = 'checkpoint_non_member';
+			$this->defaultColumns[] = array(
+				'name' => 'checkpoints',
+				'value' => '$data->checkpoints != null ? $data->checkpoints : "-"',
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'checkpoint_member',
+				'value' => '$data->checkpoint_member != null ? $data->checkpoint_member : "-"',
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'checkpoint_non_member',
+				'value' => '$data->checkpoint_non_member != null ? $data->checkpoint_non_member : "-"',
+			);
 		}
 		parent::afterConstruct();
 	}

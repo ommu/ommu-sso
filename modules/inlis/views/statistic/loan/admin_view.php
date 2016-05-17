@@ -3,7 +3,6 @@
  * View Inlis Sync Collectionloans (view-inlis-sync-collectionloans)
  * @var $this LoanController
  * @var $model ViewInlisSyncCollectionloans
- * @var $form CActiveForm
  * version: 0.0.1
  *
  * @author Putra Sudaryanto <putra.sudaryanto@gmail.com>
@@ -16,11 +15,5 @@
 
 	$this->breadcrumbs=array(
 		'View Inlis Sync Collectionloans'=>array('manage'),
-		$model->date_key=>array('view','id'=>$model->date_key),
-		'Update',
 	);
 ?>
-
-<div class="form">
-	<?php echo $this->renderPartial('_form', array('model'=>$model)); ?>
-</div>

@@ -186,11 +186,12 @@ class ViewInlisSyncCollectionloans extends CActiveRecord
 	protected function afterConstruct() {
 		if(count($this->defaultColumns) == 0) {
 			$this->defaultColumns[] = array(
+				'header' => 'No',
+				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
+			);
+			$this->defaultColumns[] = array(
 				'name' => 'date_key',
 				'value' => 'Utility::dateFormat($data->date_key)',
-				'htmlOptions' => array(
-					'class' => 'center',
-				),
 				'filter' => Yii::app()->controller->widget('zii.widgets.jui.CJuiDatePicker', array(
 					'model'=>$this,
 					'attribute'=>'date_key',
@@ -211,11 +212,26 @@ class ViewInlisSyncCollectionloans extends CActiveRecord
 					),
 				), true),
 			);
-			$this->defaultColumns[] = 'loans';
-			$this->defaultColumns[] = 'loan_collection';
-			$this->defaultColumns[] = 'returns';
-			$this->defaultColumns[] = 'return_late';
-			$this->defaultColumns[] = 'return_collection';
+			$this->defaultColumns[] = array(
+				'name' => 'loans',
+				'value' => '$data->loans != null ? $data->loans : "-"',
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'loan_collection',
+				'value' => '$data->loan_collection != null ? $data->loan_collection : "-"',
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'returns',
+				'value' => '$data->returns != null ? $data->returns : "-"',
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'return_late',
+				'value' => '$data->return_late != null ? $data->return_late : "-"',
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'return_collection',
+				'value' => '$data->return_collection != null ? $data->return_collection : "-"',
+			);
 		}
 		parent::afterConstruct();
 	}

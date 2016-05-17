@@ -24,12 +24,6 @@ plugin_menu		:
 		urlRules: {siteType: 0,1, userLevel: 1,2}
 		urlPath: {url: -, attr: -, icon: -}
 		submenu :
-			- urlTitle: Searchs
-				urlRules: {siteType: 0,1, userLevel: 1,2}
-				urlPath: {url: o/search/manage, attr: -, icon: -}
-			- urlTitle: Views
-				urlRules: {siteType: 0,1, userLevel: 1,2}
-				urlPath: {url: o/view/manage, attr: -, icon: -}
 			- urlTitle: Bookmarks
 				urlRules: {siteType: 0,1, userLevel: 1}
 				urlPath: {url: o/bookmark/manage, attr: -, icon: -}
@@ -39,6 +33,12 @@ plugin_menu		:
 			- urlTitle: Favourites
 				urlRules: {siteType: 0,1, userLevel: 1}
 				urlPath: {url: o/favourite/manage, attr: -, icon: -}
+			- urlTitle: Searchs
+				urlRules: {siteType: 0,1, userLevel: 1,2}
+				urlPath: {url: o/search/manage, attr: -, icon: -}
+			- urlTitle: Views
+				urlRules: {siteType: 0,1, userLevel: 1,2}
+				urlPath: {url: o/view/manage, attr: -, icon: -}
 				
 	- urlTitle: Inlis Sync
 		urlRules: {siteType: 0,1, userLevel: 1,2}
@@ -59,6 +59,27 @@ plugin_menu		:
 			- urlTitle: Worksheet
 				urlRules: {siteType: 0,1, userLevel: 1,2}
 				urlPath: {url: sync/worksheet/manage, attr: -, icon: -}
+				
+	- urlTitle: Statistics
+		urlRules: {siteType: 0,1, userLevel: 1,2}
+		urlPath: {url: -, attr: -, icon: -}
+		submenu :
+			- urlTitle: Catalogs
+				urlRules: {siteType: 0,1, userLevel: 1}
+				urlPath: {url: statistic/catalog/view, attr: -, icon: -}
+			- urlTitle: Collections
+				urlRules: {siteType: 0,1, userLevel: 1}
+				urlPath: {url: statistic/collection/view, attr: -, icon: -}
+			- urlTitle: Checkpoints
+				urlRules: {siteType: 0,1, userLevel: 1}
+				urlPath: {url: statistic/checkpoint/view, attr: -, icon: -}
+			- urlTitle: Members
+				urlRules: {siteType: 0,1, userLevel: 1}
+				urlPath: {url: statistic/member/view, attr: -, icon: -}
+			- urlTitle: Loans
+				urlRules: {siteType: 0,1, userLevel: 1}
+				urlPath: {url: statistic/loan/view, attr: -, icon: -}
+
 
 content_menu	:
 # controller sync/catalog
@@ -76,4 +97,34 @@ content_menu	:
 		
 	- urlTitle: Back to Manage
 		urlRules: {inlis, sync/member, view, siteType: 0,1, userLevel: 1,2}
+		urlPath: {url: manage, attr: -, icon: -}
+		
+# controller statistic/catalog
+
+	- urlTitle: View Detail Statistic
+		urlRules: {inlis, statistic/catalog, view, siteType: 0,1, userLevel: 1,2}
+		urlPath: {url: manage, attr: -, icon: -}
+		
+# controller statistic/collection
+		
+	- urlTitle: View Detail Statistic
+		urlRules: {inlis, statistic/collection, view, siteType: 0,1, userLevel: 1,2}
+		urlPath: {url: manage, attr: -, icon: -}
+		
+# controller statistic/checkpoint
+		
+	- urlTitle: View Detail Statistic
+		urlRules: {inlis, statistic/checkpoint, view, siteType: 0,1, userLevel: 1,2}
+		urlPath: {url: manage, attr: -, icon: -}
+		
+# controller statistic/member
+		
+	- urlTitle: View Detail Statistic
+		urlRules: {inlis, statistic/member, view, siteType: 0,1, userLevel: 1,2}
+		urlPath: {url: manage, attr: -, icon: -}
+		
+# controller statistic/loan
+		
+	- urlTitle: View Detail Statistic
+		urlRules: {inlis, statistic/loan, view, siteType: 0,1, userLevel: 1,2}
 		urlPath: {url: manage, attr: -, icon: -}

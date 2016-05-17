@@ -195,11 +195,12 @@ class ViewInlisSyncMembers extends CActiveRecord
 	protected function afterConstruct() {
 		if(count($this->defaultColumns) == 0) {
 			$this->defaultColumns[] = array(
+				'header' => 'No',
+				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
+			);
+			$this->defaultColumns[] = array(
 				'name' => 'date_key',
 				'value' => 'Utility::dateFormat($data->date_key)',
-				'htmlOptions' => array(
-					'class' => 'center',
-				),
 				'filter' => Yii::app()->controller->widget('zii.widgets.jui.CJuiDatePicker', array(
 					'model'=>$this,
 					'attribute'=>'date_key',
@@ -220,13 +221,34 @@ class ViewInlisSyncMembers extends CActiveRecord
 					),
 				), true),
 			);
-			$this->defaultColumns[] = 'members';
-			$this->defaultColumns[] = 'member_siswa';
-			$this->defaultColumns[] = 'member_pelajar';
-			$this->defaultColumns[] = 'member_mahasiswa';
-			$this->defaultColumns[] = 'member_karyawan';
-			$this->defaultColumns[] = 'member_pegawai';
-			$this->defaultColumns[] = 'member_umum';
+			$this->defaultColumns[] = array(
+				'name' => 'members',
+				'value' => '$data->members != null ? $data->members : "-"',
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'member_siswa',
+				'value' => '$data->member_siswa != null ? $data->member_siswa : "-"',
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'member_pelajar',
+				'value' => '$data->member_pelajar != null ? $data->member_pelajar : "-"',
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'member_mahasiswa',
+				'value' => '$data->member_mahasiswa != null ? $data->member_mahasiswa : "-"',
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'member_karyawan',
+				'value' => '$data->member_karyawan != null ? $data->member_karyawan : "-"',
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'member_pegawai',
+				'value' => '$data->member_pegawai != null ? $data->member_pegawai : "-"',
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'member_umum',
+				'value' => '$data->member_umum != null ? $data->member_umum : "-"',
+			);
 		}
 		parent::afterConstruct();
 	}

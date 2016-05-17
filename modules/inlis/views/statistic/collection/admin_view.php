@@ -3,7 +3,6 @@
  * View Inlis Sync Collections (view-inlis-sync-collections)
  * @var $this CollectionController
  * @var $model ViewInlisSyncCollections
- * @var $dataProvider CActiveDataProvider
  * version: 0.0.1
  *
  * @author Putra Sudaryanto <putra.sudaryanto@gmail.com>
@@ -15,17 +14,6 @@
  */
 
 	$this->breadcrumbs=array(
-		'View Inlis Sync Collections',
+		'View Inlis Sync Collections'=>array('manage'),
 	);
 ?>
-
-<?php $this->widget('application.components.system.FListView', array(
-	'dataProvider'=>$dataProvider,
-	'itemView'=>'_view',
-	'pager' => array(
-		'header' => '',
-	), 
-	'summaryText' => '',
-	'itemsCssClass' => 'items clearfix',
-	'pagerCssClass'=>'pager clearfix',
-)); ?>

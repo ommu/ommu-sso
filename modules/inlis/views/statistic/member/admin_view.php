@@ -3,7 +3,6 @@
  * View Inlis Sync Members (view-inlis-sync-members)
  * @var $this MemberController
  * @var $model ViewInlisSyncMembers
- * @var $form CActiveForm
  * version: 0.0.1
  *
  * @author Putra Sudaryanto <putra.sudaryanto@gmail.com>
@@ -16,11 +15,5 @@
 
 	$this->breadcrumbs=array(
 		'View Inlis Sync Members'=>array('manage'),
-		$model->date_key=>array('view','id'=>$model->date_key),
-		'Update',
 	);
 ?>
-
-<div class="form">
-	<?php echo $this->renderPartial('_form', array('model'=>$model)); ?>
-</div>

@@ -3,7 +3,6 @@
  * View Inlis Sync Catalogs (view-inlis-sync-catalogs)
  * @var $this CatalogController
  * @var $model ViewInlisSyncCatalogs
- * @var $form CActiveForm
  * version: 0.0.1
  *
  * @author Putra Sudaryanto <putra.sudaryanto@gmail.com>
@@ -16,10 +15,5 @@
 
 	$this->breadcrumbs=array(
 		'View Inlis Sync Catalogs'=>array('manage'),
-		'Create',
 	);
 ?>
-
-<div class="form">
-	<?php echo $this->renderPartial('_form', array('model'=>$model)); ?>
-</div>

@@ -164,11 +164,12 @@ class ViewInlisSyncCollections extends CActiveRecord
 	protected function afterConstruct() {
 		if(count($this->defaultColumns) == 0) {
 			$this->defaultColumns[] = array(
+				'header' => 'No',
+				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
+			);
+			$this->defaultColumns[] = array(
 				'name' => 'date_key',
 				'value' => 'Utility::dateFormat($data->date_key)',
-				'htmlOptions' => array(
-					'class' => 'center',
-				),
 				'filter' => Yii::app()->controller->widget('zii.widgets.jui.CJuiDatePicker', array(
 					'model'=>$this,
 					'attribute'=>'date_key',
@@ -189,7 +190,10 @@ class ViewInlisSyncCollections extends CActiveRecord
 					),
 				), true),
 			);
-			$this->defaultColumns[] = 'collections';
+			$this->defaultColumns[] = array(
+				'name' => 'collections',
+				'value' => '$data->collections != null ? $data->collections : "-"',
+			);
 		}
 		parent::afterConstruct();
 	}
