@@ -18,7 +18,7 @@
  *	LoadModel
  *	performAjaxValidation
  *
- * @author Putra Sudaryanto <putra.sudaryanto@gmail.com>
+ * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @copyright Copyright (c) 2016 Ommu Platform (ommu.co)
  * @created date 29 March 2016, 15:15 WIB
  * @link http://company.ommu.co
@@ -110,7 +110,7 @@ class AdminController extends Controller
 	 * Manages all models.
 	 */
 	public function actionManage() 
-	{
+	{		
 		$model=new InlisCatalogs('search');
 		$model->unsetAttributes();  // clear any default values
 		if(isset($_GET['InlisCatalogs'])) {
