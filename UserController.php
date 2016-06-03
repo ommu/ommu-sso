@@ -182,49 +182,56 @@ class UserController extends Controller
 			$email = trim($_POST['email']);
 			$password = trim($_POST['password']);
 			
-			$url = Utility::getProtocol().'://'.Yii::app()->request->serverName.Yii::app()->createUrl('users/api/site/login');		
-			$item = array(
-				'email' => $email,
-				'password' => $password,
-			);
-			$items = http_build_query($item);
-		
-			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_URL, $url);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			//curl_setopt($ch,CURLOPT_HEADER, true);
-			curl_setopt($ch, CURLOPT_POST, true);
-			curl_setopt($ch, CURLOPT_POSTFIELDS, $items);
-			$output=curl_exec($ch);
+			$server = InlisUtility::getConnected();
+			if($server != 'neither-connected') {			
+				$url = $server.Yii::app()->createUrl('users/api/site/login');
+				echo $url;
+				exit();
+				$item = array(
+					'email' => $email,
+					'password' => $password,
+				);
+				$items = http_build_query($item);
 			
-			if($output === false) {
-				$return['success'] = '0';
-				$return['error'] = 'NETWORK_NOTCONENCT';
-				$return['message'] = 'error, not connected';
+				$ch = curl_init();
+				curl_setopt($ch, CURLOPT_URL, $url);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+				//curl_setopt($ch,CURLOPT_HEADER, true);
+				curl_setopt($ch, CURLOPT_POST, true);
+				curl_setopt($ch, CURLOPT_POSTFIELDS, $items);
+				$output=curl_exec($ch);
 				
-			} else {
-				$object = json_decode($output);
-				$return = $object;
-				
-				if($object->success == 1) {
-					$user = ViewUsers::model()->findByAttributes(array('token_password' => $object->token));
-					$member = InlisUsers::model()->findByAttributes(array('user_id' => $user->user_id));
+				if($output === false) {
+					$return['success'] = '0';
+					$return['error'] = 'NETWORK_NOTCONENCT';
+					$return['message'] = 'error, not connected';
 					
-					$image = '/uploaded_files/foto_anggota/'.$member->member->PicPath;
-					$photo = Yii::app()->params['inlis_address'].$image;
+				} else {
+					$object = json_decode($output);
+					$return = $object;
 					
-					$return->member_id = $member != null ? $member->member->ID : '-';
-					$return->member_number = $member != null ? trim($member->member->MemberNo) : '-';
-					$return->address = $member != null ? ucwords(strtolower(trim($member->member->Address))) : '-';
-					$return->photo = $member != null ? ($member->member->PicPath != null && $member->member->PicPath != '' ? (file_exists($photo) ? $photo : '-') : '-') : '-';
-					$return->birthday = $member != null ? ($member->member->PlaceOfBirth != '' ? ucwords(strtolower(trim($member->member->PlaceOfBirth.', '.Utility::dateFormat($member->member->DateOfBirth)))) : ucwords(strtolower(Utility::dateFormat($member->member->DateOfBirth)))) : '-';
-					$return->phone_number = $member != null ? ($member->member->NoHp != null && $member->member->NoHp != '' ? trim($member->member->NoHp) : '-') : '-';
-					$return->status = $member != null ? strtoupper(trim($member->member->StatusAnggota)) : '-';
-					$return->member_type = $member != null ? strtoupper(trim($member->member->JenisAnggota)) : '-';
-					$return->change_password = $member != null ? $member->change_password : '-';
+					if($object->success == 1) {
+						$user = ViewUsers::model()->findByAttributes(array('token_password' => $object->token));
+						$member = InlisUsers::model()->findByAttributes(array('user_id' => $user->user_id));
+						
+						$image = '/uploaded_files/foto_anggota/'.$member->member->PicPath;
+						$photo = Yii::app()->params['inlis_address'].$image;
+						
+						$return->member_id = $member != null ? $member->member->ID : '-';
+						$return->member_number = $member != null ? trim($member->member->MemberNo) : '-';
+						$return->address = $member != null ? ucwords(strtolower(trim($member->member->Address))) : '-';
+						$return->photo = $member != null ? ($member->member->PicPath != null && $member->member->PicPath != '' ? (file_exists($photo) ? $photo : '-') : '-') : '-';
+						$return->birthday = $member != null ? ($member->member->PlaceOfBirth != '' ? ucwords(strtolower(trim($member->member->PlaceOfBirth.', '.Utility::dateFormat($member->member->DateOfBirth)))) : ucwords(strtolower(Utility::dateFormat($member->member->DateOfBirth)))) : '-';
+						$return->phone_number = $member != null ? ($member->member->NoHp != null && $member->member->NoHp != '' ? trim($member->member->NoHp) : '-') : '-';
+						$return->status = $member != null ? strtoupper(trim($member->member->StatusAnggota)) : '-';
+						$return->member_type = $member != null ? strtoupper(trim($member->member->JenisAnggota)) : '-';
+						$return->change_password = $member != null ? $member->change_password : '-';
+					}
 				}
-			}
-			echo CJSON::encode($return);
+				echo CJSON::encode($return);
+
+			} else
+				return false;
 			
 		} else
 			$this->redirect(Yii::app()->createUrl('site/index'));
@@ -239,43 +246,48 @@ class UserController extends Controller
 			$token = trim($_POST['token']);
 			$password = trim($_POST['password']);
 			$newpassword = trim($_POST['newpassword']);
-			$confirmpassword = trim($_POST['confirmpassword']);			
+			$confirmpassword = trim($_POST['confirmpassword']);	
 			
-			$user = ViewUsers::model()->findByAttributes(array('token_password' => $token));
-			$url = Utility::getProtocol().'://'.Yii::app()->request->serverName.Yii::app()->createUrl('users/api/member/changepassword');		
-			$item = array(
-				'token' => $token,
-				'password' => $password,
-				'newpassword' => $newpassword,
-				'confirmpassword' => $confirmpassword,
-			);
-			$items = http_build_query($item);
-		
-			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_URL, $url);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			//curl_setopt($ch,CURLOPT_HEADER, true);
-			curl_setopt($ch, CURLOPT_POST, true);
-			curl_setopt($ch, CURLOPT_POSTFIELDS, $items);
-			$output=curl_exec($ch);
+			$server = InlisUtility::getConnected();
+			if($server != 'neither-connected') {
+				$user = ViewUsers::model()->findByAttributes(array('token_password' => $token));
+				$url = $server.Yii::app()->createUrl('users/api/member/changepassword');			
+				$item = array(
+					'token' => $token,
+					'password' => $password,
+					'newpassword' => $newpassword,
+					'confirmpassword' => $confirmpassword,
+				);
+				$items = http_build_query($item);
 			
-			if($output === false) {
-				$return['success'] = '0';
-				$return['error'] = 'NETWORK_NOTCONENCT';
-				$return['message'] = 'error, not connected';
+				$ch = curl_init();
+				curl_setopt($ch, CURLOPT_URL, $url);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+				//curl_setopt($ch,CURLOPT_HEADER, true);
+				curl_setopt($ch, CURLOPT_POST, true);
+				curl_setopt($ch, CURLOPT_POSTFIELDS, $items);
+				$output=curl_exec($ch);
 				
-			} else {
-				$object = json_decode($output);
-				$return = $object;
-				if($object->success == 1) {
-					$member = InlisUsers::model()->findByAttributes(array('user_id' => $user->user_id));
-					if($member != null && $member->change_password == 0) {
-						$member->change_password = 1;
-						$member->save();
-					}
-				}				
-			}
-			echo CJSON::encode($return);
+				if($output === false) {
+					$return['success'] = '0';
+					$return['error'] = 'NETWORK_NOTCONENCT';
+					$return['message'] = 'error, not connected';
+					
+				} else {
+					$object = json_decode($output);
+					$return = $object;
+					if($object->success == 1) {
+						$member = InlisUsers::model()->findByAttributes(array('user_id' => $user->user_id));
+						if($member != null && $member->change_password == 0) {
+							$member->change_password = 1;
+							$member->save();
+						}
+					}				
+				}
+				echo CJSON::encode($return);
+				
+			} else
+				return false;
 			
 		} else
 			$this->redirect(Yii::app()->createUrl('site/index'));
