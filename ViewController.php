@@ -176,34 +176,34 @@ class ViewController extends Controller
 						if($model->update()) {
 							$return = array(
 								'success'=>1,
-								'message'=>'success, view berhasil dihapus',
+								'message'=>Yii::t('phrase', 'success, view berhasil dihapus'),
 							);
 						} else {
 							$return = array(
 								'success'=>0,
 								'error'=>'VIEW_NOT_UPDATE',
-								'message'=>'success, view tidak berhasil dihapus',
+								'message'=>Yii::t('phrase', 'success, view tidak berhasil dihapus'),
 							);							
 						}
 					} else {
 						$return = array(
 							'success'=>0,
 							'error'=>'USER_ERROR',
-							'message'=>'error, user tidak diizinkan untuk menghapus',
+							'message'=>Yii::t('phrase', 'error, user tidak diizinkan untuk menghapus'),
 						);						
 					}
 				} else {
 					$return = array(
 						'success'=>0,
 						'error'=>'VIEW_IS_NULL',
-						'message'=>'error, view tidak dalam kondisi publish',
+						'message'=>Yii::t('phrase', 'error, view tidak dalam kondisi publish'),
 					);
 				}
 			} else {
 				$return = array(
 					'success'=>0,
 					'error'=>'VIEW_IS_NULL',
-					'message'=>'error, id tidak ditemukan',
+					'message'=>Yii::t('phrase', 'error, id tidak ditemukan'),
 				);				
 			}
 			

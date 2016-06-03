@@ -346,7 +346,7 @@ class SiteController extends Controller
 				$return = array(
 					'success'=>'0',
 					'error'=>'NULL',
-					'message'=>'error, catalog tidak ditemukan',
+					'message'=>Yii::t('phrase', 'error, catalog tidak ditemukan'),
 				);
 			}
 			echo CJSON::encode($return);
@@ -475,7 +475,7 @@ class SiteController extends Controller
 				}
 				$data[] = array(
 					'id'=>0,
-					'name'=>'Semua Jenis Bahan',
+					'name'=>Yii::t('phrase', 'Semua Jenis Bahan'),
 				);
 				
 			} else

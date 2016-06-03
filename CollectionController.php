@@ -162,7 +162,7 @@ class CollectionController extends Controller
 				$return = array(
 					'success'=>'0',
 					'error'=>'NULL',
-					'message'=>'error, collection tidak ditemukan',
+					'message'=>Yii::t('phrase', 'error, collection tidak ditemukan'),
 				);
 			}				
 			echo CJSON::encode($return);

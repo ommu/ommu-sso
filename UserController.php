@@ -101,7 +101,7 @@ class UserController extends Controller
 				} else {
 					$return['success'] = '0';
 					$return['error'] = 'USER_ENABLE';
-					$return['message'] = 'error, member sudah terdaftar silahkan login';
+					$return['message'] = Yii::t('phrase', 'error, member sudah terdaftar silahkan login');
 				}				
 				$return['member_id'] = $model->ID;
 				$return['member_number'] = trim($model->MemberNo);
@@ -113,7 +113,7 @@ class UserController extends Controller
 			} else {
 				$return['success'] = '0';
 				$return['error'] = 'MEMBER_NULL';
-				$return['message'] = 'error, member tidak ditemukan';
+				$return['message'] = Yii::t('phrase', 'error, member tidak ditemukan');
 			}
 			echo CJSON::encode($return);
 			
@@ -149,22 +149,22 @@ class UserController extends Controller
 						else {
 							$return['success'] = '0';
 							$return['error'] = 'USER_INLIS_NOT_SAVE';
-							$return['message'] = 'error, user inlis gagal ditambahkan';							
+							$return['message'] = Yii::t('phrase', 'error, user inlis gagal ditambahkan');							
 						}
 					} else {
 						$return['success'] = '0';
 						$return['error'] = 'USER_NOT_SAVE';
-						$return['message'] = 'error, user gagal ditambahkan';
+						$return['message'] = Yii::t('phrase', 'error, user gagal ditambahkan');
 					}
 				} else {
 					$return['success'] = '0';
 					$return['error'] = 'USER_ENABLE';
-					$return['message'] = 'error, member sudah terdaftar silahkan login';
+					$return['message'] = Yii::t('phrase', 'error, member sudah terdaftar silahkan login');
 				}
 			} else {
 				$return['success'] = '0';
 				$return['error'] = 'USER_EMAIL_ENABLE';
-				$return['message'] = 'error, email sudah terdaftar sebagai member';
+				$return['message'] = Yii::t('phrase', 'error, email sudah terdaftar sebagai member');
 			}
 			
 			echo CJSON::encode($return);
@@ -185,8 +185,6 @@ class UserController extends Controller
 			$server = InlisUtility::getConnected();
 			if($server != 'neither-connected') {			
 				$url = $server.Yii::app()->createUrl('users/api/site/login');
-				echo $url;
-				exit();
 				$item = array(
 					'email' => $email,
 					'password' => $password,
@@ -204,7 +202,7 @@ class UserController extends Controller
 				if($output === false) {
 					$return['success'] = '0';
 					$return['error'] = 'NETWORK_NOTCONENCT';
-					$return['message'] = 'error, not connected';
+					$return['message'] = Yii::t('phrase', 'error, not connected');
 					
 				} else {
 					$object = json_decode($output);
@@ -271,7 +269,7 @@ class UserController extends Controller
 				if($output === false) {
 					$return['success'] = '0';
 					$return['error'] = 'NETWORK_NOTCONENCT';
-					$return['message'] = 'error, not connected';
+					$return['message'] = Yii::t('phrase', 'error, not connected');
 					
 				} else {
 					$object = json_decode($output);

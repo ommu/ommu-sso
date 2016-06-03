@@ -176,34 +176,34 @@ class SearchController extends Controller
 						if($model->update()) {
 							$return = array(
 								'success'=>1,
-								'message'=>'success, search history berhasil dihapus',
+								'message'=>Yii::t('phrase', 'success, search history berhasil dihapus'),
 							);
 						} else {
 							$return = array(
 								'success'=>0,
 								'error'=>'SEARCH_NOT_UPDATE',
-								'message'=>'success, search history tidak berhasil dihapus',
+								'message'=>Yii::t('phrase', 'success, search history tidak berhasil dihapus'),
 							);							
 						}					
 					} else {
 						$return = array(
 							'success'=>0,
 							'error'=>'USER_ERROR',
-							'message'=>'error, user tidak diizinkan untuk menghapus',
+							'message'=>Yii::t('phrase', 'error, user tidak diizinkan untuk menghapus'),
 						);
 					}
 				} else {
 					$return = array(
 						'success'=>0,
 						'error'=>'SEARCH_IS_NULL',
-						'message'=>'error, search tidak dalam kondisi publish',
+						'message'=>Yii::t('phrase', 'error, search tidak dalam kondisi publish'),
 					);
 				}
 			} else {
 				$return = array(
 					'success'=>0,
 					'error'=>'SEARCH_IS_NULL',
-					'message'=>'error, id tidak ditemukan',
+					'message'=>Yii::t('phrase', 'error, id tidak ditemukan'),
 				);
 			}
 			

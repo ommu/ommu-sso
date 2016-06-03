@@ -177,7 +177,7 @@ class LikeController extends Controller
 						$return = array(
 							'success'=>1,
 							'result'=>0,
-							'message'=>'success, like berhasil dihapus',
+							'message'=>Yii::t('phrase', 'success, like berhasil dihapus'),
 						);						
 					}
 				} else
@@ -227,13 +227,13 @@ class LikeController extends Controller
 					$return = array(
 						'success'=>1,
 						'result'=>0,
-						'message'=>'success, like berhasil dihapus',
+						'message'=>Yii::t('phrase', 'success, like berhasil dihapus'),
 					);
 				} else {
 					$return = array(
 						'success'=>0,
 						'error'=>'LIKE_NOT_UPDATE',
-						'message'=>'error, like gagal diperbarui',
+						'message'=>Yii::t('phrase', 'error, like gagal diperbarui'),
 					);
 				}
 			} else {
@@ -250,13 +250,13 @@ class LikeController extends Controller
 					$return = array(
 						'success'=>1,
 						'result'=>$like->like_id,
-						'message'=>'success, like berhasil ditambahkan',
+						'message'=>Yii::t('phrase', 'success, like berhasil ditambahkan'),
 					);
 				} else {
 					$return = array(
 						'success'=>0,
 						'error'=>'LIKE_NOT_SAVE',
-						'message'=>'error, like gagal ditambahkan',
+						'message'=>Yii::t('phrase', 'error, like gagal ditambahkan'),
 					);
 				}
 			}
@@ -265,7 +265,7 @@ class LikeController extends Controller
 			$return = array(
 				'success'=>0,
 				'error'=>'USER_NULL',
-				'message'=>'error, user tidak ditemukan',
+				'message'=>Yii::t('phrase', 'error, user tidak ditemukan'),
 			);
 		}
 		

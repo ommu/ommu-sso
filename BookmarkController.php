@@ -177,7 +177,7 @@ class BookmarkController extends Controller
 						$return = array(
 							'success'=>1,
 							'result'=>0,
-							'message'=>'success, bookmark berhasil dihapus',
+							'message'=>Yii::t('phrase', 'success, bookmark berhasil dihapus'),
 						);						
 					}
 				} else
@@ -227,13 +227,13 @@ class BookmarkController extends Controller
 					$return = array(
 						'success'=>1,
 						'result'=>0,
-						'message'=>'success, bookmark berhasil dihapus',
+						'message'=>Yii::t('phrase', 'success, bookmark berhasil dihapus'),
 					);
 				} else {
 					$return = array(
 						'success'=>0,
 						'error'=>'BOOKMARK_NOT_UPDATE',
-						'message'=>'error, bookmark gagal diperbarui',
+						'message'=>Yii::t('phrase', 'error, bookmark gagal diperbarui'),
 					);
 				}
 			} else {
@@ -250,13 +250,13 @@ class BookmarkController extends Controller
 					$return = array(
 						'success'=>1,
 						'result'=>$bookmark->bookmark_id,
-						'message'=>'success, bookmark berhasil ditambahkan',
+						'message'=>Yii::t('phrase', 'success, bookmark berhasil ditambahkan'),
 					);
 				} else {
 					$return = array(
 						'success'=>'0',
 						'error'=>'BOOKMARK_NOT_SAVE',
-						'message'=>'error, bookmark gagal ditambahkan',
+						'message'=>Yii::t('phrase', 'error, bookmark gagal ditambahkan'),
 					);					
 				}					
 			}
@@ -265,7 +265,7 @@ class BookmarkController extends Controller
 			$return = array(
 				'success'=>'0',
 				'error'=>'USER_NULL',
-				'message'=>'error, user tidak ditemukan',
+				'message'=>Yii::t('phrase', 'error, user tidak ditemukan'),
 			);
 		}
 		

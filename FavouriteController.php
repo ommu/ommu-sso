@@ -177,7 +177,7 @@ class FavouriteController extends Controller
 						$return = array(
 							'success'=>1,
 							'result'=>0,
-							'message'=>'success, favourite berhasil dihapus',
+							'message'=>Yii::t('phrase', 'success, favourite berhasil dihapus'),
 						);						
 					}
 				} else
@@ -227,13 +227,13 @@ class FavouriteController extends Controller
 					$return = array(
 						'success'=>1,
 						'result'=>0,
-						'message'=>'success, favourite berhasil dihapus',
+						'message'=>Yii::t('phrase', 'success, favourite berhasil dihapus'),
 					);
 				} else {
 					$return = array(
 						'success'=>0,
 						'error'=>'FAVOURITE_NOT_UPDATE',
-						'message'=>'error, favourite gagal diperbarui',
+						'message'=>Yii::t('phrase', 'error, favourite gagal diperbarui'),
 					);
 				}
 			} else {
@@ -250,13 +250,13 @@ class FavouriteController extends Controller
 					$return = array(
 						'success'=>1,
 						'result'=>$favourite->favourite_id,
-						'message'=>'success, favourite berhasil ditambahkan',
+						'message'=>Yii::t('phrase', 'success, favourite berhasil ditambahkan'),
 					);
 				} else {
 					$return = array(
 						'success'=>0,
 						'error'=>'FAVOURITE_NOT_SAVE',
-						'message'=>'error, favourite gagal ditambahkan',
+						'message'=>Yii::t('phrase', 'error, favourite gagal ditambahkan'),
 					);
 				}
 			}
@@ -265,7 +265,7 @@ class FavouriteController extends Controller
 			$return = array(
 				'success'=>0,
 				'error'=>'USER_NULL',
-				'message'=>'error, user tidak ditemukan',
+				'message'=>Yii::t('phrase', 'error, user tidak ditemukan'),
 			);
 		}
 		
