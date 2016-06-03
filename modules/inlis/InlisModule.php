@@ -11,6 +11,7 @@ class InlisModule extends CWebModule
 		// import the module-level models and components
 		$this->setImport(array(
 			'inlis.components.*',
+			'inlis.components.system.*',
 			'inlis.models.*',
 			'inlis.models.sync.*',
 			//'inlis.models.sync.2_2_1.*',
