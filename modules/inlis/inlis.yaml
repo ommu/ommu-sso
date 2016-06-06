@@ -44,7 +44,7 @@ plugin_menu		:
 				urlRules: {siteType: 0,1, userLevel: 1,2}
 				urlPath: {url: sync/worksheet/manage, attr: -, icon: -}
 				
-	- urlTitle: Statistics
+	- urlTitle: Inlis Statistics
 		urlRules: {siteType: 0,1, userLevel: 1,2}
 		urlPath: {url: -, attr: -, icon: -}
 		submenu :

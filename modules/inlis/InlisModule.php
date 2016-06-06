@@ -15,6 +15,7 @@ class InlisModule extends CWebModule
 			'inlis.models.*',
 			'inlis.models.sync.*',
 			//'inlis.models.sync.2_2_1.*',
+			'sso.models.SsoUsers',
 		));
 	}
 
