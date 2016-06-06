@@ -1,6 +1,6 @@
 <?php
 /**
- * InlisUtility class file
+ * SsoUtility class file
  *
  * Contains many function that most used :
  *
@@ -13,7 +13,7 @@
  *
  */
 
-class InlisUtility
+class SsoUtility
 {
 	/**
 	 * get alternatif connected domain for inlis server

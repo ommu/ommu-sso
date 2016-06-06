@@ -154,7 +154,7 @@ class SyncMembers extends OActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'users' => array(self::HAS_MANY, 'InlisUsers', 'member_id'),
+			'users' => array(self::HAS_MANY, 'SsoUsers', 'member_id'),
 			//'collectionloanitems_relation' => array(self::HAS_MANY, 'Collectionloanitems', 'member_id'),
 			//'collectionloans_relation' => array(self::HAS_MANY, 'Collectionloans', 'Member_id'),
 			//'memberloanauthorizecategories_relation' => array(self::HAS_MANY, 'Memberloanauthorizecategory', 'Member_id'),
