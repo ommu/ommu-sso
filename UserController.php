@@ -2,7 +2,7 @@
 /**
  * UserController
  * @var $this UserController
- * @var $model InlisUsers
+ * @var $model SsoUsers
  * @var $form CActiveForm
  * version: 0.0.1
  * Reference start
@@ -133,14 +133,14 @@ class UserController extends Controller
 			
 			$userFind = Users::model()->findByAttributes(array('email' => $email));
 			if($userFind == null) {
-				$memberFind = InlisUsers::model()->findByAttributes(array('member_id' => $member));
+				$memberFind = SsoUsers::model()->findByAttributes(array('member_id' => $member));
 				if($memberFind == null) {
 					$return['success'] = '1';
 					$model=new Users;
 					$model->email = $email;
 					$model->displayname = $displayname;
 					if($model->save()) {
-						$user=new InlisUsers;
+						$user=new SsoUsers;
 						$user->user_id = $model->user_id;
 						$user->member_id = $member;
 						if($user->save())
@@ -210,7 +210,7 @@ class UserController extends Controller
 					
 					if($object->success == 1) {
 						$user = ViewUsers::model()->findByAttributes(array('token_password' => $object->token));
-						$member = InlisUsers::model()->findByAttributes(array('user_id' => $user->user_id));
+						$member = SsoUsers::model()->findByAttributes(array('user_id' => $user->user_id));
 						
 						$image = '/uploaded_files/foto_anggota/'.$member->member->PicPath;
 						$photo = Yii::app()->params['inlis_address'].$image;
@@ -275,7 +275,7 @@ class UserController extends Controller
 					$object = json_decode($output);
 					$return = $object;
 					if($object->success == 1) {
-						$member = InlisUsers::model()->findByAttributes(array('user_id' => $user->user_id));
+						$member = SsoUsers::model()->findByAttributes(array('user_id' => $user->user_id));
 						if($member != null && $member->change_password == 0) {
 							$member->change_password = 1;
 							$member->save();
@@ -298,7 +298,7 @@ class UserController extends Controller
 	 */
 	public function loadModel($id) 
 	{
-		$model = InlisUsers::model()->findByPk($id);
+		$model = SsoUsers::model()->findByPk($id);
 		if($model===null)
 			throw new CHttpException(404, Yii::t('phrase', 'The requested page does not exist.'));
 		return $model;
