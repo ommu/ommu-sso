@@ -182,7 +182,7 @@ class UserController extends Controller
 			$email = trim($_POST['email']);
 			$password = trim($_POST['password']);
 			
-			$server = InlisUtility::getConnected();
+			$server = SsoUtility::getConnected();
 			if($server != 'neither-connected') {			
 				$url = $server.Yii::app()->createUrl('users/api/site/login');
 				$item = array(
@@ -229,7 +229,7 @@ class UserController extends Controller
 				echo CJSON::encode($return);
 
 			} else
-				return false;
+				return false;			
 			
 		} else
 			$this->redirect(Yii::app()->createUrl('site/index'));
@@ -246,10 +246,10 @@ class UserController extends Controller
 			$newpassword = trim($_POST['newpassword']);
 			$confirmpassword = trim($_POST['confirmpassword']);	
 			
-			$server = InlisUtility::getConnected();
+			$server = SsoUtility::getConnected();
 			if($server != 'neither-connected') {
-				$user = ViewUsers::model()->findByAttributes(array('token_password' => $token));
-				$url = $server.Yii::app()->createUrl('users/api/member/changepassword');			
+				$url = $server.Yii::app()->createUrl('users/api/member/changepassword');		
+				$user = ViewUsers::model()->findByAttributes(array('token_password' => $token));	
 				$item = array(
 					'token' => $token,
 					'password' => $password,
