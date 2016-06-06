@@ -1,8 +1,8 @@
 <?php
 /**
  * Inlis Users (inlis-users)
- * @var $this UserController
- * @var $model InlisUsers
+ * @var $this AdminController
+ * @var $model SsoUsers
  * @var $form CActiveForm
  * version: 0.0.1
  *

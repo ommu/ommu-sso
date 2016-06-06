@@ -1,6 +1,6 @@
 <?php
 /**
- * InlisUsers
+ * SsoUsers
  * version: 0.0.1
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
@@ -32,7 +32,7 @@
  * @property string $modified_date
  * @property string $modified_id
  */
-class InlisUsers extends CActiveRecord
+class SsoUsers extends CActiveRecord
 {
 	public $defaultColumns = array();
 	
@@ -46,7 +46,7 @@ class InlisUsers extends CActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return InlisUsers the static model class
+	 * @return SsoUsers the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -58,7 +58,7 @@ class InlisUsers extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'ommu_inlis_users';
+		return 'ommu_sso_users';
 	}
 
 	/**
@@ -187,7 +187,7 @@ class InlisUsers extends CActiveRecord
 		$criteria->compare('creation.displayname',strtolower($this->creation_search), true);
 		$criteria->compare('modified.displayname',strtolower($this->modified_search), true);
 		
-		if(!isset($_GET['InlisUsers_sort']))
+		if(!isset($_GET['SsoUsers_sort']))
 			$criteria->order = 't.id DESC';
 
 		return new CActiveDataProvider($this, array(

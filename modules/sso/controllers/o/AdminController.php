@@ -1,8 +1,8 @@
 <?php
 /**
- * UserController
- * @var $this UserController
- * @var $model InlisUsers
+ * AdminController
+ * @var $this AdminController
+ * @var $model SsoUsers
  * @var $form CActiveForm
  * version: 0.0.1
  * Reference start
@@ -27,7 +27,7 @@
  *----------------------------------------------------------------------------------------------------------
  */
 
-class UserController extends Controller
+class AdminController extends Controller
 {
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
@@ -111,10 +111,10 @@ class UserController extends Controller
 	 */
 	public function actionManage() 
 	{
-		$model=new InlisUsers('search');
+		$model=new SsoUsers('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['InlisUsers'])) {
-			$model->attributes=$_GET['InlisUsers'];
+		if(isset($_GET['SsoUsers'])) {
+			$model->attributes=$_GET['SsoUsers'];
 		}
 
 		$columnTemp = array();
@@ -142,13 +142,13 @@ class UserController extends Controller
 	 */
 	public function actionAdd() 
 	{
-		$model=new InlisUsers;
+		$model=new SsoUsers;
 
 		// Uncomment the following line if AJAX validation is needed
 		$this->performAjaxValidation($model);
 
-		if(isset($_POST['InlisUsers'])) {
-			$model->attributes=$_POST['InlisUsers'];
+		if(isset($_POST['SsoUsers'])) {
+			$model->attributes=$_POST['SsoUsers'];
 			
 			$jsonError = CActiveForm::validate($model);
 			if(strlen($jsonError) > 2) {
@@ -161,7 +161,7 @@ class UserController extends Controller
 							'type' => 5,
 							'get' => Yii::app()->controller->createUrl('manage'),
 							'id' => 'partial-inlis-users',
-							'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'InlisUsers success created.').'</strong></div>',
+							'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'SsoUsers success created.').'</strong></div>',
 						));
 					} else {
 						print_r($model->getErrors());
@@ -195,8 +195,8 @@ class UserController extends Controller
 		// Uncomment the following line if AJAX validation is needed
 		$this->performAjaxValidation($model);
 
-		if(isset($_POST['InlisUsers'])) {
-			$model->attributes=$_POST['InlisUsers'];
+		if(isset($_POST['SsoUsers'])) {
+			$model->attributes=$_POST['SsoUsers'];
 			
 			$jsonError = CActiveForm::validate($model);
 			if(strlen($jsonError) > 2) {
@@ -209,7 +209,7 @@ class UserController extends Controller
 							'type' => 5,
 							'get' => Yii::app()->controller->createUrl('manage'),
 							'id' => 'partial-inlis-users',
-							'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'InlisUsers success updated.').'</strong></div>',
+							'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'SsoUsers success updated.').'</strong></div>',
 						));
 					} else {
 						print_r($model->getErrors());
@@ -268,7 +268,7 @@ class UserController extends Controller
 						'type' => 5,
 						'get' => Yii::app()->controller->createUrl('manage'),
 						'id' => 'partial-inlis-users',
-						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'InlisUsers success deleted.').'</strong></div>',
+						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'SsoUsers success deleted.').'</strong></div>',
 					));
 				}
 			}
@@ -278,7 +278,7 @@ class UserController extends Controller
 			$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 			$this->dialogWidth = 350;
 
-			$this->pageTitle = Yii::t('phrase', 'InlisUsers Delete.');
+			$this->pageTitle = Yii::t('phrase', 'SsoUsers Delete.');
 			$this->pageDescription = '';
 			$this->pageMeta = '';
 			$this->render('admin_delete');
@@ -292,7 +292,7 @@ class UserController extends Controller
 	 */
 	public function loadModel($id) 
 	{
-		$model = InlisUsers::model()->findByPk($id);
+		$model = SsoUsers::model()->findByPk($id);
 		if($model===null)
 			throw new CHttpException(404, Yii::t('phrase', 'The requested page does not exist.'));
 		return $model;
