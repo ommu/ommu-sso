@@ -1,7 +1,7 @@
 code			: 
-name			: Career
-description		: Career
-folder_name		: career
+name			: INLIS
+description		: INLIS
+folder_name		: inlis
 version			: 0.1.0
 created_date	: 
 author			: Putra Sudaryanto [putra@sudaryanto.id]
@@ -15,10 +15,6 @@ plugin_menu		:
 	- urlTitle: Catalogs
 		urlRules: {siteType: 0,1, userLevel: 1,2}
 		urlPath: {url: o/admin/manage, attr: -, icon: -}
-		
-	- urlTitle: Users
-		urlRules: {siteType: 0,1, userLevel: 1}
-		urlPath: {url: o/user/manage, attr: -, icon: -}
 				
 	- urlTitle: Tracks
 		urlRules: {siteType: 0,1, userLevel: 1,2}
