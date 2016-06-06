@@ -1,6 +1,6 @@
 <?php
 
-class InlisModule extends CWebModule
+class SsoModule extends CWebModule
 {
 	public $defaultController = 'site'; 
 
@@ -10,11 +10,9 @@ class InlisModule extends CWebModule
 		
 		// import the module-level models and components
 		$this->setImport(array(
-			'inlis.components.*',
-			'inlis.components.system.*',
-			'inlis.models.*',
-			'inlis.models.sync.*',
-			//'inlis.models.sync.2_2_1.*',
+			'sso.components.*',
+			'sso.components.system.*',
+			'sso.models.*',
 		));
 	}
 
@@ -25,15 +23,6 @@ class InlisModule extends CWebModule
 			//list public controller in this module
 			$publicControllers = array(
 				'site',
-				'api/bookmark',
-				'api/collection',
-				'api/favourite',
-				'api/like',
-				'api/loan',
-				'api/search',
-				'api/site',
-				'api/user',
-				'api/view',
 			);
 			
 			// pake ini untuk set theme per action di controller..

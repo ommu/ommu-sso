@@ -1,1 +1,2 @@
 mklink /H "D:\htdocs\_project_ommu_module_inlis_sso\modules\inlis\LICENSE" "D:\htdocs\_project_ommu_module_inlis_sso\LICENSE"
+mklink /H "D:\htdocs\_project_ommu_module_inlis_sso\modules\sso\LICENSE" "D:\htdocs\_project_ommu_module_inlis_sso\LICENSE"
