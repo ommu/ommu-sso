@@ -1,6 +1,6 @@
 <?php
 /**
- * Inlis Users (inlis-users)
+ * Sso Users (sso-users)
  * @var $this AdminController
  * @var $model SsoUsers
  * version: 0.0.1
@@ -14,7 +14,7 @@
  */
 
 	$this->breadcrumbs=array(
-		'Inlis Users'=>array('manage'),
+		'Sso Users'=>array('manage'),
 		$model->id,
 	);
 ?>

@@ -1,6 +1,6 @@
 <?php
 /**
- * Inlis Users (inlis-users)
+ * Sso Users (sso-users)
  * @var $this AdminController
  * @var $model SsoUsers
  * version: 0.0.1
@@ -14,7 +14,7 @@
  */
 
 	$this->breadcrumbs=array(
-		'Inlis Users'=>array('manage'),
+		'Sso Users'=>array('manage'),
 		'Manage',
 	);
 	$this->menu=array(
@@ -50,7 +50,7 @@
 </div>
 <?php //end.Grid Option ?>
 
-<div id="partial-inlis-users">
+<div id="partial-sso-users">
 	<?php //begin.Messages ?>
 	<div id="ajax-message">
 	<?php
@@ -93,7 +93,7 @@
 			));
 
 			$this->widget('application.components.system.OGridView', array(
-				'id'=>'inlis-users-grid',
+				'id'=>'sso-users-grid',
 				'dataProvider'=>$model->search(),
 				'filter'=>$model,
 				'columns' => $columnData,

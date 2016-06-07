@@ -127,7 +127,7 @@ class AdminController extends Controller
 		}
 		$columns = $model->getGridColumn($columnTemp);
 
-		$this->pageTitle = Yii::t('phrase', 'Inlis Users Manage');
+		$this->pageTitle = Yii::t('phrase', 'Sso Users Manage');
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_manage',array(
@@ -160,7 +160,7 @@ class AdminController extends Controller
 						echo CJSON::encode(array(
 							'type' => 5,
 							'get' => Yii::app()->controller->createUrl('manage'),
-							'id' => 'partial-inlis-users',
+							'id' => 'partial-sso-users',
 							'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'SsoUsers success created.').'</strong></div>',
 						));
 					} else {
@@ -175,7 +175,7 @@ class AdminController extends Controller
 		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 		$this->dialogWidth = 600;
 
-		$this->pageTitle = Yii::t('phrase', 'Create Inlis Users');
+		$this->pageTitle = Yii::t('phrase', 'Create Sso Users');
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_add',array(
@@ -208,7 +208,7 @@ class AdminController extends Controller
 						echo CJSON::encode(array(
 							'type' => 5,
 							'get' => Yii::app()->controller->createUrl('manage'),
-							'id' => 'partial-inlis-users',
+							'id' => 'partial-sso-users',
 							'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'SsoUsers success updated.').'</strong></div>',
 						));
 					} else {
@@ -223,7 +223,7 @@ class AdminController extends Controller
 		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 		$this->dialogWidth = 600;
 
-		$this->pageTitle = Yii::t('phrase', 'Update Inlis Users');
+		$this->pageTitle = Yii::t('phrase', 'Update Sso Users');
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_edit',array(
@@ -243,7 +243,7 @@ class AdminController extends Controller
 			
 		$model=$this->loadModel($id);
 
-		$this->pageTitle = Yii::t('phrase', 'View Inlis Users');
+		$this->pageTitle = Yii::t('phrase', 'View Sso Users');
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_view',array(
@@ -267,7 +267,7 @@ class AdminController extends Controller
 					echo CJSON::encode(array(
 						'type' => 5,
 						'get' => Yii::app()->controller->createUrl('manage'),
-						'id' => 'partial-inlis-users',
+						'id' => 'partial-sso-users',
 						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'SsoUsers success deleted.').'</strong></div>',
 					));
 				}
@@ -304,7 +304,7 @@ class AdminController extends Controller
 	 */
 	protected function performAjaxValidation($model) 
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='inlis-users-form') {
+		if(isset($_POST['ajax']) && $_POST['ajax']==='sso-users-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}

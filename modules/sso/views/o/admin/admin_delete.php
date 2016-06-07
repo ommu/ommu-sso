@@ -1,6 +1,6 @@
 <?php
 /**
- * Inlis Users (inlis-users)
+ * Sso Users (sso-users)
  * @var $this AdminController
  * @var $model SsoUsers
  * @var $form CActiveForm
@@ -15,13 +15,13 @@
  */
 
 	$this->breadcrumbs=array(
-		'Inlis Users'=>array('manage'),
+		'Sso Users'=>array('manage'),
 		'Delete',
 	);
 ?>
 
 <?php $form=$this->beginWidget('application.components.system.OActiveForm', array(
-	'id'=>'inlis-users-form',
+	'id'=>'sso-users-form',
 	'enableAjaxValidation'=>true,
 	//'htmlOptions' => array('enctype' => 'multipart/form-data')
 )); ?>

@@ -1,6 +1,6 @@
 <?php
 /**
- * Inlis Users (inlis-users)
+ * Sso Users (sso-users)
  * @var $this AdminController
  * @var $model SsoUsers
  * @var $form CActiveForm

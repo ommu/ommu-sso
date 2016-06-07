@@ -1,6 +1,6 @@
 <?php
 /**
- * Inlis Users (inlis-users)
+ * Sso Users (sso-users)
  * @var $this AdminController
  * @var $model SsoUsers
  * @var $form CActiveForm
@@ -15,7 +15,7 @@
  */
 
 	$this->breadcrumbs=array(
-		'Inlis Users'=>array('manage'),
+		'Sso Users'=>array('manage'),
 		'Create',
 	);
 ?>

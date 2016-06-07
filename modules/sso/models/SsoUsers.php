@@ -20,9 +20,9 @@
  *
  * --------------------------------------------------------------------------------------
  *
- * This is the model class for table "ommu_inlis_users".
+ * This is the model class for table "ommu_sso_users".
  *
- * The followings are the available columns in table 'ommu_inlis_users':
+ * The followings are the available columns in table 'ommu_sso_users':
  * @property string $id
  * @property string $user_id
  * @property string $member_id

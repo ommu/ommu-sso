@@ -16,7 +16,7 @@
 class SsoUtility
 {
 	/**
-	 * get alternatif connected domain for inlis server
+	 * get alternatif connected domain for inlis sso server
 	 * @param type $operator not yet using
 	 * @return type
 	 */
