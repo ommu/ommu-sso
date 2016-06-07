@@ -149,7 +149,7 @@ class UserController extends Controller
 						else {
 							$return['success'] = '0';
 							$return['error'] = 'USER_INLIS_NOT_SAVE';
-							$return['message'] = Yii::t('phrase', 'error, user inlis gagal ditambahkan');							
+							$return['message'] = Yii::t('phrase', 'error, user inlis sso gagal ditambahkan');							
 						}
 					} else {
 						$return['success'] = '0';
@@ -310,7 +310,7 @@ class UserController extends Controller
 	 */
 	protected function performAjaxValidation($model) 
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='inlis-users-form') {
+		if(isset($_POST['ajax']) && $_POST['ajax']==='sso-users-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}
