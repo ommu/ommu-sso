@@ -26,6 +26,7 @@ class SsoModule extends CWebModule
 			//list public controller in this module
 			$publicControllers = array(
 				'site',
+				'api/user',
 			);
 			
 			// pake ini untuk set theme per action di controller..

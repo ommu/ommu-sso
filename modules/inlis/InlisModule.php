@@ -33,7 +33,6 @@ class InlisModule extends CWebModule
 				'api/loan',
 				'api/search',
 				'api/site',
-				'api/user',
 				'api/view',
 			);
 			
