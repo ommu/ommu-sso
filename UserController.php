@@ -80,6 +80,18 @@ class UserController extends Controller
 	public function actionIndex() 
 	{
 		$this->redirect(Yii::app()->createUrl('site/index'));
+		
+		/*
+		Yii::import('application.modules.sso.components.extensions.routeros.*');
+		
+		$test = new ORouterosAPI;
+		echo '<pre>';
+		print_r($test->ip()->hotspot()->detail_hotspot(array(
+			'?name'=>'hotspot1',
+		)));
+		//print_r($test->hotspot()->detail_hotspot(array('name'=>'hotspot1')));
+		echo '</pre>';
+		*/
 	}
 	
 	/**
