@@ -25,7 +25,7 @@
  *----------------------------------------------------------------------------------------------------------
  */
 
-class FavouriteController extends Controller
+class FavouriteController extends ControllerApi
 {
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
@@ -116,7 +116,7 @@ class FavouriteController extends Controller
 				'pagination'=>array(
 					'pageSize'=>$pagesize != null && $pagesize != '' ? $pagesize : 20,
 				),
-			));			
+			));
 			$model = $dataProvider->getData();
 			
 			$data = '';
@@ -151,7 +151,7 @@ class FavouriteController extends Controller
 				'nextPager' => $nextPager,
 			);
 				
-			echo CJSON::encode($return);
+			$this->_sendResponse(200, CJSON::encode($this->renderJson($return)));
 			
 		} else 
 			$this->redirect(Yii::app()->createUrl('site/index'));
@@ -185,7 +185,7 @@ class FavouriteController extends Controller
 			} else
 				$return = $this->toggle($_POST);
 			
-			echo CJSON::encode($return);
+			$this->_sendResponse(200, CJSON::encode($this->renderJson($return)));
 			
 		} else 
 			$this->redirect(Yii::app()->createUrl('site/index'));

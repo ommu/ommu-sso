@@ -24,7 +24,7 @@
  *----------------------------------------------------------------------------------------------------------
  */
 
-class SearchController extends Controller
+class SearchController extends ControllerApi
 {
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
@@ -138,7 +138,7 @@ class SearchController extends Controller
 				$data = array();
 		
 			if($toolbar != null && $toolbar != '' && $toolbar == 'true')
-				echo CJSON::encode($data);
+				$this->_sendResponse(200, CJSON::encode($this->renderJson($data)));
 				
 			else {
 				$pager = OFunction::getDataProviderPager($dataProvider);
@@ -150,7 +150,7 @@ class SearchController extends Controller
 					'nextPager' => $nextPager,
 				);
 				
-				echo CJSON::encode($return);				
+				$this->_sendResponse(200, CJSON::encode($this->renderJson($return)));
 			}
 			
 		} else 
@@ -207,7 +207,7 @@ class SearchController extends Controller
 				);
 			}
 			
-			echo CJSON::encode($return);
+			$this->_sendResponse(200, CJSON::encode($this->renderJson($return)));
 			
 		} else 
 			$this->redirect(Yii::app()->createUrl('site/index'));

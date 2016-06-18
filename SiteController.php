@@ -27,7 +27,7 @@
  *----------------------------------------------------------------------------------------------------------
  */
 
-class SiteController extends Controller
+class SiteController extends ControllerApi
 {
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
@@ -163,7 +163,7 @@ class SiteController extends Controller
 				'pager' => $pager,
 				'nextPager' => $nextPager,
 			);
-			echo CJSON::encode($return);
+			$this->_sendResponse(200, CJSON::encode($this->renderJson($return)));
 			
 		} else 
 			$this->redirect(Yii::app()->createUrl('site/index'));
@@ -243,7 +243,7 @@ class SiteController extends Controller
 				'pager' => $pager,
 				'nextPager' => $nextPager,
 			);
-			echo CJSON::encode($return);
+			$this->_sendResponse(200, CJSON::encode($this->renderJson($return)));
 			
 		} else 
 			$this->redirect(Yii::app()->createUrl('site/index'));
@@ -349,7 +349,7 @@ class SiteController extends Controller
 					'message'=>Yii::t('phrase', 'error, catalog tidak ditemukan'),
 				);
 			}
-			echo CJSON::encode($return);
+			$this->_sendResponse(200, CJSON::encode($this->renderJson($return)));
 			
 		} else 
 			$this->redirect(Yii::app()->createUrl('site/index'));
@@ -448,7 +448,7 @@ class SiteController extends Controller
 				);
 			}
 			
-			echo CJSON::encode($return);
+			$this->_sendResponse(200, CJSON::encode($this->renderJson($return)));
 			
 		} else 
 			$this->redirect(Yii::app()->createUrl('site/index'));
@@ -480,8 +480,8 @@ class SiteController extends Controller
 				
 			} else
 				$data = array();
-				
-			echo CJSON::encode($data);
+			
+			$this->_sendResponse(200, CJSON::encode($this->renderJson($data)));
 			
 		} else 
 			$this->redirect(Yii::app()->createUrl('site/index'));

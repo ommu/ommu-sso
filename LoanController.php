@@ -23,7 +23,7 @@
  *----------------------------------------------------------------------------------------------------------
  */
 
-class LoanController extends Controller
+class LoanController extends ControllerApi
 {
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
@@ -182,7 +182,7 @@ class LoanController extends Controller
 				);
 			}
 			
-			echo CJSON::encode($return);
+			$this->_sendResponse(200, CJSON::encode($this->renderJson($return)));
 			
 		} else 
 			$this->redirect(Yii::app()->createUrl('site/index'));
