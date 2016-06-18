@@ -26,7 +26,7 @@
  *----------------------------------------------------------------------------------------------------------
  */
 
-class UserController extends Controller
+class UserController extends ControllerApi
 {
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
@@ -127,7 +127,7 @@ class UserController extends Controller
 				$return['error'] = 'MEMBER_NULL';
 				$return['message'] = Yii::t('phrase', 'error, member tidak ditemukan');
 			}
-			echo CJSON::encode($return);
+			$this->_sendResponse(200, CJSON::encode($this->renderJson($return)));
 			
 		} else
 			$this->redirect(Yii::app()->createUrl('site/index'));
@@ -179,7 +179,7 @@ class UserController extends Controller
 				$return['message'] = Yii::t('phrase', 'error, email sudah terdaftar sebagai member');
 			}
 			
-			echo CJSON::encode($return);
+			$this->_sendResponse(200, CJSON::encode($this->renderJson($return)));
 			
 		} else
 			$this->redirect(Yii::app()->createUrl('site/index'));
@@ -238,7 +238,7 @@ class UserController extends Controller
 						$return->change_password = $member != null ? $member->change_password : '-';
 					}
 				}
-				echo CJSON::encode($return);
+				$this->_sendResponse(200, CJSON::encode($this->renderJson($return)));
 
 			} else
 				return false;			
@@ -294,7 +294,7 @@ class UserController extends Controller
 						}
 					}				
 				}
-				echo CJSON::encode($return);
+				$this->_sendResponse(200, CJSON::encode($this->renderJson($return)));
 				
 			} else
 				return false;
