@@ -65,7 +65,7 @@ class SsoSettings extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('id, license, permission, meta_keyword, meta_description, modified_date, modified_id', 'required'),
+			array('license, permission, meta_keyword, meta_description', 'required'),
 			array('id, permission', 'numerical', 'integerOnly'=>true),
 			array('license', 'length', 'max'=>32),
 			array('modified_id', 'length', 'max'=>11),
@@ -153,7 +153,6 @@ class SsoSettings extends CActiveRecord
 			),
 		);
 		$criteria->compare('modified_relation.displayname',strtolower($this->modified_search), true);
-
 
 		if(!isset($_GET['SsoSettings_sort']))
 			$criteria->order = 't.id DESC';
