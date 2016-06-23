@@ -1,0 +1,448 @@
+{
+  "_type": "export",
+  "__export_format": 1,
+  "__export_date": "2016-06-23T07:18:41.151Z",
+  "__export_source": "insomnia.chrome.app:v2.6.10",
+  "items": [
+    {
+      "_type": "request_group",
+      "_id": "grp_1440140990890",
+      "name": "inlis",
+      "environments": {},
+      "requests": [
+        {
+          "_type": "request",
+          "_id": "req_1460288059674",
+          "url": "http://localhost/_client_bpadjogja.info.sso/inlis/api/site/worksheet",
+          "method": "POST",
+          "body": "\n&dump=true\n&variable=\n//type = POST\n//var = \n\n//url = /inlis/api/site/worksheet\n//localhost = http://localhost/_client_bpadjogja.info.sso\n//nwtwork = http://193.168.3.13/_client_bpadjogja.info.sso\n//live = http://103.255.15.77/sso\n",
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/x-www-form-urlencoded"
+            }
+          ],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "catalog/worksheet"
+        },
+        {
+          "_type": "request",
+          "_id": "req_1460295050119",
+          "url": "http://localhost/_client_bpadjogja.info.sso/inlis/api/site/track",
+          "method": "POST",
+          "body": "&type=favourite\n&query=small\n&pagesize=10\n&token=2aff7d8198a8444e9a7909823f91f98d\n&apikey=a7909823f91f98da7909823f91f98d\n\n&dump=true\n&variable=\n//type = POST\n//var = \n//  type[wajib], ='view','bookmark','favourite','like'\n//  query[optional], ='large','small'\n//  pagesize[optional], \n//  token[optional],\n//  apikey[optional],\n\n//url = /inlis/api/site/track\n//localhost = http://localhost/_client_bpadjogja.info.sso\n//nwtwork = http://193.168.3.13/_client_bpadjogja.info.sso\n//live = http://103.255.15.77/sso\n\n",
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/x-www-form-urlencoded"
+            }
+          ],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "catalog/track"
+        },
+        {
+          "_type": "request",
+          "_id": "req_1459280085877",
+          "url": "http://localhost/_client_bpadjogja.info.sso/inlis/api/site/search",
+          "method": "POST",
+          "body": "&keyword=dani\n&category=author\n&worksheet=1\n&pagesize=10\n\n&dump=true\n&variable=\n//type = POST\n//var = \n//  keyword[wajib],\n//  category[wajib],\n//  worksheet[wajib],\n//  pagesize[optional], \n//  token[optional],\n//  apikey[optional],\n\n//url = /inlis/api/site/search\n//localhost = http://localhost/_client_bpadjogja.info.sso\n//nwtwork = http://193.168.3.13/_client_bpadjogja.info.sso\n//live = http://103.255.15.77/sso\n",
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/x-www-form-urlencoded"
+            }
+          ],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "catalog/search"
+        },
+        {
+          "_type": "request",
+          "_id": "req_1459279014481",
+          "url": "http://localhost/_client_bpadjogja.info.sso/inlis/api/site/advanced",
+          "method": "POST",
+          "body": "&title=\n&author=krisna\n&publisher=\n&publishyear=\n&subject=\n&callnumber=\n&bibid=\n&isbn =\n&pagesize=10\n&token=2aff7d8198a8444e9a7909823f91f98d\n&apikey=a7909823f91f98da7909823f91f98d\n\n&dump=true\n&variable=\n//type = POST\n//var = \n//  title[optional],\n//  author[optional],\n//  publisher[optional],\n//  publishyear[optional],\n//  subject[optional],\n//  callnumber[optional],\n//  bibid[optional],\n//  isbn[optional],\n//  pagesize[optional], \n//  token[optional],\n//  apikey[optional],\n\n//url = /inlis/api/site/advanced\n//localhost = http://localhost/_client_bpadjogja.info.sso\n//nwtwork = http://193.168.3.13/_client_bpadjogja.info.sso\n//live = http://103.255.15.77/sso\n\n",
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/x-www-form-urlencoded"
+            }
+          ],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "catalog/advanced"
+        },
+        {
+          "_type": "request",
+          "_id": "req_1459320371723",
+          "url": "http://localhost/_client_bpadjogja.info.sso/inlis/api/site/detail",
+          "method": "POST",
+          "body": "&id=257192\n\n&dump=true\n&variable=\n//type = POST\n//var = \n//  id[wajib], \n//  token[optional], _view_user_oauth[`token_password`]\n//  apikey[optional], ommu_user_device[`android_id`]\n\n//url = /inlis/api/site/detail\n//localhost = http://localhost/_client_bpadjogja.info.sso\n//nwtwork = http://193.168.3.13/_client_bpadjogja.info.sso\n//live = http://103.255.15.77/sso\n\n",
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/x-www-form-urlencoded"
+            }
+          ],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "catalog/detail"
+        },
+        {
+          "_type": "request",
+          "_id": "req_1459326048492",
+          "url": "http://localhost/_client_bpadjogja.info.sso/inlis/api/collection/list",
+          "method": "POST",
+          "body": "&id=51\n\n&dump=true\n&variable=\n//type = POST\n//var = \n//  id[wajib],\n\n//url = /inlis/api/collection/list\n//localhost = http://localhost/_client_bpadjogja.info.sso\n//nwtwork = http://193.168.3.13/_client_bpadjogja.info.sso\n//live = http://103.255.15.77/sso\n",
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/x-www-form-urlencoded"
+            }
+          ],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "collection/list"
+        },
+        {
+          "_type": "request",
+          "_id": "req_1459327495748",
+          "url": "http://localhost/_client_bpadjogja.info.sso/inlis/api/collection/detail",
+          "method": "POST",
+          "body": "&id=4363\n\n&dump=true\n&variable=\n//type = POST\n//var = \n//  id[wajib],\n\n//url = /inlis/api/collection/detail\n//localhost = http://localhost/_client_bpadjogja.info.sso\n//nwtwork = http://193.168.3.13/_client_bpadjogja.info.sso\n//live = http://103.255.15.77/sso\n",
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/x-www-form-urlencoded"
+            }
+          ],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "collection/detail"
+        },
+        {
+          "_type": "request",
+          "_id": "req_1460363704739",
+          "url": "http://localhost/_client_bpadjogja.info.sso/inlis/api/loan/popular",
+          "method": "POST",
+          "body": "&now=true\n&curdate=\n&pagesize=10\n&token=2aff7d8198a8444e9a7909823f91f98d\n&apikey=a7909823f91f98da7909823f91f98d\n\n&dump=true\n&variable=\n//type = POST\n//var = \n//  now[optional], ='true','false'\n//  curdate[optional], = yyyy-mm-dd\n//  query[optional], ='large','small'\n//  pagesize[optional], \n//  token[optional],\n//  apikey[optional],\n\n//url = /inlis/api/loan/popular\n//localhost = http://localhost/_client_bpadjogja.info.sso\n//nwtwork = http://193.168.3.13/_client_bpadjogja.info.sso\n//live = http://103.255.15.77/sso\n",
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/x-www-form-urlencoded"
+            }
+          ],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "loan/popular"
+        },
+        {
+          "_type": "request",
+          "_id": "req_1460342374027",
+          "url": "http://localhost/_client_bpadjogja.info.sso/inlis/api/search/list",
+          "method": "POST",
+          "body": "&toolbar=true\n&pagesize=10\n&token=2aff7d8198a8444e9a7909823f91f98d\n&apikey=a7909823f91f98da7909823f91f98d\n\n&dump=true\n&variable=\n//type = POST\n//var = \n//  token[wajib],\n//  pagesize[optional], \n//  token[optional],\n//  apikey[optional],\n\n//url = /inlis/api/search/list\n//localhost = http://localhost/_client_bpadjogja.info.sso\n//nwtwork = http://193.168.3.13/_client_bpadjogja.info.sso\n//live = http://103.255.15.77/sso\n",
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/x-www-form-urlencoded"
+            }
+          ],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "search/list"
+        },
+        {
+          "_type": "request",
+          "_id": "req_1459695063251",
+          "url": "http://localhost/_client_bpadjogja.info.sso/inlis/api/search/run",
+          "method": "POST",
+          "body": "&id=14\n&token=2aff7d8198a8444e9a7909823f91f98d\n&apikey=a7909823f91f98da7909823f91f98d\n\n&dump=true\n&variable=\n//type = POST\n//var = \n//  id[wajib],\n//  token[wajib],\n//  apikey[optional],\n\n//url = /inlis/api/search/run\n//localhost = http://localhost/_client_bpadjogja.info.sso\n//nwtwork = http://193.168.3.13/_client_bpadjogja.info.sso\n//live = http://103.255.15.77/sso\n\n",
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/x-www-form-urlencoded"
+            }
+          ],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "search/run"
+        },
+        {
+          "_type": "request",
+          "_id": "req_1459671779713",
+          "url": "http://localhost/_client_bpadjogja.info.sso/inlis/api/view/list",
+          "method": "POST",
+          "body": "&pagesize=10\n&token=2aff7d8198a8444e9a7909823f91f98d\n&apikey=a7909823f91f98da7909823f91f98d\n\n&dump=true\n&variable=\n//type = POST\n//var = \n//  pagesize[optional], \n//  token[wajib],\n//  apikey[optional],\n\n//url = /inlis/api/view/list\n//localhost = http://localhost/_client_bpadjogja.info.sso\n//nwtwork = http://193.168.3.13/_client_bpadjogja.info.sso\n//live = http://103.255.15.77/sso\n\n",
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/x-www-form-urlencoded"
+            }
+          ],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "view/list"
+        },
+        {
+          "_type": "request",
+          "_id": "req_1460344443010",
+          "url": "http://localhost/_client_bpadjogja.info.sso/inlis/api/view/run",
+          "method": "POST",
+          "body": "&id=7\n&token=2aff7d8198a8444e9a7909823f91f98d\n&apikey=a7909823f91f98da7909823f91f98d\n\n&dump=true\n&variable=\n//type = POST\n//var = \n//  id[wajib],\n//  token[wajib],\n//  apikey[optional],\n\n//url = /inlis/api/view/run\n//localhost = http://localhost/_client_bpadjogja.info.sso\n//nwtwork = http://193.168.3.13/_client_bpadjogja.info.sso\n//live = http://103.255.15.77/sso\n",
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/x-www-form-urlencoded"
+            }
+          ],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "view/run"
+        },
+        {
+          "_type": "request",
+          "_id": "req_1459675156981",
+          "url": "http://localhost/_client_bpadjogja.info.sso/inlis/api/bookmark/list",
+          "method": "POST",
+          "body": "&pagesize=10\n&token=2aff7d8198a8444e9a7909823f91f98d\n&apikey=a7909823f91f98da7909823f91f98d\n\n&dump=true\n&variable=\n//type = POST\n//var = \n//  pagesize[optional], \n//  token[wajib],\n//  apikey[optional],\n\n//url = /inlis/api/bookmark/list\n//localhost = http://localhost/_client_bpadjogja.info.sso\n//nwtwork = http://193.168.3.13/_client_bpadjogja.info.sso\n//live = http://103.255.15.77/sso\n\n",
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/x-www-form-urlencoded"
+            }
+          ],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "bookmark/list"
+        },
+        {
+          "_type": "request",
+          "_id": "req_1459691878620",
+          "url": "http://localhost/_client_bpadjogja.info.sso/inlis/api/bookmark/run",
+          "method": "POST",
+          "body": "&id=7\n&catalog=266106\n&token=2aff7d8198a8444e9a7909823f91f98d\n&apikey=a7909823f91f98da7909823f91f98d\n\n&dump=true\n&variable=\n//type = POST\n//var = \n//  id[optional],\n//  catalog[wajib],\n//  token[wajib],\n//  apikey[optional],\n\n//url = /inlis/api/bookmark/run\n//localhost = http://localhost/_client_bpadjogja.info.sso\n//nwtwork = http://193.168.3.13/_client_bpadjogja.info.sso\n//live = http://103.255.15.77/sso\n\n",
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/x-www-form-urlencoded"
+            }
+          ],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "bookmark/run"
+        },
+        {
+          "_type": "request",
+          "_id": "req_1459675463607",
+          "url": "http://localhost/_client_bpadjogja.info.sso/inlis/api/favourite/list",
+          "method": "POST",
+          "body": "&pagesize=10\n&token=2aff7d8198a8444e9a7909823f91f98d\n&apikey=a7909823f91f98da7909823f91f98d\n\n&dump=true\n&variable=\n//type = POST\n//var = \n//  pagesize[optional], \n//  token[wajib],\n//  apikey[optional],\n\n//url = /inlis/api/favourite/list\n//localhost = http://localhost/_client_bpadjogja.info.sso\n//nwtwork = http://193.168.3.13/_client_bpadjogja.info.sso\n//live = http://103.255.15.77/sso\n",
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/x-www-form-urlencoded"
+            }
+          ],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "favourite/list"
+        },
+        {
+          "_type": "request",
+          "_id": "req_1459693883586",
+          "url": "http://localhost/_client_bpadjogja.info.sso/inlis/api/favourite/run",
+          "method": "POST",
+          "body": "&id=7\n&catalog=266106\n&token=2aff7d8198a8444e9a7909823f91f98d\n&apikey=a7909823f91f98da7909823f91f98d\n\n&dump=true\n&variable=\n//type = POST\n//var = \n//  id[optional],\n//  catalog[wajib],\n//  token[wajib],\n//  apikey[optional],\n\n//url = /inlis/api/favourite/run\n//localhost = http://localhost/_client_bpadjogja.info.sso\n//nwtwork = http://193.168.3.13/_client_bpadjogja.info.sso\n//live = http://103.255.15.77/sso\n",
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/x-www-form-urlencoded"
+            }
+          ],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "favourite/run"
+        },
+        {
+          "_type": "request",
+          "_id": "req_1459675321865",
+          "url": "http://localhost/_client_bpadjogja.info.sso/inlis/api/like/list",
+          "method": "POST",
+          "body": "&pagesize=10\n&token=2aff7d8198a8444e9a7909823f91f98d\n&apikey=a7909823f91f98da7909823f91f98d\n\n&dump=true\n&variable=\n//type = POST\n//var = \n//  pagesize[optional], \n//  token[wajib],\n//  apikey[optional],\n\n//url = /inlis/api/like/list\n//localhost = http://localhost/_client_bpadjogja.info.sso\n//nwtwork = http://193.168.3.13/_client_bpadjogja.info.sso\n//live = http://103.255.15.77/sso\n",
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/x-www-form-urlencoded"
+            }
+          ],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "like/list"
+        },
+        {
+          "_type": "request",
+          "_id": "req_1459694576353",
+          "url": "http://localhost/_client_bpadjogja.info.sso/inlis/api/like/run",
+          "method": "POST",
+          "body": "&id=7\n&catalog=266106\n&token=2aff7d8198a8444e9a7909823f91f98d\n&apikey=a7909823f91f98da7909823f91f98d\n\n&dump=true\n&variable=\n//type = POST\n//var = \n//  id[optional],\n//  catalog[wajib],\n//  token[wajib],\n//  apikey[optional],\n\n//url = /inlis/api/like/run\n//localhost = http://localhost/_client_bpadjogja.info.sso\n//nwtwork = http://193.168.3.13/_client_bpadjogja.info.sso\n//live = http://103.255.15.77/sso\n",
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "application/x-www-form-urlencoded"
+            }
+          ],
+          "params": [],
+          "authentication": {
+            "_type": "basic",
+            "username": "",
+            "password": ""
+          },
+          "__insomnia": {
+            "format": "json",
+            "panel_width": 0.5
+          },
+          "name": "like/run"
+        }
+      ]
+    }
+  ]
+}
