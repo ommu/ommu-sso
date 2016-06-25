@@ -262,8 +262,8 @@ class SiteController extends ControllerApi
 			$model = SyncCatalogs::model()->findByPk($id);
 			
 			if($model != null) {
-				$path = '/uploaded_files/sampul_koleksi/original/'.$item->worksheet->Name;
-				$cover = Yii::app()->params['inlis_address'].$path.'/'.$item->CoverURL;
+				$path = '/uploaded_files/sampul_koleksi/original/'.$model->worksheet->Name;
+				$cover = Yii::app()->params['inlis_address'].$path.'/'.$model->CoverURL;
 				$title = $model->Title != null && $model->Title != '' ? $model->Title : '-';
 				
 				$return = array(
