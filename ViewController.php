@@ -102,11 +102,13 @@ class ViewController extends ControllerApi
 			if($token != null && $token != '')
 				$criteria->compare('view.token_password',$token);
 			else {
-				$device = UserDevice::model()->findByAttributes(array('android_id' => $apikey), array(
-					'select' => 'id, user_id',
-				));
-				if($device != null)
-					$criteria->compare('t.device_id',$device->id);
+				if($apikey != null && $apikey != '') {
+					$device = UserDevice::model()->findByAttributes(array('android_id' => $apikey), array(
+						'select' => 'id, user_id',
+					));
+					if($device != null)
+						$criteria->compare('t.device_id',$device->id);
+				}
 			}
 			$criteria->group = 't.catalog_id';
 			$criteria->order = 't.view_id DESC';
