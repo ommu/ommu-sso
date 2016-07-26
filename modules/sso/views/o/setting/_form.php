@@ -69,6 +69,14 @@
 		</div>
 	</div>
 
+	<div class="clearfix">
+		<?php echo $form->labelEx($model,'password_safe'); ?>
+		<div class="desc">
+			<?php echo $form->checkBox($model,'password_safe'); ?>
+			<?php echo $form->error($model,'password_safe'); ?>
+		</div>
+	</div>
+
 	<div class="submit clearfix">
 		<label>&nbsp;</label>
 		<div class="desc">

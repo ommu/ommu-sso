@@ -10,6 +10,7 @@
  * TOC :
  *	Index
  *	Manage
+ *	Generate
  *	View
  *
  *	LoadModel
@@ -81,7 +82,7 @@ class MemberController extends Controller
 				//'expression'=>'isset(Yii::app()->user->level) && (Yii::app()->user->level != 1)',
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('manage','view'),
+				'actions'=>array('manage','generate','view'),
 				'users'=>array('@'),
 				'expression'=>'isset(Yii::app()->user->level) && in_array(Yii::app()->user->level, array(1,2))',
 			),
@@ -130,6 +131,59 @@ class MemberController extends Controller
 		$this->render('admin_manage',array(
 			'model'=>$model,
 			'columns' => $columns,
+		));
+	}
+
+	/**
+	 * Updates a particular model.
+	 * If update is successful, the browser will be redirected to the 'view' page.
+	 * @param integer $id the ID of the model to be updated
+	 */
+	public function actionGenerate($id) 
+	{
+		$member=$this->loadModel($id);
+		$model=new SsoUsers;
+
+		// Uncomment the following line if AJAX validation is needed
+		$this->performAjaxValidation($model);
+
+		if(isset($_POST['SsoUsers'])) {
+			$model->attributes=$_POST['SsoUsers'];
+			$model->scenario = 'adminGenerate';
+			
+			$model->member_id = $member->ID;
+			
+			$jsonError = CActiveForm::validate($model);			
+			if(strlen($jsonError) > 2) {
+				echo $jsonError;
+
+			} else {
+				if(isset($_GET['enablesave']) && $_GET['enablesave'] == 1) {
+					if($model->save()) {
+						echo CJSON::encode(array(
+							'type' => 5,
+							'get' => Yii::app()->controller->createUrl('manage'),
+							'id' => 'partial-sso-users',
+							'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'SsoUsers success updated.').'</strong></div>',
+						));	
+					} else {
+						print_r($model->getErrors());
+					}
+				}
+			}
+			Yii::app()->end();
+		}
+		
+		$this->dialogDetail = true;
+		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
+		$this->dialogWidth = 600;
+
+		$this->pageTitle = Yii::t('phrase', 'Generate Sso Users');
+		$this->pageDescription = '';
+		$this->pageMeta = '';
+		$this->render('admin_generate',array(
+			'member'=>$member,
+			'model'=>$model,
 		));
 	}
 	

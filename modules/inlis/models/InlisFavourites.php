@@ -359,22 +359,24 @@ class InlisFavourites extends CActiveRecord
 			}
 			
 		} else {
-			$device = UserDevice::model()->findByAttributes(array('android_id' => $apikey), array(
-				'select' => 'id, user_id',
-			));
-			if($device != null) {
-				$favourite = self::model()->find(array(
-					'select'    => 'favourite_id',
-					'condition' => 'publish= :publish AND catalog_id= :catalog AND device_id= :device',
-					'params'    => array(
-						':publish' => 1,
-						':catalog' => $id,
-						':device' => $device->id,
-					),
+			if($apikey != null && $apikey != '') {
+				$device = UserDevice::model()->findByAttributes(array('android_id' => $apikey), array(
+					'select' => 'id, user_id',
 				));
-				if($favourite != null)
-					$return = $detail == true ? $favourite->favourite_id : 1;
-			}			
+				if($device != null) {
+					$favourite = self::model()->find(array(
+						'select'    => 'favourite_id',
+						'condition' => 'publish= :publish AND catalog_id= :catalog AND device_id= :device',
+						'params'    => array(
+							':publish' => 1,
+							':catalog' => $id,
+							':device' => $device->id,
+						),
+					));
+					if($favourite != null)
+						$return = $detail == true ? $favourite->favourite_id : 1;
+				}
+			}
 		}
 		
 		return $return;

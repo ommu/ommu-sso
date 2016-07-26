@@ -359,22 +359,24 @@ class InlisBookmarks extends CActiveRecord
 			}
 			
 		} else {
-			$device = UserDevice::model()->findByAttributes(array('android_id' => $apikey), array(
-				'select' => 'id, user_id',
-			));
-			if($device != null) {
-				$bookmark = self::model()->find(array(
-					'select'    => 'bookmark_id',
-					'condition' => 'publish= :publish AND catalog_id= :catalog AND device_id= :device',
-					'params'    => array(
-						':publish' => 1,
-						':catalog' => $id,
-						':device' => $device->id,
-					),
+			if($apikey != null && $apikey != '') {
+				$device = UserDevice::model()->findByAttributes(array('android_id' => $apikey), array(
+					'select' => 'id, user_id',
 				));
-				if($bookmark != null)
-					$return = $detail == true ? $bookmark->bookmark_id : 1;
-			}			
+				if($device != null) {
+					$bookmark = self::model()->find(array(
+						'select'    => 'bookmark_id',
+						'condition' => 'publish= :publish AND catalog_id= :catalog AND device_id= :device',
+						'params'    => array(
+							':publish' => 1,
+							':catalog' => $id,
+							':device' => $device->id,
+						),
+					));
+					if($bookmark != null)
+						$return = $detail == true ? $bookmark->bookmark_id : 1;
+				}
+			}	
 		}
 		
 		return $return;

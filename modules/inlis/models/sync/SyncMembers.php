@@ -96,6 +96,7 @@
 class SyncMembers extends OActiveRecord
 {
 	public $defaultColumns = array();
+	public $sso_condition;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -134,7 +135,8 @@ class SyncMembers extends OActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('LoanReturnLateCount, Branch_id, User_id', 'numerical', 'integerOnly'=>true),
+			array('LoanReturnLateCount, Branch_id, User_id,
+				sso_condition', 'numerical', 'integerOnly'=>true),
 			array('MemberNo, Fullname, PlaceOfBirth, Address, AddressNow, Phone, InstitutionName, InstitutionAddress, InstitutionPhone, IdentityType, IdentityNo, EducationLevel, Religion, Sex, MaritalStatus, JobName, BarCode, PicPath, MotherMaidenName, Email, JenisPermohonan, JenisPermohonanName, JenisAnggota, JenisAnggotaName, StatusAnggota, StatusAnggotaName, Handphone, ParentName, ParentAddress, ParentPhone, ParentHandphone, Nationality, AlamatDomisili, RT, RW, Kelurahan, Kecamatan, Kota, KodePos, NoHp, NamaDarurat, TelpDarurat, AlamatDarurat, StatusHubunganDarurat', 'length', 'max'=>255),
 			array('CreateBy, CreateTerminal, UpdateBy, UpdateTerminal', 'length', 'max'=>100),
 			array('City, Province, CityNow, ProvinceNow', 'length', 'max'=>45),
@@ -142,7 +144,8 @@ class SyncMembers extends OActiveRecord
 			array('DateOfBirth, RegisterDate, EndDate, CreateDate, UpdateDate', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('ID, MemberNo, Fullname, PlaceOfBirth, DateOfBirth, Address, AddressNow, Phone, InstitutionName, InstitutionAddress, InstitutionPhone, IdentityType, IdentityNo, EducationLevel, Religion, Sex, MaritalStatus, JobName, RegisterDate, EndDate, BarCode, PicPath, MotherMaidenName, Email, JenisPermohonan, JenisPermohonanName, JenisAnggota, JenisAnggotaName, StatusAnggota, StatusAnggotaName, Handphone, ParentName, ParentAddress, ParentPhone, ParentHandphone, Nationality, LoanReturnLateCount, Branch_id, User_id, CreateBy, CreateDate, CreateTerminal, UpdateBy, UpdateDate, UpdateTerminal, AlamatDomisili, RT, RW, Kelurahan, Kecamatan, Kota, KodePos, NoHp, NamaDarurat, TelpDarurat, AlamatDarurat, StatusHubunganDarurat, City, Province, CityNow, ProvinceNow, JobNameDetail', 'safe', 'on'=>'search'),
+			array('ID, MemberNo, Fullname, PlaceOfBirth, DateOfBirth, Address, AddressNow, Phone, InstitutionName, InstitutionAddress, InstitutionPhone, IdentityType, IdentityNo, EducationLevel, Religion, Sex, MaritalStatus, JobName, RegisterDate, EndDate, BarCode, PicPath, MotherMaidenName, Email, JenisPermohonan, JenisPermohonanName, JenisAnggota, JenisAnggotaName, StatusAnggota, StatusAnggotaName, Handphone, ParentName, ParentAddress, ParentPhone, ParentHandphone, Nationality, LoanReturnLateCount, Branch_id, User_id, CreateBy, CreateDate, CreateTerminal, UpdateBy, UpdateDate, UpdateTerminal, AlamatDomisili, RT, RW, Kelurahan, Kecamatan, Kota, KodePos, NoHp, NamaDarurat, TelpDarurat, AlamatDarurat, StatusHubunganDarurat, City, Province, CityNow, ProvinceNow, JobNameDetail,
+				sso_condition', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -154,7 +157,7 @@ class SyncMembers extends OActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'users' => array(self::HAS_MANY, 'SsoUsers', 'member_id'),
+			'users' => array(self::HAS_ONE, 'SsoUsers', 'member_id'),
 			//'collectionloanitems_relation' => array(self::HAS_MANY, 'Collectionloanitems', 'member_id'),
 			//'collectionloans_relation' => array(self::HAS_MANY, 'Collectionloans', 'Member_id'),
 			//'memberloanauthorizecategories_relation' => array(self::HAS_MANY, 'Memberloanauthorizecategory', 'Member_id'),
@@ -231,6 +234,7 @@ class SyncMembers extends OActiveRecord
 			'CityNow' => Yii::t('attribute', 'City Now'),
 			'ProvinceNow' => Yii::t('attribute', 'Province Now'),
 			'JobNameDetail' => Yii::t('attribute', 'Job Name Detail'),
+			'sso_condition' => Yii::t('attribute', 'SSO'),
 		);
 		/*
 			'ID' => 'ID',
@@ -387,6 +391,7 @@ class SyncMembers extends OActiveRecord
 		$criteria->compare('t.CityNow',strtolower($this->CityNow),true);
 		$criteria->compare('t.ProvinceNow',strtolower($this->ProvinceNow),true);
 		$criteria->compare('t.JobNameDetail',strtolower($this->JobNameDetail),true);
+		$criteria->compare('t.sso_condition',$this->sso_condition, true);
 
 		if(!isset($_GET['SyncMembers_sort']))
 			$criteria->order = 't.ID DESC';
@@ -532,6 +537,18 @@ class SyncMembers extends OActiveRecord
 					'class' => 'center',
 				),
 			);
+			$this->defaultColumns[] = array(
+				'name' => 'sso_condition',
+				'value' => '$data->sso_condition == 1 ? Chtml::image(Yii::app()->theme->baseUrl.\'/images/icons/publish.png\') : CHtml::link(Chtml::image(Yii::app()->theme->baseUrl.\'/images/icons/unpublish.png\'), Yii::app()->controller->createUrl("generate",array("id"=>$data->ID)))',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+				'filter'=>array(
+					1=>Yii::t('phrase', 'Yes'),
+					0=>Yii::t('phrase', 'No'),
+				),
+				'type' => 'raw',
+			);
 		}
 		parent::afterConstruct();
 	}
@@ -551,6 +568,12 @@ class SyncMembers extends OActiveRecord
 			$model = self::model()->findByPk($id);
 			return $model;			
 		}
+	}
+	
+	protected function afterFind() {
+		$this->sso_condition = $this->users != null ? 1 : 0;
+		
+		parent::afterFind();		
 	}
 
 }

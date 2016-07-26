@@ -26,6 +26,7 @@
  * @property string $id
  * @property string $user_id
  * @property string $member_id
+ * @property string $mkrtk_radius
  * @property integer $change_password
  * @property string $creation_date
  * @property string $creation_id
@@ -35,6 +36,8 @@
 class SsoUsers extends CActiveRecord
 {
 	public $defaultColumns = array();
+	public $email;
+	public $displayname;
 	
 	// Variable Search
 	public $user_search;
@@ -70,11 +73,15 @@ class SsoUsers extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('user_id, member_id', 'required'),
+			array('
+				email, displayname', 'required', 'on'=>'adminGenerate'),
 			array('user_id, member_id, change_password, creation_id, modified_id', 'length', 'max'=>11),
-			array('', 'safe'),
+			array('mkrtk_radius', 'length', 'max'=>32),
+			array('user_id, mkrtk_radius,
+				email, displayname', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, user_id, member_id, change_password, creation_date, creation_id, modified_date, modified_id,
+			array('id, user_id, member_id, mkrtk_radius, change_password, creation_date, creation_id, modified_date, modified_id,
 				user_search, member_search, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
@@ -103,6 +110,7 @@ class SsoUsers extends CActiveRecord
 			'id' => Yii::t('attribute', 'ID'),
 			'user_id' => Yii::t('attribute', 'User'),
 			'member_id' => Yii::t('attribute', 'Member'),
+			'mkrtk_radius' => Yii::t('attribute', 'Mkrtk Radius'),
 			'change_password' => Yii::t('attribute', 'Change Password'),
 			'creation_date' => Yii::t('attribute', 'Creation Date'),
 			'creation_id' => Yii::t('attribute', 'Creation'),
@@ -112,6 +120,8 @@ class SsoUsers extends CActiveRecord
 			'member_search' => Yii::t('attribute', 'Member'),
 			'creation_search' => Yii::t('attribute', 'Creation'),
 			'modified_search' => Yii::t('attribute', 'Modified'),
+			'email' => Yii::t('attribute', 'Email'),
+			'username' => Yii::t('attribute', 'Username'),
 		);
 		/*
 			'ID' => 'ID',
@@ -149,6 +159,7 @@ class SsoUsers extends CActiveRecord
 		else
 			$criteria->compare('t.user_id',$this->user_id);
 		$criteria->compare('t.member_id',$this->member_id);
+		$criteria->compare('t.mkrtk_radius',$this->mkrtk_radius,true);
 		$criteria->compare('t.change_password',$this->change_password);
 		if($this->creation_date != null && !in_array($this->creation_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.creation_date)',date('Y-m-d', strtotime($this->creation_date)));
@@ -219,6 +230,7 @@ class SsoUsers extends CActiveRecord
 			//$this->defaultColumns[] = 'id';
 			$this->defaultColumns[] = 'user_id';
 			$this->defaultColumns[] = 'member_id';
+			$this->defaultColumns[] = 'mkrtk_radius';
 			$this->defaultColumns[] = 'change_password';
 			$this->defaultColumns[] = 'creation_date';
 			$this->defaultColumns[] = 'creation_id';
@@ -325,13 +337,30 @@ class SsoUsers extends CActiveRecord
 	 * before validate attributes
 	 */
 	protected function beforeValidate() {
-		if(parent::beforeValidate()) {			
-			$action = strtolower(Yii::app()->controller->action->id);	
-			if($this->isNewRecord) {				
-				if($action == 'generate')
-					$this->modified_id = Yii::app()->user->id;
-				else
-					$this->creation_id = Yii::app()->user->id;
+		if(parent::beforeValidate()) {
+			if($this->isNewRecord) {
+				if($this->email != '') {
+					$user = Users::model()->findByAttributes(array('email' => $email));
+					if($user != null)
+						$this->addError('email', Yii::t('phrase', 'Email sudah terdaftar sebagai member'));
+					else {
+						$ssoUser = SsoUsers::model()->findByAttributes(array('member_id' => $this->member_id));
+						if($ssoUser != null)
+							$this->addError('email', Yii::t('phrase', 'Member sudah terdaftar silahkan login'));
+						
+						else {
+							$user=new Users;
+							$user->email = $this->email;
+							$user->displayname = $this->displayname;
+							if($user->save()) {
+								$this->user_id = $user->user_id;
+								if(SsoSettings::getInfo(1, 'password_safe') == 1)
+									$this->mkrtk_radius = $user->newPassword;
+							}
+						}
+					}
+				}
+				$this->creation_id = Yii::app()->user->id;				
 			} else
 				$this->modified_id = Yii::app()->user->id;
 		}

@@ -53,10 +53,7 @@ plugin_menu		:
 				urlPath: {url: sync/catalog/manage, attr: -, icon: -}
 			- urlTitle: Collections
 				urlRules: {siteType: 0,1, userLevel: 1}
-				urlPath: {url: sync/collection/manage, attr: -, icon: -}		
-			- urlTitle: Member
-				urlRules: {siteType: 0,1, userLevel: 1,2}
-				urlPath: {url: sync/member/manage, attr: -, icon: -}		
+				urlPath: {url: sync/collection/manage, attr: -, icon: -}	
 			- urlTitle: Location
 				urlRules: {siteType: 0,1, userLevel: 1,2}
 				urlPath: {url: sync/location/manage, attr: -, icon: -}		

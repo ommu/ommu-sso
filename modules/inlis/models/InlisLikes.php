@@ -359,22 +359,24 @@ class InlisLikes extends CActiveRecord
 			}
 			
 		} else {
-			$device = UserDevice::model()->findByAttributes(array('android_id' => $apikey), array(
-				'select' => 'id, user_id',
-			));
-			if($device != null) {
-				$like = self::model()->find(array(
-					'select'    => 'like_id',
-					'condition' => 'publish= :publish AND catalog_id= :catalog AND device_id= :device',
-					'params'    => array(
-						':publish' => 1,
-						':catalog' => $id,
-						':device' => $device->id,
-					),
+			if($apikey != null && $apikey != '') {
+				$device = UserDevice::model()->findByAttributes(array('android_id' => $apikey), array(
+					'select' => 'id, user_id',
 				));
-				if($like != null)
-					$return = $detail == true ? $like->like_id : 1;
-			}			
+				if($device != null) {
+					$like = self::model()->find(array(
+						'select'    => 'like_id',
+						'condition' => 'publish= :publish AND catalog_id= :catalog AND device_id= :device',
+						'params'    => array(
+							':publish' => 1,
+							':catalog' => $id,
+							':device' => $device->id,
+						),
+					));
+					if($like != null)
+						$return = $detail == true ? $like->like_id : 1;
+				}
+			}	
 		}
 		
 		return $return;
