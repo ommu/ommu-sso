@@ -147,7 +147,6 @@ class UserController extends ControllerApi
 			if($userFind == null) {
 				$memberFind = SsoUsers::model()->findByAttributes(array('member_id' => $member));
 				if($memberFind == null) {
-					$return['success'] = '1';
 					$model=new Users;
 					$model->email = $email;
 					$model->displayname = $displayname;
@@ -155,10 +154,13 @@ class UserController extends ControllerApi
 						$user=new SsoUsers;
 						$user->user_id = $model->user_id;
 						$user->member_id = $member;
-						if($user->save())
+						if(SsoSettings::getInfo(1, 'password_safe') == 1)
+							$user->mkrtk_radius = $model->newPassword;
+						if($user->save()) {
+							$return['success'] = '1';
 							$return['message'] = 'success';
-						
-						else {
+							
+						} else {
 							$return['success'] = '0';
 							$return['error'] = 'USER_INLIS_NOT_SAVE';
 							$return['message'] = Yii::t('phrase', 'error, user inlis sso gagal ditambahkan');							
