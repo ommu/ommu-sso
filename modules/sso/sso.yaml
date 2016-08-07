@@ -17,7 +17,7 @@ plugin_menu		:
 		urlPath: {url: o/admin/manage, attr: -, icon: -}
 				
 	- urlTitle: Settings
-		urlRules: {siteType: 0,1, userLevel: 1,2}
+		urlRules: {siteType: 0,1, userLevel: 1}
 		urlPath: {url: o/setting/index, attr: -, icon: -}
 				
 	- urlTitle: Inlis Sync
