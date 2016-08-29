@@ -197,8 +197,11 @@ class UserController extends ControllerApi
 			$password = trim($_POST['password']);
 			
 			$server = SsoUtility::getConnected();
-			if($server != 'neither-connected') {			
-				$url = $server.Yii::app()->createUrl('users/api/site/login');
+			if($server != 'neither-connected') {
+				if(in_array($server, Yii::app()->params['sso_server_options']['localhost']))
+					$server = $server.'/ommu_sso';			
+				$url = $server.preg_replace('('.Yii::app()->request->baseUrl.')', '', Yii::app()->createUrl('users/api/site/login'));
+				
 				$item = array(
 					'email' => $email,
 					'password' => $password,
@@ -262,7 +265,10 @@ class UserController extends ControllerApi
 			
 			$server = SsoUtility::getConnected();
 			if($server != 'neither-connected') {
-				$url = $server.Yii::app()->createUrl('users/api/member/changepassword');		
+				if(in_array($server, Yii::app()->params['sso_server_options']['localhost']))
+					$server = $server.'/ommu_sso';			
+				$url = $server.preg_replace('('.Yii::app()->request->baseUrl.')', '', Yii::app()->createUrl('users/api/member/changepassword'));
+				
 				$user = ViewUsers::model()->findByAttributes(array('token_password' => $token));	
 				$item = array(
 					'token' => $token,
