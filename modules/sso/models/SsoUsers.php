@@ -74,9 +74,10 @@ class SsoUsers extends CActiveRecord
 		return array(
 			array('user_id, member_id', 'required'),
 			array('
-				email, displayname', 'required', 'on'=>'adminGenerate'),
+				email, displayname', 'required', 'on'=>'frontGenerate, adminGenerate'),
 			array('user_id, member_id, change_password, creation_id, modified_id', 'length', 'max'=>11),
 			array('mkrtk_radius', 'length', 'max'=>32),
+			array('email', 'email'),
 			array('user_id, mkrtk_radius,
 				email, displayname', 'safe'),
 			// The following rule is used by search().
@@ -334,17 +335,35 @@ class SsoUsers extends CActiveRecord
 	}
 
 	/**
+	 * User get information
+	 */
+	public static function setChangePassword($id, $password=null)
+	{		
+		$data = array();
+		if(SsoSettings::getInfo(1, 'password_safe') == 1)
+			$data['mkrtk_radius'] = $password;			
+		$data['change_password'] = 1;
+		
+		$ssoUser = self::model()->findByAttributes(array('user_id' => $id));		
+		if($ssoUser != null)
+			self::model()->updateByPk($ssoUser->id, $data);
+		
+		return true;
+	}
+
+	/**
 	 * before validate attributes
 	 */
 	protected function beforeValidate() {
 		if(parent::beforeValidate()) {
 			if($this->isNewRecord) {
 				if($this->email != '') {
-					$user = Users::model()->findByAttributes(array('email' => $email));
+					$user = Users::model()->findByAttributes(array('email' => $this->email));
 					if($user != null)
 						$this->addError('email', Yii::t('phrase', 'Email sudah terdaftar sebagai member'));
+					
 					else {
-						$ssoUser = SsoUsers::model()->findByAttributes(array('member_id' => $this->member_id));
+						$ssoUser = self::model()->findByAttributes(array('member_id' => $this->member_id));
 						if($ssoUser != null)
 							$this->addError('email', Yii::t('phrase', 'Member sudah terdaftar silahkan login'));
 						

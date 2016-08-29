@@ -14,6 +14,7 @@ class SsoModule extends CWebModule
 			'sso.components.extensions.*',
 			'sso.components.system.*',
 			'sso.models.*',
+			'inlis.models.ViewInlisSyncMemberData',
 			'inlis.models.sync.SyncMembers',
 		));
 	}
@@ -24,6 +25,7 @@ class SsoModule extends CWebModule
 			// you may place customized code here
 			//list public controller in this module
 			$publicControllers = array(
+				'account',
 				'site',
 				'api/user',
 			);
