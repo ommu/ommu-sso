@@ -21,7 +21,7 @@ class SsoUtility
 	 * @return type
 	 */
 	public static function getConnected() {
-		$ssoServerOptions = Yii::app()->params['sso_server_options'];
+		$ssoServerOptions = Yii::app()->params['sso_server_options']['all'];
 		$connectedUrl = 'neither-connected';
 		
 		foreach($ssoServerOptions as $val) {

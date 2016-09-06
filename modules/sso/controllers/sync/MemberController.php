@@ -153,25 +153,10 @@ class MemberController extends Controller
 			
 			$model->member_id = $member->ID;
 			
-			$jsonError = CActiveForm::validate($model);			
-			if(strlen($jsonError) > 2) {
-				echo $jsonError;
-
-			} else {
-				if(isset($_GET['enablesave']) && $_GET['enablesave'] == 1) {
-					if($model->save()) {
-						echo CJSON::encode(array(
-							'type' => 5,
-							'get' => Yii::app()->controller->createUrl('manage'),
-							'id' => 'partial-sso-users',
-							'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'SsoUsers success updated.').'</strong></div>',
-						));	
-					} else {
-						print_r($model->getErrors());
-					}
-				}
+			if($model->save()) {					
+				Yii::app()->user->setFlash('success', Yii::t('phrase', 'SsoUsers success updated.'));
+				$this->redirect(array('manage'));
 			}
-			Yii::app()->end();
 		}
 		
 		$this->dialogDetail = true;

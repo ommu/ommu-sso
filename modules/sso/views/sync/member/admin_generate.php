@@ -23,14 +23,17 @@
 <?php $form=$this->beginWidget('application.components.system.OActiveForm', array(
 	'id'=>'sso-users-form',
 	'enableAjaxValidation'=>true,
-	//'htmlOptions' => array('enctype' => 'multipart/form-data')
+	'htmlOptions' => array(
+		'enctype' => 'multipart/form-data',
+		'on_post' => '',
+	),
 )); ?>
 
 <div class="dialog-content">
 	<fieldset>
 		<?php //begin.Messages ?>
 		<div id="ajax-message">
-			<?php echo $form->errorSummary($model); ?>
+			<?php //echo $form->errorSummary($model); ?>
 		</div>
 		<?php //begin.Messages ?>
 
