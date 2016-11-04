@@ -10,8 +10,8 @@ class SsoModule extends CWebModule
 		
 		// import the module-level models and components
 		$this->setImport(array(
+			'sso.assets.*',
 			'sso.components.*',
-			'sso.components.extensions.*',
 			'sso.components.system.*',
 			'sso.models.*',
 			'inlis.models.ViewInlisSyncMemberData',
