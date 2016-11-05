@@ -15,7 +15,7 @@ class SsoModule extends CWebModule
 			'sso.components.system.*',
 			'sso.models.*',
 			'inlis.models.ViewInlisSyncMemberData',
-			'inlis.models.sync.SyncMembers',
+			'inlis.model_sync_2-1.SyncMembers',
 		));
 	}
 
