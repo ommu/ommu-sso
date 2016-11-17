@@ -13,8 +13,7 @@ class InlisModule extends CWebModule
 			'inlis.components.*',
 			'inlis.components.system.*',
 			'inlis.models.*',
-			'inlis.models.sync.*',
-			//'inlis.models.sync.2_2_1.*',
+			'inlis.model_sync_2-1.*',
 			'sso.models.SsoUsers',
 		));
 	}

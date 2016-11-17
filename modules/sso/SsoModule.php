@@ -11,6 +11,7 @@ class SsoModule extends CWebModule
 		// import the module-level models and components
 		$this->setImport(array(
 			'sso.assets.*',
+			'sso.assets.routeros.*',
 			'sso.components.*',
 			'sso.components.system.*',
 			'sso.models.*',
