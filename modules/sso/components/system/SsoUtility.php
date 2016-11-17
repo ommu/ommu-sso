@@ -61,4 +61,26 @@ class SsoUtility
 		} else
 			return false;
 	}
+
+	//returns true, if domain is availible, false if not
+	public static function chaining($function, $methods, $data=array())
+	{
+		$i=0;
+		$countMethods = count($methods);
+		
+		$object = $function;
+		foreach($methods as $value) {
+			$i++;
+			
+			if(!empty($data)) {
+				if($i == $countMethods)
+					$object = $object->$value($data);
+				else
+					$object = $object->$value();
+				
+			} else
+				$object = $object->$value();
+		}
+		return $object;
+	}
 }

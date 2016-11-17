@@ -10,6 +10,7 @@
  * TOC :
  *	Index
  *	Edit
+ *	Network
  *
  *	LoadModel
  *	performAjaxValidation
@@ -38,7 +39,7 @@ class SettingController extends Controller
 	public function init() 
 	{
 		if(!Yii::app()->user->isGuest) {
-			if(in_array(Yii::app()->user->level, array(1,2))) {
+			if(Yii::app()->user->level == 1) {
 				$arrThemes = Utility::getCurrentTemplate('admin');
 				Yii::app()->theme = $arrThemes['folder'];
 				$this->layout = $arrThemes['layout'];
@@ -80,9 +81,9 @@ class SettingController extends Controller
 				//'expression'=>'isset(Yii::app()->user->level) && (Yii::app()->user->level != 1)',
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('edit'),
+				'actions'=>array('edit','network'),
 				'users'=>array('@'),
-				'expression'=>'isset(Yii::app()->user->level) && in_array(Yii::app()->user->level, array(1,2))',
+				'expression'=>'isset(Yii::app()->user->level) && (Yii::app()->user->level == 1)',
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
 				'actions'=>array(),
@@ -155,6 +156,33 @@ class SettingController extends Controller
 		$this->render('admin_edit',array(
 			'model'=>$model,
 		));
+	}
+	
+	/**
+	 * Lists all models.
+	 */
+	public function actionNetwork() 
+	{		
+		Yii::import('application.modules.sso.assets.routeros.*');
+		
+		echo Utility::getProtocol().'://'.Yii::app()->request->serverName.Yii::app()->controller->createUrl('network', array(
+			'method'=>'tool,usermanager,get_all_profile',
+		));
+		
+		$api = new ORouterosAPI;
+		$method = Utility::formatFileType($_GET['method'], true, ',');
+		echo '<br/><br/>method : '.$_GET['method'].' | to array: '; print_r($method);
+		unset($_GET['method']);
+		echo '<br/>data : '; print_r($_GET).'<br/>';
+		//exit();
+		
+		echo '<pre>';		
+		if(!empty($_GET))
+			print_r(SsoUtility::chaining($api, $method, $_GET));
+		else
+			print_r(SsoUtility::chaining($api, $method));
+		echo '</pre>';
+		//exit();
 	}
 	
 	/**
