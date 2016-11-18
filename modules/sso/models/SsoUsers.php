@@ -338,15 +338,27 @@ class SsoUsers extends CActiveRecord
 	 * User get information
 	 */
 	public static function setChangePassword($id, $password=null)
-	{		
+	{
+		$setting = SsoSettings::model()->findByPk(1, array(
+			'select' => 'password_safe, network_radius_enable, network_radius_customer, network_radius_profile, network_radius_shared',
+		));
+		Yii::import('application.modules.sso.assets.routeros.*');
+		
 		$data = array();
-		if(SsoSettings::getInfo(1, 'password_safe') == 1)
-			$data['mkrtk_radius'] = $password;			
+		if($setting->password_safe == 1)
+			$data['mkrtk_radius'] = $password;
 		$data['change_password'] = 1;
 		
-		$ssoUser = self::model()->findByAttributes(array('user_id' => $id));		
-		if($ssoUser != null)
+		$ssoUser = self::model()->findByAttributes(array('user_id' => $id));
+		if($ssoUser != null) {
 			self::model()->updateByPk($ssoUser->id, $data);
+			
+			$api = new ORouterosAPI;
+			$api->command('/tool/user-manager/user/set', array(
+				'numbers'=>$ssoUser->member->MemberNo,
+				'password'=>$password,
+			));
+		}
 		
 		return true;
 	}
@@ -384,6 +396,42 @@ class SsoUsers extends CActiveRecord
 				$this->modified_id = Yii::app()->user->id;
 		}
 		return true;
+	}
+	
+	/**
+	 * After save attributes
+	 */
+	protected function afterSave() {
+		parent::afterSave();
+		$setting = SsoSettings::model()->findByPk(1, array(
+			'select' => 'network_radius_enable, network_radius_customer, network_radius_profile, network_radius_shared',
+		));
+		Yii::import('application.modules.sso.assets.routeros.*');
+		
+		if($this->isNewRecord) {
+			if($setting->network_radius_enable == 1) {
+				$api = new ORouterosAPI;
+				$data = array(
+					'customer'=>$setting->network_radius_customer,
+					//'actual-profile'=>$setting->network_radius_profile,	
+					'username'=>$this->member->MemberNo,
+					'password'=>$this->mkrtk_radius,
+					'shared-users'=>$setting->network_radius_shared,
+					'email'=>$this->user->email,
+				);
+				if($this->member->NoHp != null && $this->member->NoHp != '')
+					$data['phone'] = $this->member->NoHp;
+				if($this->member->Kota != null && $this->member->Kota != '')
+					$data['location'] = $this->member->Kota;
+				
+				$api->command('/tool/user-manager/user/add', $data);
+				$api->command('/tool/user-manager/user/create-and-activate-profile', array(
+					'numbers'=>$this->member->MemberNo,
+					'customer'=>$setting->network_radius_customer,
+					'profile'=>$setting->network_radius_profile,						
+				));
+			}
+		}
 	}
 
 }

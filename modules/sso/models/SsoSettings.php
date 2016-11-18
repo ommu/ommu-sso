@@ -29,6 +29,10 @@
  * @property string $meta_keyword
  * @property string $meta_description
  * @property integer $password_safe
+ * @property integer $network_radius_enable
+ * @property string $network_radius_customer
+ * @property string $network_radius_profile
+ * @property integer $network_radius_shared
  * @property string $modified_date
  * @property string $modified_id
  */
@@ -66,13 +70,14 @@ class SsoSettings extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('license, permission, meta_keyword, meta_description', 'required'),
+			array('license, permission, meta_keyword, meta_description', 'required', 'on'=>'general'),
+			array('network_radius_enable, network_radius_customer, network_radius_profile, network_radius_shared', 'required', 'on'=>'network_radius'),
 			array('id, permission, password_safe', 'numerical', 'integerOnly'=>true),
 			array('license', 'length', 'max'=>32),
 			array('modified_id', 'length', 'max'=>11),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, license, permission, meta_keyword, meta_description, password_safe, modified_date, modified_id,
+			array('id, license, permission, meta_keyword, meta_description, password_safe, network_radius_enable, network_radius_customer, network_radius_profile, network_radius_shared, modified_date, modified_id,
 				modified_search', 'safe', 'on'=>'search'),
 		);
 	}
@@ -101,6 +106,10 @@ class SsoSettings extends CActiveRecord
 			'meta_keyword' => Yii::t('attribute', 'Meta Keyword'),
 			'meta_description' => Yii::t('attribute', 'Meta Description'),
 			'password_safe' => Yii::t('attribute', 'Password Safe'),
+			'network_radius_enable' => Yii::t('attribute', 'Enable'),
+			'network_radius_customer' => Yii::t('attribute', 'Customer Default'),
+			'network_radius_profile' => Yii::t('attribute', 'Profile Default'),
+			'network_radius_shared' => Yii::t('attribute', 'User Shared Default'),
 			'modified_date' => Yii::t('attribute', 'Modified Date'),
 			'modified_id' => Yii::t('attribute', 'Modified'),
 			'modified_search' => Yii::t('attribute', 'Modified'),
@@ -141,6 +150,10 @@ class SsoSettings extends CActiveRecord
 		$criteria->compare('t.meta_keyword',strtolower($this->meta_keyword),true);
 		$criteria->compare('t.meta_description',strtolower($this->meta_description),true);
 		$criteria->compare('t.password_safe',$this->password_safe);
+		$criteria->compare('t.network_radius_enable',$this->network_radius_enable);
+		$criteria->compare('t.network_radius_customer',strtolower($this->network_radius_customer),true);
+		$criteria->compare('t.network_radius_profile',strtolower($this->network_radius_profile),true);
+		$criteria->compare('t.network_radius_shared',$this->network_radius_shared);
 		if($this->modified_date != null && !in_array($this->modified_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.modified_date)',date('Y-m-d', strtotime($this->modified_date)));
 		if(isset($_GET['modified']))
@@ -192,6 +205,10 @@ class SsoSettings extends CActiveRecord
 			$this->defaultColumns[] = 'meta_keyword';
 			$this->defaultColumns[] = 'meta_description';
 			$this->defaultColumns[] = 'password_safe';
+			$this->defaultColumns[] = 'network_radius_enable';
+			$this->defaultColumns[] = 'network_radius_customer';
+			$this->defaultColumns[] = 'network_radius_profile';
+			$this->defaultColumns[] = 'network_radius_shared';
 			$this->defaultColumns[] = 'modified_date';
 			$this->defaultColumns[] = 'modified_id';
 		}
@@ -213,6 +230,10 @@ class SsoSettings extends CActiveRecord
 			$this->defaultColumns[] = 'meta_keyword';
 			$this->defaultColumns[] = 'meta_description';
 			$this->defaultColumns[] = 'password_safe';
+			$this->defaultColumns[] = 'network_radius_enable';
+			$this->defaultColumns[] = 'network_radius_customer';
+			$this->defaultColumns[] = 'network_radius_profile';
+			$this->defaultColumns[] = 'network_radius_shared';
 			$this->defaultColumns[] = array(
 				'name' => 'modified_date',
 				'value' => 'Utility::dateFormat($data->modified_date)',

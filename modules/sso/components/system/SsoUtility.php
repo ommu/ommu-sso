@@ -63,13 +63,14 @@ class SsoUtility
 	}
 
 	//returns true, if domain is availible, false if not
-	public static function chaining($function, $methods, $data=array())
+	public static function API($function, $methods, $data=array())
 	{
 		$i=0;
-		$countMethods = count($methods);
+		$arrayMethods = Utility::formatFileType($methods, true, ',');
+		$countMethods = count($arrayMethods);
 		
 		$object = $function;
-		foreach($methods as $value) {
+		foreach($arrayMethods as $value) {
 			$i++;
 			
 			if(!empty($data)) {
@@ -82,5 +83,19 @@ class SsoUtility
 				$object = $object->$value();
 		}
 		return $object;
+	}
+
+	//returns true, if domain is availible, false if not
+	public static function getKeyVal($array, $a, $b)
+	{
+		$items = array();
+		if(!empty($array)) {
+			foreach($array as $val) {
+				$items[$val[$a]] = $val[$b];
+			}
+			return $items;
+		} else {
+			return false;
+		}
 	}
 }

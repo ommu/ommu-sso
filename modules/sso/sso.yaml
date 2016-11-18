@@ -29,3 +29,17 @@ plugin_menu		:
 				urlPath: {url: sync/member/manage, attr: -, icon: -}
 
 content_menu	:
+
+# controller o/setting
+	- urlTitle: General
+		urlRules: {sso, o/setting, edit,usernetwork, siteType: 0,1, userLevel: 1}
+		urlPath: {url: edit, attr: -, icon: -}
+        
+	- urlTitle: User Network
+		urlRules: {sso, o/setting, edit,usernetwork, siteType: 0,1, userLevel: 1}
+		urlPath: {url: usernetwork, attr: -, icon: -}
+        
+# controller sync/member
+	- urlTitle: Back to manage
+		urlRules: {sso, sync/member, view, siteType: 0,1, userLevel: 1,2}
+		urlPath: {url: manage, attr: -, icon: -}
