@@ -30,19 +30,19 @@ plugin_menu		:
 		submenu :
 			- urlTitle: Catalogs
 				urlRules: {siteType: 0,1, userLevel: 1,2}
-				urlPath: {url: statistic/catalog/view, attr: -, icon: -}
+				urlPath: {url: statistic/catalog/manage, attr: -, icon: -}
 			- urlTitle: Collections
 				urlRules: {siteType: 0,1, userLevel: 1,2}
-				urlPath: {url: statistic/collection/view, attr: -, icon: -}
+				urlPath: {url: statistic/collection/manage, attr: -, icon: -}
 			- urlTitle: Checkpoints
 				urlRules: {siteType: 0,1, userLevel: 1,2}
-				urlPath: {url: statistic/checkpoint/view, attr: -, icon: -}
+				urlPath: {url: statistic/checkpoint/manage, attr: -, icon: -}
 			- urlTitle: Members
 				urlRules: {siteType: 0,1, userLevel: 1,2}
-				urlPath: {url: statistic/member/view, attr: -, icon: -}
+				urlPath: {url: statistic/member/manage, attr: -, icon: -}
 			- urlTitle: Loans
 				urlRules: {siteType: 0,1, userLevel: 1,2}
-				urlPath: {url: statistic/loan/view, attr: -, icon: -}
+				urlPath: {url: statistic/loan/manage, attr: -, icon: -}
 				
 	- urlTitle: Inlis Sync
 		urlRules: {siteType: 0,1, userLevel: 1}

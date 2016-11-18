@@ -56,7 +56,10 @@
 				<?php 
 				$api = new ORouterosAPI;
 				$network_radius_customer = $api->command('/tool/user-manager/customer/getall');
-				echo $form->dropDownList($model,'network_radius_customer', SsoUtility::getKeyVal($network_radius_customer, 'login', 'login')); ?>
+				if(!empty($network_radius_customer))
+					echo $form->dropDownList($model,'network_radius_customer', SsoUtility::getKeyVal($network_radius_customer, 'login', 'login'), array('prompt'=>Yii::t('phrase', 'Select One')));
+				else
+					echo $form->dropDownList($model,'network_radius_customer', array('prompt'=>Yii::t('phrase', 'Select One'))); ?>
 				<?php echo $form->error($model,'network_radius_customer'); ?>
 			</div>
 		</div>
@@ -69,7 +72,10 @@
 				<?php 
 				$api = new ORouterosAPI;
 				$network_radius_profile = $api->command('/tool/user-manager/profile/getall');
-				echo $form->dropDownList($model,'network_radius_profile', SsoUtility::getKeyVal($network_radius_profile, 'name', 'name')); ?>
+				if(!empty($network_radius_profile))
+					echo $form->dropDownList($model,'network_radius_profile', SsoUtility::getKeyVal($network_radius_profile, 'name', 'name'), array('prompt'=>Yii::t('phrase', 'Select One')));
+				else
+					echo $form->dropDownList($model,'network_radius_profile', array('prompt'=>Yii::t('phrase', 'Select One'))); ?>
 				<?php echo $form->error($model,'network_radius_profile'); ?>
 			</div>
 		</div>
