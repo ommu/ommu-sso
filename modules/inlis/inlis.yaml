@@ -24,6 +24,23 @@ plugin_menu		:
 		urlRules: {siteType: 0,1, userLevel: 1}
 		urlPath: {url: o/setting/index, attr: -, icon: -}
 				
+	- urlTitle: Inlis Sync
+		urlRules: {siteType: 0,1, userLevel: 1}
+		urlPath: {url: -, attr: -, icon: -}
+		submenu :
+			- urlTitle: Catalogs
+				urlRules: {siteType: 0,1, userLevel: 1}
+				urlPath: {url: sync/catalog/manage, attr: -, icon: -}
+			- urlTitle: Collections
+				urlRules: {siteType: 0,1, userLevel: 1}
+				urlPath: {url: sync/collection/manage, attr: -, icon: -}	
+			- urlTitle: Location
+				urlRules: {siteType: 0,1, userLevel: 1}
+				urlPath: {url: sync/location/manage, attr: -, icon: -}		
+			- urlTitle: Worksheet
+				urlRules: {siteType: 0,1, userLevel: 1}
+				urlPath: {url: sync/worksheet/manage, attr: -, icon: -}
+				
 	- urlTitle: Inlis Statistics
 		urlRules: {siteType: 0,1, userLevel: 1,2}
 		urlPath: {url: -, attr: -, icon: -}
@@ -43,23 +60,6 @@ plugin_menu		:
 			- urlTitle: Loans
 				urlRules: {siteType: 0,1, userLevel: 1,2}
 				urlPath: {url: statistic/loan/manage, attr: -, icon: -}
-				
-	- urlTitle: Inlis Sync
-		urlRules: {siteType: 0,1, userLevel: 1}
-		urlPath: {url: -, attr: -, icon: -}
-		submenu :
-			- urlTitle: Catalogs
-				urlRules: {siteType: 0,1, userLevel: 1}
-				urlPath: {url: sync/catalog/manage, attr: -, icon: -}
-			- urlTitle: Collections
-				urlRules: {siteType: 0,1, userLevel: 1}
-				urlPath: {url: sync/collection/manage, attr: -, icon: -}	
-			- urlTitle: Location
-				urlRules: {siteType: 0,1, userLevel: 1}
-				urlPath: {url: sync/location/manage, attr: -, icon: -}		
-			- urlTitle: Worksheet
-				urlRules: {siteType: 0,1, userLevel: 1}
-				urlPath: {url: sync/worksheet/manage, attr: -, icon: -}
 
 content_menu	:
 # controller o/bookmark
