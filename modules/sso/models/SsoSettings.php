@@ -75,6 +75,7 @@ class SsoSettings extends CActiveRecord
 			array('id, permission, password_safe', 'numerical', 'integerOnly'=>true),
 			array('license', 'length', 'max'=>32),
 			array('modified_id', 'length', 'max'=>11),
+			array('license', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, license, permission, meta_keyword, meta_description, password_safe, network_radius_enable, network_radius_customer, network_radius_profile, network_radius_shared, modified_date, modified_id,
@@ -283,6 +284,33 @@ class SsoSettings extends CActiveRecord
 			$model = self::model()->findByPk($id);
 			return $model;			
 		}
+	}
+
+	/**
+	 * get Module License
+	 */
+	public static function getLicense($source='1234567890', $length=16, $char=4)
+	{
+		$mod = $length%$char;
+		if($mod == 0)
+			$sep = ($length/$char);
+		else
+			$sep = (int)($length/$char)+1;
+		
+		$sourceLength = strlen($source);
+		$random = '';
+		for ($i = 0; $i < $length; $i++)
+			$random .= $source[rand(0, $sourceLength - 1)];
+		
+		$license = '';
+		for ($i = 0; $i < $sep; $i++) {
+			if($i != $sep-1)
+				$license .= substr($random,($i*$char),$char).'-';
+			else
+				$license .= substr($random,($i*$char),$char);
+		}
+
+		return $license;
 	}
 
 	/**

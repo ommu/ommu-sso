@@ -12,13 +12,13 @@ db_table_name	:
 db_sql_filename	: 
 
 plugin_menu		:
-	- urlTitle: Catalogs
-		urlRules: {siteType: 0,1, userLevel: 1,2}
-		urlPath: {url: o/admin/manage, attr: -, icon: -}
+#	- urlTitle: Catalogs
+#		urlRules: {siteType: 0,1, userLevel: 1,2}
+#		urlPath: {url: o/admin/manage, attr: -, icon: -}
 				
-	- urlTitle: Tracks
-		urlRules: {siteType: 0,1, userLevel: 1,2}
-		urlPath: {url: o/bookmark/manage, attr: -, icon: -}
+#	- urlTitle: Tracks
+#		urlRules: {siteType: 0,1, userLevel: 1,2}
+#		urlPath: {url: o/bookmark/manage, attr: -, icon: -}
 				
 	- urlTitle: Settings
 		urlRules: {siteType: 0,1, userLevel: 1}
