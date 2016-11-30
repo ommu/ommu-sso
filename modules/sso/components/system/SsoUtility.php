@@ -21,16 +21,21 @@ class SsoUtility
 	 * @return type
 	 */
 	public static function getConnected() {
-		$ssoServerOptions = Yii::app()->params['sso_server_options']['all'];
-		$connectedUrl = 'neither-connected';
+		if(Yii::app()->params['sso_server_options']['default'] == true)
+			$connectedUrl = Yii::app()->params['sso_server_options']['default_host'];
 		
-		foreach($ssoServerOptions as $val) {
-			if(self::isServerAvailible($val)) {
-				$connectedUrl = $val;
-				break;
+		else {
+			$ssoServerOptions = Yii::app()->params['sso_server_options']['all'];
+			$connectedUrl = 'neither-connected';
+			
+			foreach($ssoServerOptions as $val) {
+				if(self::isServerAvailible($val)) {
+					$connectedUrl = $val;
+					break;
+				}
 			}
+			file_put_contents('assets/sso_server_actived.txt', $connectedUrl);			
 		}
-		file_put_contents('assets/sso_server_actived.txt', $connectedUrl);
 
 		return $connectedUrl;
 	}

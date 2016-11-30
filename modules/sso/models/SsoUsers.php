@@ -403,6 +403,7 @@ class SsoUsers extends CActiveRecord
 	 */
 	protected function afterSave() {
 		parent::afterSave();
+		
 		$setting = SsoSettings::model()->findByPk(1, array(
 			'select' => 'network_radius_enable, network_radius_customer, network_radius_profile, network_radius_shared',
 		));
@@ -432,6 +433,25 @@ class SsoUsers extends CActiveRecord
 				));
 			}
 		}
+	}
+
+	/**
+	 * After delete attributes
+	 */
+	protected function afterDelete() {
+		parent::afterDelete();
+		
+		$setting = SsoSettings::model()->findByPk(1, array(
+			'select' => 'network_radius_enable',
+		));
+		Yii::import('application.modules.sso.assets.routeros.*');
+		
+		if($setting->network_radius_enable == 1) {
+			$api = new ORouterosAPI;
+			$api->command('/tool/user-manager/user/remove', array(
+				'numbers'=>$this->member->MemberNo,					
+			));
+		}		
 	}
 
 }
