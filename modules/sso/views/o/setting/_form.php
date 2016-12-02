@@ -39,7 +39,7 @@
 			if($model->isNewRecord || (!$model->isNewRecord && $model->license == ''))
 				$model->license = SsoSettings::getLicense();
 			
-			if($model->isNewRecord)
+			if($model->isNewRecord || (!$model->isNewRecord && $model->license == ''))
 				echo $form->textField($model,'license',array('maxlength'=>32,'class'=>'span-4'));
 			else
 				echo $form->textField($model,'license',array('maxlength'=>32,'class'=>'span-4','disabled'=>'disabled'));?>
