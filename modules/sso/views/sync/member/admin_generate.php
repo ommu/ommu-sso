@@ -38,22 +38,32 @@
 		<?php //begin.Messages ?>
 
 		<div class="clearfix">
-			<?php echo $form->labelEx($model,'email'); ?>
+			<?php echo $form->labelEx($model,'displayname_input'); ?>
 			<div class="desc">
-				<?php $model->email = $member->Email;
-				echo $form->textField($model,'email',array('maxlength'=>32,'class'=>'span-7')); ?>
-				<?php echo $form->error($model,'email'); ?>
+				<?php $model->displayname_input = ucwords(strtolower(trim($member->Fullname)));
+				echo $form->textField($model,'displayname_input',array('maxlength'=>64,'class'=>'span-7')); ?>
+				<?php echo $form->error($model,'displayname_input'); ?>
 			</div>
 		</div>
 
 		<div class="clearfix">
-			<?php echo $form->labelEx($model,'displayname'); ?>
+			<?php echo $form->labelEx($model,'email_input'); ?>
 			<div class="desc">
-				<?php $model->displayname = ucwords(strtolower(trim($member->Fullname)));
-				echo $form->textField($model,'displayname',array('maxlength'=>64,'class'=>'span-7')); ?>
-				<?php echo $form->error($model,'displayname'); ?>
+				<?php $model->email_input = $member->Email;
+				echo $form->textField($model,'email_input',array('maxlength'=>32,'class'=>'span-7')); ?>
+				<?php echo $form->error($model,'email_input'); ?>
 			</div>
 		</div>
+		
+		<?php if($setting->signup_random == 0) {?>
+		<div class="clearfix">
+			<?php echo $form->labelEx($model,'password_input'); ?>
+			<div class="desc">
+				<?php echo $form->textField($model,'password_input',array('maxlength'=>32,'class'=>'span-7')); ?>
+				<?php echo $form->error($model,'password_input'); ?>
+			</div>
+		</div>
+		<?php }?>
 
 	</fieldset>
 </div>

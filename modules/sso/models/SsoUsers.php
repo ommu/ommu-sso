@@ -36,8 +36,9 @@
 class SsoUsers extends CActiveRecord
 {
 	public $defaultColumns = array();
-	public $email;
-	public $displayname;
+	public $email_input;
+	public $displayname_input;
+	public $password_input;
 	
 	// Variable Search
 	public $user_search;
@@ -74,12 +75,14 @@ class SsoUsers extends CActiveRecord
 		return array(
 			array('user_id, member_id', 'required'),
 			array('
-				email, displayname', 'required', 'on'=>'frontGenerate, adminGenerate'),
+				email_input, displayname_input', 'required', 'on'=>'frontGenerate, adminGenerate'),
+			array('
+				email_input, displayname_input, password_input', 'required', 'on'=>'frontGeneratePlusPassword, adminGeneratePlusPassword'),
 			array('user_id, member_id, change_password, creation_id, modified_id', 'length', 'max'=>11),
 			array('mkrtk_radius', 'length', 'max'=>32),
-			array('email', 'email'),
+			array('email_input', 'email'),
 			array('user_id, mkrtk_radius,
-				email, displayname', 'safe'),
+				email_input, displayname_input, password_input', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, user_id, member_id, mkrtk_radius, change_password, creation_date, creation_id, modified_date, modified_id,
@@ -121,8 +124,9 @@ class SsoUsers extends CActiveRecord
 			'member_search' => Yii::t('attribute', 'Member'),
 			'creation_search' => Yii::t('attribute', 'Creation'),
 			'modified_search' => Yii::t('attribute', 'Modified'),
-			'email' => Yii::t('attribute', 'Email'),
-			'username' => Yii::t('attribute', 'Username'),
+			'email_input' => Yii::t('attribute', 'Email'),
+			'displayname_input' => Yii::t('attribute', 'Name'),
+			'password_input' => Yii::t('attribute', 'Password'),
 		);
 		/*
 			'ID' => 'ID',
@@ -369,20 +373,22 @@ class SsoUsers extends CActiveRecord
 	protected function beforeValidate() {
 		if(parent::beforeValidate()) {
 			if($this->isNewRecord) {
-				if($this->email != '') {
-					$user = Users::model()->findByAttributes(array('email' => $this->email));
+				if($this->email_input != '') {
+					$user = Users::model()->findByAttributes(array('email' => $this->email_input));
 					if($user != null)
-						$this->addError('email', Yii::t('phrase', 'Email sudah terdaftar sebagai member'));
+						$this->addError('email_input', Yii::t('phrase', 'Email sudah terdaftar sebagai member'));
 					
 					else {
 						$ssoUser = self::model()->findByAttributes(array('member_id' => $this->member_id));
 						if($ssoUser != null)
-							$this->addError('email', Yii::t('phrase', 'Member sudah terdaftar silahkan login'));
+							$this->addError('email_input', Yii::t('phrase', 'Member sudah terdaftar silahkan login'));
 						
 						else {
 							$user=new Users;
-							$user->email = $this->email;
-							$user->displayname = $this->displayname;
+							$user->email = $this->email_input;
+							$user->displayname = $this->displayname_input;
+							if(OmmuSettings::getInfo('signup_random') == 0)
+								$user->confirmPassword = $user->newPassword = $this->password_input;
 							if($user->save()) {
 								$this->user_id = $user->user_id;
 								if(SsoSettings::getInfo(1, 'password_safe') == 1)

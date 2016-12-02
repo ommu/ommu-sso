@@ -141,6 +141,9 @@ class MemberController extends Controller
 	 */
 	public function actionGenerate($id) 
 	{
+		$setting = OmmuSettings::model()->findByPk(1, array(
+			'select' => 'signup_random',
+		));
 		$member=$this->loadModel($id);
 		$model=new SsoUsers;
 
@@ -149,8 +152,10 @@ class MemberController extends Controller
 
 		if(isset($_POST['SsoUsers'])) {
 			$model->attributes=$_POST['SsoUsers'];
-			$model->scenario = 'adminGenerate';
-			
+			if($setting->signup_random == 1)
+				$model->scenario = 'adminGenerate';
+			else
+				$model->scenario = 'adminGeneratePlusPassword';			
 			$model->member_id = $member->ID;
 			
 			if($model->save()) {					
@@ -167,6 +172,7 @@ class MemberController extends Controller
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_generate',array(
+			'setting'=>$setting,
 			'member'=>$member,
 			'model'=>$model,
 		));
