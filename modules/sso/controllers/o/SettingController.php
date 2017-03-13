@@ -218,7 +218,7 @@ class SettingController extends Controller
 	 */
 	public function actionTesting() 
 	{
-		Yii::import('application.modules.sso.assets.routeros.*');
+		Yii::import('application.modules.sso.components.plugins.routeros.*');
 		
 		echo Utility::getProtocol().'://'.Yii::app()->request->serverName.Yii::app()->controller->createUrl('network', array(
 			'method'=>'tool,usermanager,get_all_profile',

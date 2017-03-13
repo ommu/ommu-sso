@@ -3,6 +3,11 @@
 class SsoModule extends CWebModule
 {
 	public $defaultController = 'site'; 
+	
+	// getAssetsUrl()
+	//	return the URL for this module's assets, performing the publish operation
+	//	the first time, and caching the result for subsequent use.
+	private $_assetsUrl;
 
 	public function init() {
 		// this method is called when the module is being created
@@ -11,13 +16,23 @@ class SsoModule extends CWebModule
 		// import the module-level models and components
 		$this->setImport(array(
 			'sso.assets.*',
-			'sso.assets.routeros.*',
 			'sso.components.*',
+			'sso.components.plugins.*',
+			'sso.components.plugins.routeros.*',
 			'sso.components.system.*',
 			'sso.models.*',
+			
 			'inlis.models.ViewInlisSyncMemberData',
 			'inlis.model_sync_2-1.SyncMembers',
 		));
+	}
+ 
+	public function getAssetsUrl()
+	{
+		if ($this->_assetsUrl === null)
+			$this->_assetsUrl = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('sso.assets'));
+		
+		return $this->_assetsUrl;
 	}
 
 	public function beforeControllerAction($controller, $action) {

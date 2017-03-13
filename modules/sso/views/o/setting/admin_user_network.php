@@ -20,7 +20,7 @@
 		'Update',
 	);
 	
-	Yii::import('application.modules.sso.assets.routeros.*');
+	Yii::import('application.modules.sso.components.plugins.routeros.*');
 ?>
 
 <div class="form" name="post-on">

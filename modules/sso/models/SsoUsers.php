@@ -346,7 +346,7 @@ class SsoUsers extends CActiveRecord
 		$setting = SsoSettings::model()->findByPk(1, array(
 			'select' => 'password_safe, network_radius_enable, network_radius_customer, network_radius_profile, network_radius_shared',
 		));
-		Yii::import('application.modules.sso.assets.routeros.*');
+		Yii::import('application.modules.sso.components.plugins.routeros.*');
 		
 		$data = array();
 		if($setting->password_safe == 1)
@@ -413,7 +413,7 @@ class SsoUsers extends CActiveRecord
 		$setting = SsoSettings::model()->findByPk(1, array(
 			'select' => 'network_radius_enable, network_radius_customer, network_radius_profile, network_radius_shared',
 		));
-		Yii::import('application.modules.sso.assets.routeros.*');
+		Yii::import('application.modules.sso.components.plugins.routeros.*');
 		
 		if($this->isNewRecord) {
 			if($setting->network_radius_enable == 1) {
@@ -450,7 +450,7 @@ class SsoUsers extends CActiveRecord
 		$setting = SsoSettings::model()->findByPk(1, array(
 			'select' => 'network_radius_enable',
 		));
-		Yii::import('application.modules.sso.assets.routeros.*');
+		Yii::import('application.modules.sso.components.plugins.routeros.*');
 		
 		if($setting->network_radius_enable == 1) {
 			$api = new ORouterosAPI;
