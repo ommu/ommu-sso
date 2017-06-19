@@ -98,13 +98,6 @@ class ViewInlisSyncCheckpoints extends CActiveRecord
 			'checkpoint_member' => Yii::t('attribute', 'Checkpoint Member'),
 			'checkpoint_non_member' => Yii::t('attribute', 'Checkpoint Non Member'),
 		);
-		/*
-			'Date Key' => 'Date Key',
-			'Checkpoints' => 'Checkpoints',
-			'Checkpoint Member' => 'Checkpoint Member',
-			'Checkpoint Non Member' => 'Checkpoint Non Member',
-		
-		*/
 	}
 
 	/**

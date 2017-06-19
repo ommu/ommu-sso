@@ -93,11 +93,6 @@ class ViewInlisSyncCollections extends CActiveRecord
 			'date_key' => Yii::t('attribute', 'Date Key'),
 			'collections' => Yii::t('attribute', 'Collections'),
 		);
-		/*
-			'Date Key' => 'Date Key',
-			'Collections' => 'Collections',
-		
-		*/
 	}
 
 	/**

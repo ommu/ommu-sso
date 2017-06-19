@@ -106,17 +106,6 @@ class ViewInlisSyncMembers extends CActiveRecord
 			'member_pegawai' => Yii::t('attribute', 'Member Pegawai'),
 			'member_umum' => Yii::t('attribute', 'Member Umum'),
 		);
-		/*
-			'Date Key' => 'Date Key',
-			'Members' => 'Members',
-			'Member Siswa' => 'Member Siswa',
-			'Member Pelajar' => 'Member Pelajar',
-			'Member Mahasiswa' => 'Member Mahasiswa',
-			'Member Karyawan' => 'Member Karyawan',
-			'Member Pegawai' => 'Member Pegawai',
-			'Member Umum' => 'Member Umum',
-		
-		*/
 	}
 
 	/**

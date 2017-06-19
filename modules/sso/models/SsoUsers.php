@@ -128,16 +128,6 @@ class SsoUsers extends CActiveRecord
 			'displayname_input' => Yii::t('attribute', 'Name'),
 			'password_input' => Yii::t('attribute', 'Password'),
 		);
-		/*
-			'ID' => 'ID',
-			'User' => 'User',
-			'Member' => 'Member',
-			'Creation Date' => 'Creation Date',
-			'Creation' => 'Creation',
-			'Modified Date' => 'Modified Date',
-			'Modified' => 'Modified',
-		
-		*/
 	}
 
 	/**

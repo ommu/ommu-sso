@@ -103,15 +103,6 @@ class InlisCatalogs extends CActiveRecord
 			'catalog_search' => Yii::t('attribute', 'Catalog'),
 			'creation_search' => Yii::t('attribute', 'Creation'),
 		);
-		/*
-			'ID' => 'ID',
-			'Catalog' => 'Catalog',
-			'Member View' => 'Member View',
-			'Public View' => 'Public View',
-			'Creation Date' => 'Creation Date',
-			'Creation' => 'Creation',
-		
-		*/
 	}
 
 	/**

@@ -110,17 +110,6 @@ class InlisLikes extends CActiveRecord
 			'catalog_search' => Yii::t('attribute', 'Catalog'),
 			'user_search' => Yii::t('attribute', 'User'),
 		);
-		/*
-			'Like' => 'Like',
-			'Publish' => 'Publish',
-			'Catalog' => 'Catalog',
-			'User' => 'User',
-			'Device' => 'Device',
-			'Creation Date' => 'Creation Date',
-			'Creation Ip' => 'Creation Ip',
-			'Deleted Date' => 'Deleted Date',
-		
-		*/
 	}
 
 	/**

@@ -99,13 +99,6 @@ class ViewInlisSyncMemberData extends CActiveRecord
 			'token_salt' => Yii::t('attribute', 'Token Salt'),
 			'token_generate' => Yii::t('attribute', 'Token Generate'),
 		);
-		/*
-			'ID' => 'ID',
-			'Member No' => 'Member No',
-			'Token Salt' => 'Token Salt',
-			'Token Generate' => 'Token Generate',
-		
-		*/
 	}
 
 	/**

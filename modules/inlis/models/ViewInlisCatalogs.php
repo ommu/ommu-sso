@@ -119,23 +119,6 @@ class ViewInlisCatalogs extends CActiveRecord
 			'view_all' => Yii::t('attribute', 'View All'),
 			'user_view' => Yii::t('attribute', 'User View'),
 		);
-		/*
-			'Catalog' => 'Catalog',
-			'Bookmarks' => 'Bookmarks',
-			'Bookmark Unique' => 'Bookmark Unique',
-			'Bookmark All' => 'Bookmark All',
-			'Favourites' => 'Favourites',
-			'Favourite Unique' => 'Favourite Unique',
-			'Favourite All' => 'Favourite All',
-			'Likes' => 'Likes',
-			'Like Unique' => 'Like Unique',
-			'Like All' => 'Like All',
-			'Views' => 'Views',
-			'View Unique' => 'View Unique',
-			'View All' => 'View All',
-			'User View' => 'User View',
-		
-		*/
 	}
 
 	/**

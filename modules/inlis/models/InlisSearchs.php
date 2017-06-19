@@ -109,18 +109,6 @@ class InlisSearchs extends CActiveRecord
 			'deleted_date' => Yii::t('attribute', 'Deleted Date'),
 			'user_search' => Yii::t('attribute', 'User'),
 		);
-		/*
-			'Search' => 'Search',
-			'Publish' => 'Publish',
-			'User' => 'User',
-			'Device' => 'Device',
-			'Search Type' => 'Search Type',
-			'Search Key' => 'Search Key',
-			'Creation Date' => 'Creation Date',
-			'Creation Ip' => 'Creation Ip',
-			'Deleted Date' => 'Deleted Date',
-		
-		*/
 	}
 
 	/**

@@ -103,15 +103,6 @@ class ViewInlisSyncCollectionloans extends CActiveRecord
 			'return_late' => Yii::t('attribute', 'Return Late'),
 			'return_collection' => Yii::t('attribute', 'Return Collection'),
 		);
-		/*
-			'Date Key' => 'Date Key',
-			'Loans' => 'Loans',
-			'Loan Collection' => 'Loan Collection',
-			'Returns' => 'Returns',
-			'Return Late' => 'Return Late',
-			'Return Collection' => 'Return Collection',
-		
-		*/
 	}
 
 	/**

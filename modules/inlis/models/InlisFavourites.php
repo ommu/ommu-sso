@@ -110,17 +110,6 @@ class InlisFavourites extends CActiveRecord
 			'catalog_search' => Yii::t('attribute', 'Catalog'),
 			'user_search' => Yii::t('attribute', 'User'),
 		);
-		/*
-			'Favourite' => 'Favourite',
-			'Publish' => 'Publish',
-			'Catalog' => 'Catalog',
-			'User' => 'User',
-			'Device' => 'Device',
-			'Creation Date' => 'Creation Date',
-			'Creation Ip' => 'Creation Ip',
-			'Deleted Date' => 'Deleted Date',
-		
-		*/
 	}
 
 	/**
