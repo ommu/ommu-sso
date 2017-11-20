@@ -95,7 +95,7 @@
 				'template' => '{view}',
 			));
 
-			$this->widget('application.components.system.OGridView', array(
+			$this->widget('application.libraries.core.components.system.OGridView', array(
 				'id'=>'inlis-collections-grid',
 				'dataProvider'=>$model->search(),
 				'filter'=>$model,

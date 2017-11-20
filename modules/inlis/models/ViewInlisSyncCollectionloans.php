@@ -183,7 +183,7 @@ class ViewInlisSyncCollectionloans extends CActiveRecord
 			$this->defaultColumns[] = array(
 				'name' => 'date_key',
 				'value' => 'Utility::dateFormat($data->date_key)',
-				'filter' => Yii::app()->controller->widget('application.components.system.CJuiDatePicker', array(
+				'filter' => Yii::app()->controller->widget('application.libraries.core.components.system.CJuiDatePicker', array(
 					'model'=>$this,
 					'attribute'=>'date_key',
 					'language' => 'en',

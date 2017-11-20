@@ -67,7 +67,7 @@
 		<?php 
 			$columnData   = $columns;
 
-			$this->widget('application.components.system.OGridView', array(
+			$this->widget('application.libraries.core.components.system.OGridView', array(
 				'id'=>'view-inlis-sync-collections-grid',
 				'dataProvider'=>$model->search(),
 				'filter'=>$model,
