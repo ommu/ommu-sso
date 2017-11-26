@@ -21,7 +21,7 @@
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @copyright Copyright (c) 2016 Ommu Platform (opensource.ommu.co)
  * @created date 29 March 2016, 16:14 WIB
- * @link http://company.ommu.co
+ * @link https://github.com/ommu/ommu-inlis-sso
  * @contact (+62)856-299-4114
  *
  *----------------------------------------------------------------------------------------------------------
