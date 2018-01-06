@@ -5,11 +5,10 @@
  * Contains many function that most used :
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
+ * @contact (+62)856-299-4114
  * @created date 3 Juny 2016, 18:56 WIB
- * @version 1.0
  * @copyright Copyright (c) 2016 Ommu Platform (opensource.ommu.co)
  * @link https://github.com/ommu/ommu-inlis-sso
- * @contact (+62)856-299-4114
  *
  */
 
