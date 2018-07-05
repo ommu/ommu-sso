@@ -7,7 +7,7 @@
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
- * @copyright Copyright (c) 2016 Ommu Platform (opensource.ommu.co)
+ * @copyright Copyright (c) 2016 Ommu Platform (www.ommu.co)
  * @created date 27 April 2016, 12:11 WIB
  * @link https://github.com/ommu/ommu-inlis-sso
  *
@@ -84,7 +84,7 @@
 				<?php echo $model->getAttributeLabel('network_radius_shared');?> <span class="required">*</span>
 			</label>
 			<div class="desc">
-				<?php echo $form->textField($model,'network_radius_shared',array('maxlength'=>2, 'class'=>'span-4')); ?>
+				<?php echo $form->textField($model,'network_radius_shared', array('maxlength'=>2, 'class'=>'span-4')); ?>
 				<?php echo $form->error($model,'network_radius_shared'); ?>
 			</div>
 		</div>

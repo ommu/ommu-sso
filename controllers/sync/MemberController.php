@@ -17,7 +17,7 @@
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
- * @copyright Copyright (c) 2016 Ommu Platform (opensource.ommu.co)
+ * @copyright Copyright (c) 2016 Ommu Platform (www.ommu.co)
  * @created date 29 March 2016, 10:07 WIB
  * @link https://github.com/ommu/ommu-inlis-sso
  *
@@ -127,7 +127,7 @@ class MemberController extends Controller
 		$this->pageTitle = Yii::t('phrase', 'Inlis Members Manage');
 		$this->pageDescription = '';
 		$this->pageMeta = '';
-		$this->render('admin_manage',array(
+		$this->render('admin_manage', array(
 			'model'=>$model,
 			'columns' => $columns,
 		));
@@ -170,7 +170,7 @@ class MemberController extends Controller
 		$this->pageTitle = Yii::t('phrase', 'Generate Sso Users');
 		$this->pageDescription = '';
 		$this->pageMeta = '';
-		$this->render('admin_generate',array(
+		$this->render('admin_generate', array(
 			'setting'=>$setting,
 			'member'=>$member,
 			'model'=>$model,
@@ -188,7 +188,7 @@ class MemberController extends Controller
 		$this->pageTitle = Yii::t('phrase', 'View Inlis Members');
 		$this->pageDescription = '';
 		$this->pageMeta = '';
-		$this->render('admin_view',array(
+		$this->render('admin_view', array(
 			'model'=>$model,
 		));
 	}	
