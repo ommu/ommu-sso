@@ -223,7 +223,7 @@ class UserController extends ControllerApi
 						$return->member_number = $member != null ? trim($member->member->MemberNo) : '-';
 						$return->address = $member != null ? ucwords(strtolower(trim($member->member->Address))) : '-';
 						$return->photo = $member != null ? ($member->member->PicPath != null && $member->member->PicPath != '' ? (file_exists($photo) ? $photo : '-') : '-') : '-';
-						$return->birthday = $member != null ? ($member->member->PlaceOfBirth != '' ? ucwords(strtolower(trim($member->member->PlaceOfBirth.', '.Utility::dateFormat($member->member->DateOfBirth)))) : ucwords(strtolower(Utility::dateFormat($member->member->DateOfBirth)))) : '-';
+						$return->birthday = $member != null ? ($member->member->PlaceOfBirth != '' ? ucwords(strtolower(trim($member->member->PlaceOfBirth.', '.$this->dateFormat($member->member->DateOfBirth, 'long', false)))) : ucwords(strtolower($this->dateFormat($member->member->DateOfBirth, 'long', false)))) : '-';
 						$return->phone_number = $member != null ? ($member->member->NoHp != null && $member->member->NoHp != '' ? trim($member->member->NoHp) : '-') : '-';
 						$return->status = $member != null ? strtoupper(trim($member->member->StatusAnggota)) : '-';
 						$return->member_type = $member != null ? strtoupper(trim($member->member->JenisAnggota)) : '-';
