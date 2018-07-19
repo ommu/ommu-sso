@@ -109,7 +109,7 @@ class AdminController extends Controller
 	public function actionManage() 
 	{
 		$model=new SsoUsers('search');
-		$model->unsetAttributes();  // clear any default values
+		$model->unsetAttributes();	// clear any default values
 		if(isset($_GET['SsoUsers'])) {
 			$model->attributes=$_GET['SsoUsers'];
 		}

@@ -109,7 +109,7 @@ class MemberController extends Controller
 	public function actionManage() 
 	{
 		$model=new SyncMembers('search');
-		$model->unsetAttributes();  // clear any default values
+		$model->unsetAttributes();	// clear any default values
 		if(isset($_GET['SyncMembers'])) {
 			$model->attributes=$_GET['SyncMembers'];
 		}
