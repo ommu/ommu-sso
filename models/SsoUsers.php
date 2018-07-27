@@ -173,20 +173,20 @@ class SsoUsers extends CActiveRecord
 		// Custom Search
 		$criteria->with = array(
 			'user' => array(
-				'alias'=>'user',
-				'select'=>'displayname',
+				'alias' => 'user',
+				'select' => 'displayname',
 			),
 			'member' => array(
-				'alias'=>'member',
-				'select'=>'Fullname',
+				'alias' => 'member',
+				'select' => 'Fullname',
 			),
 			'creation' => array(
-				'alias'=>'creation',
-				'select'=>'displayname',
+				'alias' => 'creation',
+				'select' => 'displayname',
 			),
 			'modified' => array(
-				'alias'=>'modified',
-				'select'=>'displayname',
+				'alias' => 'modified',
+				'select' => 'displayname',
 			),
 		);
 		$criteria->compare('user.displayname', strtolower($this->user_search), true);
