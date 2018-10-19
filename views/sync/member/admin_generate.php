@@ -15,7 +15,7 @@
 	$this->breadcrumbs=array(
 		'Inlis Members'=>array('manage'),
 		$member->ID=>array('view','id'=>$member->ID),
-		'Update',
+		Yii::t('phrase', 'Update'),
 	);
 ?>
 

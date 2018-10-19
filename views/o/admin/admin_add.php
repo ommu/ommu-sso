@@ -15,7 +15,7 @@
 
 	$this->breadcrumbs=array(
 		'Sso Users'=>array('manage'),
-		'Create',
+		Yii::t('phrase', 'Create'),
 	);
 ?>
 

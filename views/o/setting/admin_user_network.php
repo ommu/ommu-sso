@@ -16,7 +16,7 @@
 	$this->breadcrumbs=array(
 		'Sso Settings'=>array('manage'),
 		$model->id=>array('view','id'=>$model->id),
-		'Update',
+		Yii::t('phrase', 'Update'),
 	);
 	
 	Yii::import('application.modules.sso.components.plugins.routeros.*');
@@ -26,7 +26,6 @@
 	<?php $form=$this->beginWidget('application.libraries.yii-traits.system.OActiveForm', array(
 		'id'=>'sso-settings-form',
 		'enableAjaxValidation'=>true,
-		//'htmlOptions' => array('enctype' => 'multipart/form-data')
 	)); ?>
 
 	<?php //begin.Messages ?>

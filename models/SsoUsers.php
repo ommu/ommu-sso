@@ -266,7 +266,7 @@ class SsoUsers extends CActiveRecord
 			*/
 			$this->defaultColumns[] = array(
 				'name' => 'creation_search',
-				'value' => '$data->creation_id != 0 ? $data->creation->displayname : "-"',
+				'value' => '$data->creation_id != 0 ? $data->creation->displayname : \'-\'',
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'creation_date',
@@ -393,7 +393,7 @@ class SsoUsers extends CActiveRecord
 				$api = new ORouterosAPI;
 				$data = array(
 					'customer'=>$setting->network_radius_customer,
-					//'actual-profile'=>$setting->network_radius_profile,	
+					//'actual-profile'=>$setting->network_radius_profile,
 					'username'=>$this->member->MemberNo,
 					'password'=>$this->mkrtk_radius,
 					'shared-users'=>$setting->network_radius_shared,
@@ -408,7 +408,7 @@ class SsoUsers extends CActiveRecord
 				$api->command('/tool/user-manager/user/create-and-activate-profile', array(
 					'numbers'=>$this->member->MemberNo,
 					'customer'=>$setting->network_radius_customer,
-					'profile'=>$setting->network_radius_profile,						
+					'profile'=>$setting->network_radius_profile,
 				));
 			}
 		}
@@ -428,7 +428,7 @@ class SsoUsers extends CActiveRecord
 		if($setting->network_radius_enable == 1) {
 			$api = new ORouterosAPI;
 			$api->command('/tool/user-manager/user/remove', array(
-				'numbers'=>$this->member->MemberNo,					
+				'numbers'=>$this->member->MemberNo,
 			));
 		}		
 	}
